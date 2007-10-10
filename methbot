@@ -1,0 +1,46 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'eventmachine'
+
+ROOT = ARGV[0]||"."
+puts "ROOT set to #{ROOT}"
+
+# load files
+Dir[ "#{ROOT}/lib/*.rb", "#{ROOT}/servers/*.rb", "#{ROOT}/clients/*.rb" ].each do |m|
+  puts "Loading Modules: #{File.basename(m)} "
+  require m
+end
+
+def em_run handler
+  begin
+    handler.servers.each do |server|
+      (server,port) = server.split(':')
+      puts "Starting #{handler.em_type.to_s} => #{server.to_s} : #{port.to_s}"
+      case handler.em_type
+      when :server
+        EM::start_server(server, port.to_i, handler){
+          @@server = server
+        }
+      when :client
+        EM::connect(server, port.to_i, handler){
+          @@server = server
+        }
+      else
+        puts "Unknown type for #{handler}"
+      end
+    end
+  rescue EventMachine::ConnectionNotBound
+    puts "Connection Not Bound: #{$!}"
+  rescue
+    puts "Unknown Error: #{$!}"
+  end
+end
+
+EM.epoll
+EM.run {
+  [MethBot].each do |handler|
+    em_run( MethBot )
+  end
+}
+
