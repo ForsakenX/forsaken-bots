@@ -19,13 +19,9 @@ def em_run handler
       puts "Starting #{handler.em_type.to_s} => #{server.to_s} : #{port.to_s}"
       case handler.em_type
       when :server
-        EM::start_server(server, port.to_i, handler){
-          @@server = server
-        }
+        EM::start_server(server, port.to_i, handler)
       when :client
-        EM::connect(server, port.to_i, handler){
-          @@server = server
-        }
+        EM::connect(server, port.to_i, handler)
       else
         puts "Unknown type for #{handler}"
       end
@@ -34,6 +30,9 @@ def em_run handler
     puts "Connection Not Bound: #{$!}"
   rescue
     puts "Unknown Error: #{$!}"
+    $@.each do |line|
+      puts "#{line}"
+    end
   end
 end
 

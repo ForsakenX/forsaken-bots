@@ -1,4 +1,5 @@
 
+# verbs for irc
 module IrcMethods
 
   # sent a message to target => user/channel
@@ -61,29 +62,27 @@ class User
   end
 end
 
-=begin Pointless ? just use array ?
+# put this into AR
 class Users
-  def initialize
-    @users = []
-  end
-  def add *args #server, channel, username, hostname, nick, flags, realname
+  @users = []
+  def self.create *args #server, channel, username, hostname, nick, flags, realname
     @users << (user = User.new(*args))
   end
-  def length
+  def self.length
     @users.length
   end
+  def self.find nick
+    users = []
+    @users.each do |user|
+      users << user if nick == :all || user.nick.downcase == nick.downcase
+    end
+    users
+  end
 end
-=end
 
 # handle irc
+require 'socket'
 class IrcClient < EM::Connection
-
-  # startup
-  def initialize *args
-    super
-    # list of users
-    @users = []
-  end
 
   # line protocol
   include EM::Protocols::LineText2
@@ -92,19 +91,48 @@ class IrcClient < EM::Connection
   include IrcMethods
 
   # defaults
-  @@em_type  = :client
-  @@servers  = []
-  @@server   = "localhost"
-  @@nick     = "irclient"
-  @@channels = ""
-  @@username = Process.uid
-  @@hostname = "localhost"
-  @@realname = "IrcClient"
-  @@target   = "," # special flag for command
+  @@em_type = :client # tell EM if we are server/client
+  @@servers = []      # list of connections
 
   # accessors
   def self.em_type; @@em_type; end 
   def self.servers; @@servers; end 
+
+  # startup
+  def initialize *args
+    # defaults
+    @remote   = { :ip => "remote", :port => "6667" }
+    @nick     = "irclient"
+    @channels = ""
+    @username = Process.uid
+    @hostname = "localhost"
+    @realname = "IrcClient"
+    @target   = "," # special flag for command
+    # user defined
+    overide_defaults
+    # run last
+    super *args # calls post_init
+  end
+
+  # user defined
+  def overide_defaults
+  end
+
+  # connection up
+  def post_init
+
+    # remote
+    unless (peername = get_peername).nil?
+      @remote[:port], @remote[:ip] = Socket.unpack_sockaddr_in(peername)
+    end
+   
+    # login
+    user @username, @hostname, @remote[:ip], @realname
+
+    # nick
+    nick @nick
+
+  end
 
   # data being sent
   def send_data line
@@ -114,17 +142,6 @@ class IrcClient < EM::Connection
 
     # send output
     super line
-
-  end
-
-  # connection up
-  def post_init
-   
-    # login
-    user @@username, @@hostname, @@server, @@realname
-
-    # nick
-    nick @@nick
 
   end
 
@@ -156,14 +173,14 @@ class IrcClient < EM::Connection
     # login completed
     when /^:[^ ]* 001 /i
 
-      # join channels
-      join @@channels
+      # join default channels
+      join @channels
 
     ################
     # joined a room
     ################
 
-    when /:#{@@nick}![^@]*@[^ ]* JOIN :([^\n]*)$/i
+    when /:#{@nick}![^@]*@[^ ]* JOIN :([^\n]*)$/i
 
       channels = $1
 
@@ -186,7 +203,7 @@ class IrcClient < EM::Connection
       realname = $7 # MethBot
 
       # add user to the list
-      @users << User.new(server, channel, username, hostname, nick, flags, realname)
+      Users.create(server, channel, username, hostname, nick, flags, realname)
     
     # end of who list
     when /:[^ ]* 315/i
@@ -205,15 +222,15 @@ class IrcClient < EM::Connection
       command = false
 
       # check our name name
-      if message =~ /^#{@@nick}: /
+      if message =~ /^#{@nick}: /
         # remove our name
-        message.slice!(/^#{@@nick}: /)
+        message.slice!(/^#{@nick}: /)
         command = true
       end
 
       # detect special target
-      if message =~ /^#{@@target}/
-        message.slice!(/^#{@@target}/)
+      if message =~ /^#{@target}/
+        message.slice!(/^#{@target}/)
         command = true
       end
 
@@ -224,7 +241,7 @@ class IrcClient < EM::Connection
       command = params.shift if command
        
       # send command to user script
-      privmsg(command,channel,message)
+      privmsg(command,channel,params)
 
     ###############
     # not handled
