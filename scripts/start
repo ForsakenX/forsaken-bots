@@ -1,31 +1,24 @@
 #!/usr/bin/env ruby
 
-# libs
 require 'rubygems'
 require 'eventmachine'
+puts "EventMachine Loaded"
 
-# run the thing
-def em_run handler
+ROOT=File.dirname(__FILE__)+"/.."
+puts "ROOT set to '#{ROOT}'"
+
+require "#{ROOT}/lib/meth_bot.rb"
+puts "MethBot Loaded"
+
+EM.epoll
+EM.run {
   begin
-    handler.servers.each do |server|
-      (server,port) = server.split(':')
-      puts "Starting #{handler.em_type.to_s} => #{server.to_s} : #{port.to_s}"
-      case handler.em_type
-      when :server
-        EM::start_server(server, port.to_i, handler)
-      when :client
-        EM::connect(server, port.to_i, handler)
-      else
-        puts "Unknown type for #{handler}"
-      end
-    end
-  rescue EventMachine::ConnectionNotBound
-    puts "Connection Not Bound: #{$!}"
+    (server,port) = MethBot.server.split(':')
+    puts "Connecting MethBot to #{server.to_s}:#{port.to_s}"
+    EM::connect(server, port.to_i, handler)
   rescue
-    puts "Unknown Error: #{$!}"
-    $@.each do |line|
-      puts "#{line}"
-    end
+    puts "Error: #{$!}"
+    $@.each do |line| puts "#{line}" end
   end
-end
+}
 
