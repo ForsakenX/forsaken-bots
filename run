@@ -1,15 +1,8 @@
 #!/usr/bin/env ruby
 
+# libs
 require 'rubygems'
 require 'eventmachine'
-
-# the root
-ROOT = ARGV[0]||"."
-puts "ROOT set to #{ROOT}"
-
-# load library
-require 'irc'
-puts "Loaded irc.rb"
 
 # run the thing
 def em_run handler
@@ -35,5 +28,4 @@ def em_run handler
     end
   end
 end
-
 

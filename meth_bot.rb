@@ -1,3 +1,4 @@
+require 'irc'
 class MethBot < Irc::Client
 
   # list of server
