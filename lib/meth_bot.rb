@@ -1,23 +1,25 @@
 require "#{ROOT}/lib/irc"
 class MethBot < Irc::Client
 
-  # list of server
   @@server  = "irc.blitzed.org"
 
-  # setups
-  def overide_defaults
-    # Override Settings
-    @channels = ["#kahn"] # default channels
+  def initialize *args
+    # settings
+    @nick     = "MethBot"
     @realname = "Meth Killer Bot 0.000001"
-    @nick     = "MethBot" # nick of bot
+    @channels = ["#kahn"]
+    # allways last
+    # calls post_init
+    super *args
   end
 
-  # we've received a private message
   def privmsg m
     handle_command(m) if m.command
   end
 
-  # we have a command
+  def notice m
+  end
+
   def handle_command m
     case m.command
     when "ping"
@@ -25,10 +27,15 @@ class MethBot < Irc::Client
     when "hi"
       m.reply "Hey, Whats up!"
     when "ip"
+      load 'plugins/ip.rb'
+      ip = IPPlugin.new
+      ip.privmsg(m)
+      ip=nil
+=begin
       case m.params[0]
       when "list"
         output = []
-        users = m.client.users.find(:all)
+        users = @users.find(:all)
         users.each do |user|
           output << "#{user.nick} => #{user.ip}"
         end
@@ -36,6 +43,7 @@ class MethBot < Irc::Client
       else # when "help"
         m.reply "ip list => Prints a list of users and their ip numbers..."
       end
+=end
     else #when "help"
       m.reply "So far I only respond to: help, hi, ping, ip"
     end

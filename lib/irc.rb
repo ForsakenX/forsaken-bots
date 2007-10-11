@@ -52,6 +52,21 @@ module Irc
       end
       nil
     end
+    def filter patterns=[]
+      found = []
+      @users.map do |user|
+        if patterns.length > 0
+          matched = false
+          patterns.each do |pattern|
+            matched = true if user.nick =~ /#{pattern}/i
+          end
+          next if matched == false
+        end
+        next if ["ChanServ"].detect{|nick| user.nick == nick }
+        found << user
+      end
+      found
+    end
   end
 
   class PrivMessage
@@ -177,23 +192,18 @@ module Irc
 
     # startup
     def initialize *args
-      # defaults
-      @remote   = { :ip => "remote", :port => "6667" }
-      @nick     = "irclient"
-      @channels = ""
+      # user defaults
+      @target   = ","            unless @target
+      @nick     = "irclient"     unless @nick
+      @realname = "Irc::Client"  unless @realname
+      @channels = []             unless @channels
+      # automatics
       @username = Process.uid
-      @hostname = "localhost"
-      @realname = "Irc::Client"
-      @target   = "," # special flag for command
+      @remote   = { :ip => "remote", :port => "6667" }
+      @hostname = Socket.gethostname
       @users    = Users
-      # user defined
-      overide_defaults
       # run last
       super *args # calls post_init
-    end
-  
-    # user defined
-    def overide_defaults
     end
   
     # connection up
