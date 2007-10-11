@@ -79,7 +79,7 @@ module Irc
         hostname = $3
         nick     = $1
         # do we know this user allready?
-        unless @source = Users.find_by_nick(nick) # has more information
+        unless @source = @client.users.find_by_nick(nick) # has more information
           # create a mock user
           @source = User.new("","",username,hostname,nick,"","")
         end
@@ -153,22 +153,22 @@ module Irc
     include EM::Protocols::LineText2
 
     # defaults
-    @@em_type = :client # tell EM if we are server/client
-    @@servers = []      # list of connections
+    @@server  = "localhost" # ircd server
+    @@port    = 6667
 
     # accessors
-    def self.em_type; @@em_type; end 
-    def self.servers; @@servers; end 
+    def self.server; @@server; end 
+    def self.port;   @@port;   end 
   
     # accessors
     attr_accessor :remote, :nick, :channels, :username,
-                  :hostname, :realname, :target
+                  :hostname, :realname, :target, :users
 
     # data being sent
     def send_data line
 
       # log output
-      puts ">>> #{line}"
+#      puts ">>> #{line}"
 
       # send output
       super line
@@ -183,9 +183,9 @@ module Irc
       @channels = ""
       @username = Process.uid
       @hostname = "localhost"
-      @server   = "ircd"
       @realname = "Irc::Client"
       @target   = "," # special flag for command
+      @users    = Users
       # user defined
       overide_defaults
       # run last
@@ -205,10 +205,10 @@ module Irc
       end
      
       # login
-      send_data "USER #{@username} #{@hostname} #{@server} :#{@realname}\n"
+      send_data "USER #{@username} #{@hostname} #{@@server} :#{@realname}\n"
   
-      # nick
-      nick @nick
+      # send initial nick
+      send_nick @nick
 
     end
  
@@ -229,7 +229,7 @@ module Irc
     end
   
     # set your nick
-    def nick nick=nil
+    def send_nick nick=nil
       unless nick.nil?
         send_data "NICK #{nick}\n"
         @nick = nick
@@ -241,7 +241,7 @@ module Irc
     def receive_line line
 
       # log input
-      puts "<<< #{line}"
+#      puts "<<< #{line}"
 
       # handle input
       case line
@@ -260,7 +260,7 @@ module Irc
       #################
 
       # pointless auth messages
-      when /^:[^ ]* NOTICE AUTH/i
+      #when /^:[^ ]* NOTICE AUTH/i
 
       # login completed
       when /^:[^ ]* 001 /i
@@ -268,23 +268,34 @@ module Irc
         # join default channels
         join @channels
 
+      # set nick failed
+      when /^:[^ ]* 433 /i
+
+      # MOTD
+      # start, line, end
+      when /^:[^ ]* (375|372|376)/
+
       ################
-      # joined a room
+      # joining
       ################
 
+      # joined
       when /:#{@nick}![^@]*@[^ ]* JOIN :([^\n]*)$/i
 
         channels = $1
 
         # get list of users
         send_data "WHO #{channels}\n"
-  
 
-      #################
+      # topic
+      when /^[^ ]* 332/
+
+      # names list
+      # we use /who instead
+      when /^[^ ]* (353|366)/
+
       # who responses
-      #################
-
-      # single user
+      # a single user in who list
       when /:([^ ]*) 352 [^ ]* (#[^ ]*) ([^ ]*) ([^ ]*) [^ ]* ([^ ]*) ([^:]* :[^ ]*) ([\n]*)/i
 
         server   = $1 # server
@@ -314,13 +325,28 @@ module Irc
         # send to user script
         privmsg(message)
 
+      ###################
+      # notice messages
+      ###################
+
+      # privmsg detected
+      when /^:[^ ]* NOTICE/i
+
+        # PrivMessage Object
+        #message = NoticeMessage.new(self,line)
+      
+        # send to user script
+        #notice(message)
+
       ###############
       # not handled
       ###############
       else
 
+puts "<<< #{line}"
+
         # log
-        puts "--- Unhandled Input ---" # line is allready printed
+#        puts "--- Unhandled Input ---" # line is allready printed
 
       end
     end

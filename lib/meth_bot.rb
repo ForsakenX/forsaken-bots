@@ -2,7 +2,7 @@ require "#{ROOT}/lib/irc"
 class MethBot < Irc::Client
 
   # list of server
-  @@servers  = ["irc.blitzed.org:6667"]#,"irc.freenode.net:6667"]
+  @@server  = "irc.blitzed.org"
 
   # setups
   def overide_defaults
@@ -28,7 +28,7 @@ class MethBot < Irc::Client
       case m.params[0]
       when "list"
         output = []
-        users = Irc::Users.find(:all)
+        users = m.client.users.find(:all)
         users.each do |user|
           output << "#{user.nick} => #{user.ip}"
         end

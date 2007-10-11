@@ -4,7 +4,7 @@ require 'rubygems'
 require 'eventmachine'
 puts "EventMachine Loaded"
 
-ROOT=File.dirname(__FILE__)+"/.."
+ROOT=File.dirname(__FILE__)
 puts "ROOT set to '#{ROOT}'"
 
 require "#{ROOT}/lib/meth_bot.rb"
@@ -13,9 +13,8 @@ puts "MethBot Loaded"
 EM.epoll
 EM.run {
   begin
-    (server,port) = MethBot.server.split(':')
-    puts "Connecting MethBot to #{server.to_s}:#{port.to_s}"
-    EM::connect(server, port.to_i, handler)
+    puts "Connecting MethBot to #{MethBot.server}:#{MethBot.port.to_s}"
+    EM::connect(MethBot.server, MethBot.port, MethBot)
   rescue
     puts "Error: #{$!}"
     $@.each do |line| puts "#{line}" end
