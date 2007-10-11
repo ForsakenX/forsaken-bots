@@ -1,4 +1,4 @@
-require 'irc'
+require "#{ROOT}/lib/irc"
 class MethBot < Irc::Client
 
   # list of server
