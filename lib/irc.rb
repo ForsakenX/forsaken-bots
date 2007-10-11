@@ -228,7 +228,7 @@ module Irc
  
     # sent a message to target => user/channel
     def say target, message
-      return message if message.nil?
+      return message unless message
       # for each line
       message.split("\n").each do |message|
         # send at chunks of 350 characters

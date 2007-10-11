@@ -14,21 +14,26 @@ module Meth
       end
     end
     def self.detect plugin
-      list.detect{|p| p == plugin }
+      list.detect{|p| p.downcase == plugin.downcase }
     end
-    def self.do(plugin, method, args)
+    def self.do(plugin, method, m)
       unless detect(plugin)
-        puts "Plugin does not exist"
+        m.reply "Plugin '#{plugin}' does not exist"
         return false
       end
       load @@glob.gsub('*',plugin)
       plugin = plugin.camel_case
       unless plugin = Object.const_get(plugin)
-        puts "Const does not exist"
+        m.reply "Const '#{plugin}' does not exist"
         return false
       end
       i = plugin.new
-      output = i.send(method,args)
+      if i.respond_to?(method.to_sym)
+        output = i.send(method,m)
+      else
+        m.reply "Method '#{method}' is not a member of plugin '#{plugin}'"
+        return false
+      end
       i = nil
       output
     end
@@ -53,21 +58,8 @@ module Meth
       command(m) if m.command
     end
   
-    def notice m
-    end
-  
     def command m
-      case m.command
-      when "help","",nil
-        if (plugin = m.params.shift)
-          m.command = plugin
-          m.reply Plugins.do(m.command,'help',m)
-        else
-          m.reply "So far I only respond to: #{Plugins.list.join(', ')}"
-        end
-      else
-        Plugins.do(m.command,'privmsg',m)
-      end
+      Plugins.do(m.command,'privmsg',m)
     end
   
   end
