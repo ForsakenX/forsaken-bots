@@ -228,6 +228,7 @@ module Irc
  
     # sent a message to target => user/channel
     def say target, message
+      return message if message.nil?
       # for each line
       message.split("\n").each do |message|
         # send at chunks of 350 characters
@@ -250,9 +251,8 @@ module Irc
     def send_nick nick=nil
       unless nick.nil?
         send_data "NICK #{nick}\n"
-        @nick = nick
+        @nick_sent = nick
       end
-      @nick
     end
 
     # new line recieved
@@ -263,6 +263,14 @@ module Irc
 
       # handle input
       case line
+
+      #########
+      # ERROR
+      #########
+      
+      when /^ERROR/i
+
+        exit
 
       #########
       # ping
@@ -288,6 +296,8 @@ module Irc
 
       # set nick failed
       when /^:[^ ]* 433 /i
+
+        send_nick "#{@nick_sent}_"
 
       # MOTD
       # start, line, end

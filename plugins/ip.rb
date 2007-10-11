@@ -1,5 +1,5 @@
 require "#{ROOT}/lib/direct_play"
-class IPPlugin
+class Ip
 
   include DirectPlay
 
@@ -51,7 +51,7 @@ class IPPlugin
     # list of users
     users = m.channel.nil? ? [m.source] : m.client.users
     # filter list against params
-    users = filter_users users, targets
+    users = m.client.users.filter targets
     # check the users
     results = check(users)
     # format output
@@ -85,11 +85,8 @@ class IPPlugin
     # output holder
     list = []
 
-    # channel or pm sender
-    users = m.channel.nil? ? [m.source] : m.client.users
-
     # get and format list of found addresses
-    users.filter(targets).each do |user|
+    m.client.users.filter(targets).each do |user|
       list << "#{user.nick} => #{user.ip}"
     end
 
