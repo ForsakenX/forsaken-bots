@@ -7,14 +7,14 @@ puts "EventMachine Loaded"
 ROOT=File.dirname(__FILE__)
 puts "ROOT set to '#{ROOT}'"
 
-require "#{ROOT}/lib/meth_bot.rb"
-puts "MethBot Loaded"
+require "#{ROOT}/lib/meth.rb"
+puts "Meth Loaded"
 
 EM.epoll
 EM.run {
   begin
-    puts "Connecting MethBot to #{MethBot.server}:#{MethBot.port.to_s}"
-    EM::connect(MethBot.server, MethBot.port, MethBot)
+    puts "Connecting MethBot to #{Meth::Bot.server}:#{Meth::Bot.port.to_s}"
+    EM::connect(Meth::Bot.server, Meth::Bot.port, Meth::Bot)
   rescue
     puts "Error: #{$!}"
     $@.each do |line| puts "#{line}" end

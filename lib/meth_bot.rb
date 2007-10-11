@@ -1,5 +1,6 @@
 require "#{ROOT}/lib/irc"
-class MethBot < Irc::Client
+module Meth
+  class Bot < Irc::Client
 
   @@server  = "irc.blitzed.org"
 
@@ -22,10 +23,6 @@ class MethBot < Irc::Client
 
   def handle_command m
     case m.command
-    when "ping"
-      m.reply "pong"
-    when "hi"
-      m.reply "Hey, Whats up!"
     when "ip"
       load 'plugins/ip.rb'
       ip = IPPlugin.new
@@ -45,9 +42,15 @@ class MethBot < Irc::Client
       end
 =end
     else #when "help"
-      m.reply "So far I only respond to: help, hi, ping, ip"
+      topic = m.params.shift
+      unless topic
+        plugins =  Dir["#{ROOT}/plugins/*.rb"]
+        m.reply "So far I only respond to: #{plugins.join(', ')}"
+      else
+
+      end
     end
   end
 
 end
-
+end

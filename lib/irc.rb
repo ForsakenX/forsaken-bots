@@ -52,7 +52,7 @@ module Irc
       end
       nil
     end
-    def filter patterns=[]
+    def self.filter patterns=[]
       found = []
       @users.map do |user|
         if patterns.length > 0
@@ -158,6 +158,10 @@ module Irc
       @client.say @replyto, message
     end
 
+    def reply_directly message
+      @client.say @source.nick, message
+    end
+
   end
   
   # handle irc
@@ -183,7 +187,7 @@ module Irc
     def send_data line
 
       # log output
-#      puts ">>> #{line}"
+      puts ">>> #{line}"
 
       # send output
       super line
@@ -224,10 +228,14 @@ module Irc
  
     # sent a message to target => user/channel
     def say target, message
-      # send at chunks of 350 characters
-      message.scan(/.{1,350}/m){|chunk|
-        send_data "PRIVMSG #{target} :#{chunk}\n"
-      }
+      # for each line
+      message.split("\n").each do |message|
+        # send at chunks of 350 characters
+        message.scan(/([^\n]*\n|.{1,350})/m){|chunk|
+          send_data "PRIVMSG #{target} :#{chunk}\n"
+        }
+      end
+      message
     end
   
     # join chat/chats
@@ -251,7 +259,7 @@ module Irc
     def receive_line line
 
       # log input
-#      puts "<<< #{line}"
+      puts "<<< #{line}"
 
       # handle input
       case line
@@ -330,10 +338,17 @@ module Irc
       when /^:[^ ]* PRIVMSG/i
 
         # PrivMessage Object
-        message = PrivMessage.new(self,line)
+        m = PrivMessage.new(self,line)
       
         # send to user script
-        privmsg(message)
+        begin
+          privmsg m
+        rescue Exception
+          puts "----------------------"
+          puts m.reply_directly "#{$!}"
+          puts $@.join("\n")
+          puts "----------------------"
+        end
 
       ###################
       # notice messages
@@ -353,10 +368,8 @@ module Irc
       ###############
       else
 
-puts "<<< #{line}"
-
         # log
-#        puts "--- Unhandled Input ---" # line is allready printed
+        puts "--- Unhandled Input ---" # line is allready printed
 
       end
     end
