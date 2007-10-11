@@ -3,15 +3,15 @@
 require 'rubygems'
 require 'eventmachine'
 
+# the root
 ROOT = ARGV[0]||"."
 puts "ROOT set to #{ROOT}"
 
-# load files
-Dir[ "#{ROOT}/lib/*.rb", "#{ROOT}/servers/*.rb", "#{ROOT}/clients/*.rb" ].each do |m|
-  puts "Loading Modules: #{File.basename(m)} "
-  require m
-end
+# load library
+require 'irc'
+puts "Loaded irc.rb"
 
+# run the thing
 def em_run handler
   begin
     handler.servers.each do |server|
@@ -36,10 +36,4 @@ def em_run handler
   end
 end
 
-EM.epoll
-EM.run {
-  [MethBot].each do |handler|
-    em_run( MethBot )
-  end
-}
 
