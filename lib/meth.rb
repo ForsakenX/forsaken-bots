@@ -2,7 +2,7 @@ module Meth
 
   require "#{ROOT}/lib/string.rb"
   class Plugins
-    @@glob = "#{ROOT}/plugins/*.rb"
+    @@glob = "#{DIST}/plugins/*.rb"
     def initialize
     end
     def self.plugins

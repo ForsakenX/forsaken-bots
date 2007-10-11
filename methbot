@@ -7,6 +7,9 @@ puts "EventMachine Loaded"
 ROOT=File.dirname(__FILE__)
 puts "ROOT set to '#{ROOT}'"
 
+DIST="#{ROOT}/dist"
+puts "DIST set to '#{DIST}'"
+
 require "#{ROOT}/lib/meth.rb"
 puts "Meth Loaded"
 

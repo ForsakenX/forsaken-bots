@@ -1,4 +1,4 @@
-require "#{ROOT}/lib/direct_play"
+require "#{DIST}/lib/direct_play"
 class Ip
 
   include DirectPlay
