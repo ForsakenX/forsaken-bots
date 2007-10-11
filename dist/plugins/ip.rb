@@ -36,11 +36,13 @@ class Ip
 
   def is_hosting? m
     ip = m.params.shift
-    if hosting? ip
-      m.reply "#{ip} is hosting..."
-    else
-      m.reply "#{ip} is NOT hosting..."
+    unless ip
+      m.reply "Missing <ip> argument."
+      return
     end
+    hosting?(ip,
+             Proc.new { |time| m.reply "#{ip} is hosting..."     },
+             Proc.new { |time| m.reply "#{ip} is NOT hosting..." })
   end
 
   # find hosts
@@ -51,29 +53,32 @@ class Ip
     # list of users
     users = m.channel.nil? ? [m.source] : m.client.users
     # filter list against params
-    users = m.client.users.filter targets
+    users = Irc::User.filter targets
     # check the users
-    results = check(users)
-    # format output
-    hosts_output = []
-    results[:hosts].each do |user|
-      hosts_output << "#{user.nick}@#{user.ip}"
-    end
-    players_output = []
-    results[:players].each do |user|
-      players_output << "#{user.nick}@#{user.ip}"
-    end
-    m.reply "Scanned #{results[:total_ports_scanned]} ports "+
-             "in #{results[:time_finished]-results[:time_started]} seconds... "+
-             "#{users.length} users were scanned... "+
-             "( #{players_output.length} playing: "+
-             "#{players_output.join(', ')} ) "+
-             "( #{hosts_output.length} hosting: "+
-             "#{hosts_output.join(', ')} ) "
-    # add hosts to game list
-    results[:hosts].each do |user|
-      @bot.plugins['game'].create(m,user)
-    end
+    check(users){ |results|
+      # format output
+      hosts_output = []
+      results[:hosts].each do |user|
+        hosts_output << "#{user.nick}@#{user.ip}"
+      end
+      players_output = []
+      results[:players].each do |user|
+        players_output << "#{user.nick}@#{user.ip}"
+      end
+      m.reply "Scanned #{results[:total_ports_scanned]} ports "+
+               "in #{results[:time_finished]-results[:time_started]} seconds... "+
+               "#{users.length} users were scanned... "+
+               "( #{players_output.length} playing: "+
+               "#{players_output.join(', ')} ) "+
+               "( #{hosts_output.length} hosting: "+
+               "#{hosts_output.join(', ')} ) "
+      # add hosts to game list
+=begin no game plugin yet
+      results[:hosts].each do |user|
+        @bot.plugins['game'].create(m,user)
+      end
+=end
+    }
   end
 
   # get ip of user
@@ -86,7 +91,7 @@ class Ip
     list = []
 
     # get and format list of found addresses
-    m.client.users.filter(targets).each do |user|
+    Irc::User.filter(targets).each do |user|
       list << "#{user.nick} => #{user.ip}"
     end
 

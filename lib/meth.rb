@@ -48,7 +48,7 @@ module Meth
       # settings
       @nick     = "MethBot"
       @realname = "Meth Killer Bot 0.000001"
-      @channels = ["#kahn"]
+      @channels = ["#tester","#kahn"]
       # allways last
       # calls post_init
       super *args
