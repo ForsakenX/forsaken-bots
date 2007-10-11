@@ -1,4 +1,4 @@
-class MethBot < IrcClient
+class MethBot < Irc::Client
 
   # list of server
   @@servers  = ["irc.blitzed.org:6667"]#,"irc.freenode.net:6667"]
@@ -11,33 +11,32 @@ class MethBot < IrcClient
     @nick     = "MethBot" # nick of bot
   end
 
-  # we've received a new message
-  def privmsg(command,channel,params)
-    handle_command(command,channel,params) if command
+  # we've received a private message
+  def privmsg m
+    handle_command(m) if m.command
   end
 
-  # we've recieved a command
-  def handle_command(command,channel,params)
-    case command
+  # we have a command
+  def handle_command m
+    case m.command
     when "ping"
-      say channel, "pong"
+      m.reply "pong"
     when "hi"
-      say channel, "Hey, Whats up!"
+      m.reply "Hey, Whats up!"
     when "ip"
-      command = params.shift
-      case command
+      case m.params[0]
       when "list"
         output = []
-        users = Users.find(:all)
+        users = Irc::Users.find(:all)
         users.each do |user|
           output << "#{user.nick} => #{user.ip}"
         end
-        say channel, "#{users.length} users: #{output.join(', ')}"
+        m.reply "#{users.length} users: #{output.join(', ')}"
       else # when "help"
-        say channel, "ip list => Prints a list of users and their ip numbers..."
+        m.reply "ip list => Prints a list of users and their ip numbers..."
       end
     else #when "help"
-      say channel, "So far I only respond to: help, hi, ping, ip"
+      m.reply "So far I only respond to: help, hi, ping, ip"
     end
   end
 
