@@ -1,31 +1,7 @@
-
-# model (Active Record Paradigm)
-class ArModel
-  attr_accessor :collection
-  @@collection = []
-
-  #
-  # Instance
-  #
-
-  def update user
-    user.each do |prop,val|
-      instance_variable_set(prop.to_s.gsub(/^/,'@').to_sym, val)
-    end
-  end
-
-  def destroy
-    @@users.delete self
-  end
-
-
-end
-
 module Irc
    
   # user model
-  require "#{ROOT}/lib/ar_model.rb"
-  class User < ArModel
+  class User
 
     #
     #  User Instance
@@ -328,8 +304,10 @@ module Irc
 
       # joined
       # :methods!1000@c-68-36-237-152.hsd1.nj.comcast.net PART #kahn
-      unless line =~ /:([^ ]*)!([^@]*)@([^ ]*) PART :(#[^\n]*)$/i
-        throw "Bad PART message..."
+      # :methods!1000@c-68-36-237-152.hsd1.nj.comcast.net PART #tester
+      unless line =~ /:([^!]*)!([^@]*)@([^ ]*) PART [:]*(#[^\n]*)$/i
+        puts "Error: badly formed PART message"
+        return
       end
 
       nick     = $1
@@ -496,7 +474,7 @@ module Irc
     def self.port;   @@port;   end 
   
     # accessors
-    attr_accessor :remote, :nick, :channels, :username,
+    attr_accessor :remote, :nick, :nick_sent, :channels, :username,
                   :hostname, :realname, :target, :users
 
     # data being sent
@@ -518,6 +496,7 @@ module Irc
       @realname = "Irc::Client"  unless @realname
       @channels = []             unless @channels
       # automatics
+      @nick_sent= @nick
       @username = Process.uid
       @remote   = { :ip => "remote", :port => "6667" }
       @hostname = Socket.gethostname
@@ -544,6 +523,7 @@ module Irc
     # sent a message to target => user/channel
     def say target, message
       return message unless message
+      message = message.to_s
       # for each line
       message.split("\n").each do |message|
         # send at chunks of 350 characters

@@ -1,6 +1,7 @@
 
 # Game Model
-class Game
+require "#{DIST}/lib/direct_play.rb"
+class GameModel
 
   #
   # Instance
@@ -8,19 +9,24 @@ class Game
 
   include DirectPlay
 
-  attr_accessor :replyto, :user, :bot, :hosting, :timer, :start_time
+  attr_accessor :replyto, :user, :client, :hosting#,
+#                :timer, :start_time
 
-  def initialize settings
-    @replyto     = settings[:replyto]
-    @games       = settings[:games]
-    @user        = settings[:user]
-    @bot         = settings[:bot]
+  def initialize game
+    @replyto     = game[:replyto]
+    @user        = game[:user]
+    @client      = game[:client]
     @hosting     = false
-    @start_time  = nil
-    @timer       = nil
-    watch
+#    watch
   end
 
+  def update game
+    game.each do |prop,val|
+      instance_variable_set(prop.to_s.gsub(/^/,'@').to_sym, val)
+    end
+  end
+
+=begin
   def started
     @hosting     = true
     @start_time  = Time.now
@@ -35,6 +41,8 @@ class Game
   end
 
   def watch
+    @start_time = nil
+    @timer = nil
     @timer = @bot.timer.add(5){
       hosting = hosting? @user.ip
       if hosting
@@ -44,6 +52,7 @@ class Game
       end
     }
   end
+=end
 
   def hostmask
     "#{@user.nick}@#{@user.ip}"
@@ -54,7 +63,6 @@ class Game
   end
 
   def destroy
-    cleanup
     @games.delete(self)
   end
 
@@ -64,12 +72,50 @@ class Game
 
   @@games = []
 
+  def self.create game
+game[:client].say "#tester", @@games
+    unless g = find_by_name(game[:user].nick)
+game[:client].say "#tester", @@games
+      g = new(game)
+      @@games << g
+game[:client].say "#tester", @@games
+    end
+game[:client].say "#tester", @@games
+    g
+  end
 
+  def self.find(target)
+    return find_all if target == :all
+    return find_by_name(target)
+  end
+
+  def self.find_all
+    @@games
+  end
+
+  def self.find_by_name(name)
+    !@@games.detect{|game|game.name.downcase==name.downcase}.nil?
+  end
 
 end
 
 
-class GamePlugin < Plugin
+class Game
+
+  def privmsg m
+    case m.params.shift
+    when "status"
+      status m
+    when "list"
+      list m
+    when "host"
+      host m
+    when "unhost"
+      unhost m
+    else #when /help/,"",nil
+      m.reply help(m)
+    end
+  end
 
   def help m
     case m.params.shift
@@ -93,7 +139,7 @@ class GamePlugin < Plugin
 
   # get status of running games
   def status m
-    games = Game.find_all
+    games = GameModel.find_all
     unless games.length > 0
       m.reply "There are currently no games..."
       return
@@ -116,7 +162,7 @@ class GamePlugin < Plugin
 
   # list games
   def list m
-    games = Game.find_all
+    games = GameModel.find_all
     unless games.length > 0
       m.reply "There are currently no games..."
       return
@@ -130,11 +176,14 @@ class GamePlugin < Plugin
 
   # start a game
   def host m
-    user = m.source
-    unless game = Game.find(user)
+    if game = GameModel.find(m.source.nick)
       m.reply "You already have a game up!"
     else
-      game = Game.create(user)
+      if game = GameModel.create({:replyto => m.replyto,
+                                  :user    => m.source,
+                                  :client  => m.client})
+        m.reply "Game created @ #{game.hostmask}"
+      end
     end
     game
   end
@@ -142,12 +191,12 @@ class GamePlugin < Plugin
   # remove a game
   def unhost m
     user = m.source
-    unless game = Game.find(user.nick)
-      m.reply "#{game.hostmask} is not hosting..."
+    unless game = GameModel.find(user.nick)
+      m.reply "You are not hosting..."
       return
     end
     game.destroy
-    m.reply "#{game.hostmask} has been removed..."
+    m.reply "Your game '#{game.hostmask}' has been removed..."
   end
 
 end
