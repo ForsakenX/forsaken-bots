@@ -200,9 +200,17 @@ module Irc
 
       # someone left a chat
       #:methods!1000@c-68-36-237-152.hsd1.nj.comcast.net PART #kahn
-      when /:[^ ]* PART/
+      when /:[^ ]* PART/i
 
         m = PartMessage.new(client,line)
+
+      ########
+      # PART
+      ########
+
+      when /:[^ ]* QUIT/i
+
+        m = QuitMessage.new(client,line)
 
       ###################
       # private messages

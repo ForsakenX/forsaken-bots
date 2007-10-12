@@ -1,5 +1,3 @@
-
-# Game Model
 require "#{DIST}/lib/direct_play.rb"
 class GameModel
 
@@ -100,7 +98,7 @@ game[:client].say "#tester", @@games
 end
 
 
-class Game
+class Game < Meth::Plugin
 
   def privmsg m
     case m.params.shift

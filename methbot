@@ -13,7 +13,7 @@ puts "DIST set to '#{DIST}'"
 require "#{ROOT}/lib/meth.rb"
 puts "Meth Loaded"
 
-EM.epoll
+#EM.epoll
 EM.run {
   begin
     puts "Connecting MethBot to #{Meth::Bot.server}:#{Meth::Bot.port.to_s}"

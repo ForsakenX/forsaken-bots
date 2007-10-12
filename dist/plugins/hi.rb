@@ -1,4 +1,4 @@
-class Hi
+class Hi < Meth::Plugin
   def help m
     "hi => Reply's with 'Hey, Whats up!'"
   end

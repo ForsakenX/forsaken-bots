@@ -10,4 +10,12 @@ class String
     split('_').map{|e| e.capitalize}.join
   end
 
+  def snake_case!
+    replace snake_case
+  end
+
+  def camel_case!
+    replace camel_case
+  end
+
 end

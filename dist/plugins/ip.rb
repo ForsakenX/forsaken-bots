@@ -1,5 +1,5 @@
 require "#{DIST}/lib/direct_play"
-class Ip
+class Ip < Meth::Plugin
 
   include DirectPlay
 
@@ -53,9 +53,11 @@ class Ip
     # list of users
     users = m.channel.nil? ? [m.source] : m.client.users
     # filter list against params
-    users = Irc::User.filter targets
+    users = Irc::User.filter(targets)
+    # remove bot from list
+    users.delete(users.detect{|u| u.nick == m.client.nick})
     # check the users
-    check(users){ |results|
+    check(users){|results|
       # format output
       hosts_output = []
       results[:hosts].each do |user|

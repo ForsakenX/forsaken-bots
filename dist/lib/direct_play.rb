@@ -8,7 +8,7 @@ module DirectPlay
     h.errback  {|time| failure.call(time) }
   end
   
-  def check(users,&finished)
+  def check(users,finished)
     results = {
       :total_ports_scanned  => 0,
       :time_started         => Time.now,
@@ -27,13 +27,13 @@ module DirectPlay
         # finish time
         results[:time_finished] = Time.now
         # if were doen with all users then quit
-        finished(results)
+        finished.call(results)
       end
     }
     # test each user
     users.each do |user|
       # scan host port
-      h = EM::Protocols::TcpConnectTester.test( user.host, 47624 )
+      h = EM::Protocols::TcpConnectTester.test( user.ip, 47624 )
       # scanned port
       results[:total_ports_scanned] += 1
       # if succesfull
@@ -52,7 +52,7 @@ module DirectPlay
         # check if user is playing
         (2300..2400).each {|i|
           # scan a player port
-          p = EM::Protocols::TcpConnectTester.test( user.host, i )
+          p = EM::Protocols::TcpConnectTester.test( user.ip, i )
           # scanned port
           results[:total_ports_scanned] += 1
           # player port is open

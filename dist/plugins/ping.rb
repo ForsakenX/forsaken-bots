@@ -1,4 +1,4 @@
-class Ping
+class Ping < Meth::Plugin
   def help m
     "ping => Reply's with 'pong'"
   end
