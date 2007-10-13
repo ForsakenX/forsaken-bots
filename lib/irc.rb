@@ -310,7 +310,6 @@ module Irc
     def initialize(client,line)
       super(client,line)
 
-      # joined
       # :methods!1000@c-68-36-237-152.hsd1.nj.comcast.net PART #kahn
       # :methods!1000@c-68-36-237-152.hsd1.nj.comcast.net PART #tester
       unless line =~ /:([^!]*)!([^@]*)@([^ ]*) PART [:]*(#[^\n]*)$/i
@@ -347,9 +346,8 @@ module Irc
       #
       super(client,line)
 
-      # joined
-      # :methods!1000@c-68-36-237-152.hsd1.nj.comcast.net PART #kahn
-      unless line =~ /:([^ ]*)!([^@]*)@([^ ]*) QUIT :(#[^\n]*)$/i
+      # :MethBot_!1000@c-68-36-237-152.hsd1.nj.comcast.net QUIT :Client closed connection
+      unless line =~ /:([^ ]*)!([^@]*)@([^ ]*) QUIT ([:]*.*)*$/mi
         throw "Bad QUIT message..."
       end
 
@@ -418,10 +416,14 @@ module Irc
       # garbage
       line.slice!(/ :/)
 
-      # "(MethBot: |,)"
-      # addressed to us or using special target
-      command = !line.slice!(/^#{@client.nick}: /).nil? || # addressed to MethBot
-                !line.slice!(/^#{@client.target}/).nil?    # addressed to ,
+      # "(<nick>: |<target>)"
+      # addressed to our name
+      unless command = !line.slice!(/^#{@client.nick}: /).nil?
+        # addressed to target
+        unless @client.target.nil?
+          command = !line.slice!(/^#{@client.target}/).nil?
+        end
+      end
 
       # if personal line than this is always a command
       command = @personal if !command
@@ -470,73 +472,68 @@ module Irc
   require 'socket'
   class Client < EM::Connection
 
+    #
+    # EventMachine::Connection
+    #
+ 
     # line protocol
     include EM::Protocols::LineText2
 
-    # defaults
-    @@server  = "localhost" # ircd server
-    @@port    = 6667
-
-    # accessors
-    def self.server; @@server; end 
-    def self.port;   @@port;   end 
-  
-    # accessors
-    attr_accessor :remote, :nick, :nick_sent, :channels, :username,
-                  :hostname, :realname, :target, :users
-
-    # data being sent
-    def send_data line
-
-      # log output
-      puts ">>> #{line}"
-
-      # send output
-      super line
-
+    # fake new method for EM
+    def new sig
+      @signature = sig
+      post_init
+      self
     end
+
+    # connection started
+    def post_init
+      # login
+      send_data "USER #{@username} #{@hostname} #{@server} :#{@realname}\n"
+      # send initial nick
+      send_nick @nick
+    end
+
+    # new line recieved
+    def receive_line line
+      # handle message
+      HandleMessage.new(self,line)
+    end
+
+    #
+    # Client Object
+    #
+
+    # accessors
+    attr_accessor :nick, :nick_sent, :realname,
+                  :server, :port, :channels,
+                  :username, :hostname,
+                  :target, :users
 
     # startup
     def initialize *args
-      # user defaults
-      @target   = ","            unless @target
-      @nick     = "irclient"     unless @nick
-      @realname = "Irc::Client"  unless @realname
-      @channels = []             unless @channels
+      # set defaults
+      @server   = "localhost"
+      @port     = 6667
+      @target   = nil
+      @nick     = "irclient"
+      @realname = "Irc::Client"
+      @channels = []
       # automatics
-      @nick_sent= @nick
       @username = Process.uid
-      @remote   = { :ip => "remote", :port => "6667" }
       @hostname = Socket.gethostname
-      # run last
-      super *args # calls post_init
     end
-  
-    # connection up
-    def post_init
-  
-      # remote
-      unless (peername = get_peername).nil?
-        @remote[:port], @remote[:ip] = Socket.unpack_sockaddr_in(peername)
-      end
-     
-      # login
-      send_data "USER #{@username} #{@hostname} #{@@server} :#{@realname}\n"
-  
-      # send initial nick
-      send_nick @nick
 
-    end
- 
-    # sent a message to target => user/channel
-    def say target, message
+
+    # send a message to user or channel
+    def say to, message
       return message unless message
       message = message.to_s
       # for each line
       message.split("\n").each do |message|
         # send at chunks of 350 characters
         message.scan(/([^\n]*\n|.{1,350})/m){|chunk|
-          send_data "PRIVMSG #{target} :#{chunk}\n"
+          send_data "PRIVMSG #{to} :#{chunk}\n"
         }
       end
       message
@@ -553,17 +550,9 @@ module Irc
     # set your nick
     def send_nick nick=nil
       unless nick.nil?
-        send_data "NICK #{nick}\n"
         @nick_sent = nick
+        send_data "NICK #{nick}\n"
       end
-    end
-
-    # new line recieved
-    def receive_line line
-      # log input
-      puts "<<< #{line}"
-      # handle message
-      HandleMessage.new(self,line)
     end
 
   end

@@ -1,26 +1,50 @@
 #!/usr/bin/env ruby
 
+# root directory
+ROOT = File.dirname(__FILE__)
+puts "ROOT: '#{ROOT}'"
+
+# user distribution
+DIST = "#{ROOT}/dist"
+puts "DIST: '#{DIST}'"
+
+# load event machine
 require 'rubygems'
-require 'eventmachine'
+require "#{ROOT}/lib/eventmachine-0.9.0/lib/eventmachine"
 puts "EventMachine Loaded"
 
-ROOT=File.dirname(__FILE__)
-puts "ROOT set to '#{ROOT}'"
-
-DIST="#{ROOT}/dist"
-puts "DIST set to '#{DIST}'"
-
+# meth name space
 require "#{ROOT}/lib/meth.rb"
 puts "Meth Loaded"
 
-#EM.epoll
+# load configs
+require 'yaml'
+$config = YAML.load(File.open("#{DIST}/conf/methbot.yaml"))
+puts "Loaded methobot.yaml"
+
+# loggin facility
+$logger = Logger.new("#{DIST}/logs/#{$config['logger']['file']}",$config['logger']['rotate'])
+$logger.level = Logger.get_const($config['logger']['severity'])
+puts "Setup Logger"
+
+# CAN WE USE EM FILE WRITING FOR LOGGING?
+EM.epoll
 EM.run {
-  begin
-    puts "Connecting MethBot to #{Meth::Bot.server}:#{Meth::Bot.port.to_s}"
-    EM::connect(Meth::Bot.server, Meth::Bot.port, Meth::Bot)
-  rescue
-    puts "Error: #{$!}"
-    $@.each do |line| puts "#{line}" end
+  # load up user init.rb
+  require "#{DIST}/conf/init"
+  # load up the bots
+  $config["bots"].each do |config|
+    begin
+      bot = Meth::Bot.new(config)
+      puts "Connecting #{bot.name} to #{bot.server}:#{bot.port}"
+      EM::connect(bot.server, bot.port, bot)
+    rescue
+      puts "Error: #{$!}"
+      $@.each do |line| puts "#{line}" end
+    end
   end
 }
+
+# close file descriptors
+$logger.close
 

@@ -1,5 +1,7 @@
-require "#{DIST}/lib/direct_play"
+load "#{DIST}/lib/direct_play.rb"
 class Ip < Meth::Plugin
+
+  #@@reload = true
 
   include DirectPlay
 
@@ -17,8 +19,8 @@ class Ip < Meth::Plugin
     end
   end
 
-  def help m
-    case m.params.shift
+  def help m=nil,topic=nil
+    case topic||m.params.shift||""
       when "list"
         "ip list [[pattern]...] => Gets a user[s] ip address. "+
         "(optional) [[pattern]..] patterns seperated by space to search for user names. "+
@@ -100,10 +102,14 @@ class Ip < Meth::Plugin
     list = list.join(', ')
 
     # send the answer
-    m.reply "A list has been messaged to you..." if m.channel
-    
-    # pm to user
-    m.reply_directly list
+    if m.personal || targets.length>0
+      m.reply list
+    else
+      m.reply "A full list of ip numbers from #{m.channel} has been messaged to you. "+
+              "To print the message here you have to specify a search pattern. "+
+              help(nil,"list")
+      m.reply_directly list
+    end
 
   end
 

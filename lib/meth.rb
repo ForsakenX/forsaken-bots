@@ -47,10 +47,14 @@ module Meth
     end
     def self._load(plugin,m)
       unless detect(plugin)
-        puts m.reply "ERROR - Plugin '#{plugin}' does not exist."
+        print "ERROR - "
+        puts m.reply("Plugin '#{plugin}' does not exist.")
+        return false
       end
       unless enabled?(plugin)
-        puts m.reply "Plugin '#{plugin}' is not enabled."
+        print "ERROR - "
+        puts m.reply("Plugin '#{plugin}' is not enabled.")
+        return false
       end
       begin
         load path(plugin)
@@ -68,12 +72,9 @@ module Meth
     def self.find_const(plugin,m)
       # get constant
       get = Proc.new{
-        begin
-          const_get(plugin.camel_case)
-        # constant does not exist
-        rescue NameError
+        const_defined?(plugin.camel_case) ?
+          const_get(plugin.camel_case) :
           nil
-        end
       }
       # our constant
       constant = nil
@@ -89,8 +90,9 @@ module Meth
       # try get constant
       return constant if constant = get.call()
       # failed
-      puts m.reply "ERROR - Loaded plugin '#{plugin.snake_case}' "+
-                   "but did not find constant '#{plugin.camel_case}'"
+      print "ERROR - "
+      puts m.reply("Loaded plugin '#{plugin.snake_case}' "+
+                   "but did not find constant '#{plugin.camel_case}'")
       nil
     end
     def self.find_inst(plugin,m)
@@ -105,7 +107,8 @@ module Meth
           puts "NOTICE - Initialized Plugin '#{const.class}'"
         rescue Exception
           puts "----------------------"
-          puts m.reply "ERROR - Plugin '#{const.class}' failed to initialize"
+          print "ERROR - "
+          puts m.reply("Plugin '#{const.class}' failed to initialize")
           puts $!
           puts $@.join("\n")
           puts "----------------------"
@@ -122,32 +125,41 @@ module Meth
       return unless i = find_inst(plugin,m)
       # check if the plugin has the desired method
       unless i.respond_to?(method.to_sym)
-        message = "ERROR - Method '#{method}' is not a member of plugin '#{plugin}'"
-        puts m.reply message
+        message = "Method '#{method}' is not a member of plugin '#{plugin}'"
+        print "ERROR - "
+        puts m.reply(message)
         return
       end
       # run the method
-      i.send(method,m) unless i.nil?
+      begin
+        i.send(method,m) unless i.nil?
+      rescue Exception
+        puts "----------------------"
+        puts "ERROR - Calling method '#{method}' of plugin '#{plugin}': #{$!}"
+        puts m.reply($!)
+        puts $@.join("\n")
+        puts "----------------------"
+        return false
+      end
     end
   end
 
   require "#{ROOT}/lib/irc"
   class Bot < Irc::Client
 
-    attr_accessor :bot
+    attr_accessor :name, :nick, :server, :channels, :realname, :bot
 
-    @@server  = "irc.blitzed.org"
-    
-    def initialize *args
-      # settings
-      @nick     = "MethBot"
-      @realname = "Meth Killer Bot 0.000001"
-      @channels = ["#tester"]#,"#kahn"]
-      # provided to plugins
-      @bot = self
-      # allways last
-      # calls post_init
-      super *args
+    def initialize(config)
+      # defaults
+      super
+      # copy in configs
+      @server   = config['server']   || "irc.freenode.org"
+      @name     = config['name']     || "freenode"
+      @nick     = config['nick']     || "MethBot_#{username}_#{hostname}"
+      @channels = config['channels'] || ["#methbot"]
+      @realname = config['realname'] || "MethBot beta"
+      # automatics
+      @bot      = self
     end
 
     def plugins
@@ -161,7 +173,17 @@ module Meth
     def command m
       PluginManager.do(m.command,'privmsg',m)
     end
-  
+   
+    def receive_line line
+      $logger.info "<<< #{line}"
+      super line
+    end
+
+    def send_data line
+      $logger.info ">>> #{line}"
+      super line
+    end
+
   end
 
 end

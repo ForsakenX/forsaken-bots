@@ -1,5 +1,3 @@
-#!/usr/bin/ruby
-
 module DirectPlay
 
   def hosting?(ip,success,failure)
@@ -8,7 +6,7 @@ module DirectPlay
     h.errback  {|time| failure.call(time) }
   end
   
-  def check(users,finished)
+  def check(users,&finished)
     results = {
       :total_ports_scanned  => 0,
       :time_started         => Time.now,
@@ -34,10 +32,12 @@ module DirectPlay
     users.each do |user|
       # scan host port
       h = EM::Protocols::TcpConnectTester.test( user.ip, 47624 )
+      # lower timeout value
+      h.timeout(1)
       # scanned port
       results[:total_ports_scanned] += 1
       # if succesfull
-      h.callback {|time|
+      h.callback {|*time|
         # we results[:hosts] a user
         results[:hosts] << user
         # were done with this user
@@ -46,17 +46,19 @@ module DirectPlay
         next
       }
       # if no connection
-      h.errback {|time|
+      h.errback {|*time|
         # ports to check
         ports = 101
         # check if user is playing
         (2300..2400).each {|i|
           # scan a player port
           p = EM::Protocols::TcpConnectTester.test( user.ip, i )
+          # lower the timeout
+          p.timeout(1)
           # scanned port
           results[:total_ports_scanned] += 1
           # player port is open
-          p.callback {|time|
+          p.callback {|*time|
             # we found a player !
             results[:players] << user unless results[:players].detect{|u|u==user}
             # down the count
@@ -67,7 +69,7 @@ module DirectPlay
             finished_with_user.call() if ports == 0
           }
           # player port is not open
-          p.errback {|time|
+          p.errback {|*time|
             # down the count
             ports -= 1;
             # if were done now
