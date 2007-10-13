@@ -23,6 +23,7 @@ $config = YAML.load(File.open("#{DIST}/conf/methbot.yaml"))
 puts "Loaded methobot.yaml"
 
 # loggin facility
+require 'logger'
 $logger = Logger.new("#{DIST}/logs/#{$config['logger']['file']}",$config['logger']['rotate'])
 $logger.level = Logger.get_const($config['logger']['severity'])
 puts "Setup Logger"
