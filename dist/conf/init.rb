@@ -10,7 +10,7 @@ end
 
 # load up keyboard listener
 if $config['keyboard']
-  if Object.const_defined?($config['keyboard']['handler'])
+  if Object.const_defined?($config['keyboard'])
     EM.open_keyboard(KeyboardHandler)
     puts "Opened keyboard for inputs"
   end

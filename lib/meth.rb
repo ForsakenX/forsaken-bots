@@ -5,15 +5,26 @@ module Meth
     # should reload automatically ?
     @@reload = false
 
+    # accessor
     def self.reload; @@reload; end
 
-    def initialize(client)
-      @client = client
+    # pass down instance of bot
+    def initialize(bot)
+      @bot = bot
     end
 
     # reload the plugin
     def reload
       PluginManager._load(self.class)
+    end
+
+    # receives all messages
+    def listen m
+    end
+
+    # receives privmsg's
+    # which are address to this plugin
+    def privmsg m
     end
 
   end
@@ -118,8 +129,12 @@ module Meth
       # return it
       @@plugins[plugin.snake_case]
     end
+    def self.do_all(method,m)
+      enabled.each do |plugin|
+        self.do(plugin,method,m)
+      end
+    end
     def self.do(plugin, method, m)
-      # out instance of plugin
       i=nil
       # find or create instance of plugin
       return unless i = find_inst(plugin,m)
@@ -144,17 +159,43 @@ module Meth
     end
   end
 
+  class BotManager
+    @@bots = {}
+    class << self
+      def bots; @@bots; end
+      def connect(config)
+        begin
+          bot = Meth::Bot.new(config)
+          @@bots[bot.name] = bot
+          puts "Connecting #{bot.name} to #{bot.server}:#{bot.port}"
+          EM::connect(bot.server, bot.port, bot)
+        rescue
+          puts "Error: #{$!}"
+          $@.each do |line| puts "#{line}" end
+        end
+      end
+    end
+  end
+
   require "#{ROOT}/lib/irc"
   class Bot < Irc::Client
 
-    attr_accessor :name, :nick, :server, :channels, :realname, :bot
+    #
+    # Instance
+    #
+
+    attr_accessor :name, :nick, :server, :channels, :realname, :bot, :target
+
+    def plugins; PluginManager.plugins; end
+    def bots;    BotManager.bots;       end
 
     def initialize(config)
       # defaults
       super
       # copy in configs
-      @server   = config['server']   || "irc.freenode.org"
       @name     = config['name']     || "freenode"
+      @target   = config['target']   || ","
+      @server   = config['server']   || "irc.freenode.org"
       @nick     = config['nick']     || "MethBot_#{username}_#{hostname}"
       @channels = config['channels'] || ["#methbot"]
       @realname = config['realname'] || "MethBot beta"
@@ -162,18 +203,60 @@ module Meth
       @bot      = self
     end
 
-    def plugins
-      PluginManager.plugins
+    #
+    # Callbacks
+    #
+
+    def _listen m
+      PluginManager.do_all('listen',m)
     end
- 
-    def privmsg m
-      command(m) if m.command
+
+    def _privmsg m
+      puts ">>> "+
+           "#{@bot.name} #{m.channel} " +
+           "(#{Time.now.strftime('%I:%M:%S %p')}) "+
+           "#{m.source.nick}: #{m.message}"
+      do_command(m)
+    end
+
+    def _notice m
+      puts m.line
+    end
+
+    def _join m
+      puts m.line
+    end
+
+    def _part m
+      puts m.line
     end
   
-    def command m
-      PluginManager.do(m.command,'privmsg',m)
+    def _quit m
+      puts m.line
     end
-   
+
+    def _unknown m
+      puts "Unknown Message -> #{m.line}"
+    end
+
+    #
+    #  Console
+    #  Loggers
+    #
+
+    def post_init *args
+      super *args
+      puts "Connected #{@name} to #{@server}:#{@port}"
+    end
+
+    def say to, message
+      puts "<<< "+
+           "#{@bot.name} #{to} " +
+           "(#{Time.now.strftime('%I:%M:%S %p')}) "+
+           "#{@bot.nick}: #{message}"
+      super(to,message)
+    end
+    
     def receive_line line
       $logger.info "<<< #{line}"
       super line
@@ -184,6 +267,54 @@ module Meth
       super line
     end
 
-  end
+    #
+    # Bot Methods
+    #
 
+    def do_command m
+
+      # m.message with a command is one of the following
+      # ",hi 1 2 3"
+      # "MethBot: hi 1 2 3"
+
+      # must become...
+      # m.command => hi
+      # m.message => 1 2 3
+
+      # look for our nick or target as first word
+      # then extract them from the message
+
+      # "(<nick>: |<target>)"
+      unless is_command = !m.message.slice!(/^#{@nick}: /).nil?
+        # addressed to target
+        unless @target.nil?
+          is_command = !m.message.slice!(/^#{@target}/).nil?
+        end
+      end
+
+      # "hi 1 2 3"
+      # now that nick/target is extracted
+      # the rest is the message
+      # that includes the command and params
+
+      # if its a pm then its allways a command
+      is_command = m.personal if !is_command
+
+      # at this point if its not a command
+      # where done working with this message
+      return unless is_command
+
+      # %w{hi 1 2 3}
+      # split words in line
+      m.params = line.split(' ')
+
+      # "hi"
+      # the command
+      m.command = m.params.shift
+
+      # invoke the plugin (command)
+      PluginManager.do(command,'privmsg',m)
+
+    end
+  end
 end

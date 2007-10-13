@@ -2,6 +2,7 @@
 
 # main logging facility
 logger: 
+  console: false
   file: main
   severity: DEBUG
   rotate: daily

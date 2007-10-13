@@ -216,7 +216,6 @@ module Irc
       # private messages
       ###################
 
-      # privmsg detected
       when /^:[^ ]* PRIVMSG/i
 
         # PrivMessage Object
@@ -226,19 +225,19 @@ module Irc
       # notice messages
       ###################
 
-      # privmsg detected
       when /^:[^ ]* NOTICE/i
 
         # PrivMessage Object
         m = NoticeMessage.new(client,line)
       
       ###############
-      # not handled
+      # Unknown Message
       ###############
       else
 
         # log
-        puts "--- Unhandled Input ---" # line is allready printed
+        # line is allready printed
+        @client._unknown(self)
 
       end
     end
@@ -250,6 +249,7 @@ module Irc
     def initialize(client,line)
       @client = client
       @line   = line
+      @client._listen(self)
     end
   end
 
@@ -257,6 +257,7 @@ module Irc
   class NoticeMessage < Message
     def initialize(client, line)
       super(client, line)
+      @client._notice(self)
     end
   end
 
@@ -299,7 +300,7 @@ module Irc
       end
 
 
-      @user
+      @client._join(self)
     end
 
   end
@@ -333,6 +334,8 @@ module Irc
       end
 =end
         @user.destroy
+
+        @client._part(self)
       end
     end
   end
@@ -357,14 +360,14 @@ module Irc
       # add or update user
       @user.destroy if @user = User.find(nick)
 
+      @client._quit(self)
     end
   end
 
   # handles a priv message
   class PrivMessage < Message
 
-    attr_accessor :replyto, :channel, :source,
-                  :command, :params, :to, :personal
+    attr_accessor :replyto, :channel, :source, :message, :to, :personal
 
     # :methods!1000@c-68-36-237-152.hsd1.nj.comcast.net PRIVMSG MethBot :,hi 1 2 3
     # :methods!1000@c-68-36-237-152.hsd1.nj.comcast.net PRIVMSG #tester :MethBot: hi 1 2 3
@@ -416,44 +419,15 @@ module Irc
       # garbage
       line.slice!(/ :/)
 
-      # "(<nick>: |<target>)"
-      # addressed to our name
-      unless command = !line.slice!(/^#{@client.nick}: /).nil?
-        # addressed to target
-        unless @client.target.nil?
-          command = !line.slice!(/^#{@client.target}/).nil?
-        end
-      end
-
-      # if personal line than this is always a command
-      command = @personal if !command
-
-      # "hi 1 2 3"
-      # the rest is the line
+      # ",hi 1 2 3"
+      # "MethBot: hi 1 2 3"
+      # the rest is the message
       @message = line
 
-      # extract command/params
-      @command = nil
-      @params  = []
-      if command
-        # break line
-        params = line.split(' ')
-        # "hi"
-        # the command
-        @command = params.shift
-        # ["1","2","3"]
-        # command params
-        @params  = params
-      end
-
-      # send to user script
       begin
-        client.privmsg(self)
+        client._privmsg(self)
       rescue Exception
-        puts "----------------------"
-        puts reply_directly("#{$!}")
-        puts $@.join("\n")
-        puts "----------------------"
+        $logger.error "#{$!} #{$@.join('\n')}"
       end
 
     end
@@ -508,14 +482,13 @@ module Irc
     attr_accessor :nick, :nick_sent, :realname,
                   :server, :port, :channels,
                   :username, :hostname,
-                  :target, :users
+                  :users
 
     # startup
     def initialize *args
       # set defaults
       @server   = "localhost"
       @port     = 6667
-      @target   = nil
       @nick     = "irclient"
       @realname = "Irc::Client"
       @channels = []
@@ -523,7 +496,6 @@ module Irc
       @username = Process.uid
       @hostname = Socket.gethostname
     end
-
 
     # send a message to user or channel
     def say to, message
@@ -553,6 +525,28 @@ module Irc
         @nick_sent = nick
         send_data "NICK #{nick}\n"
       end
+    end
+
+    #
+    # Client Callbacks
+    #
+
+    def _listen m
+    end
+
+    def _privmsg m
+    end
+
+    def _notice m
+    end
+
+    def _join m
+    end
+
+    def _part m
+    end
+  
+    def _quit m
     end
 
   end

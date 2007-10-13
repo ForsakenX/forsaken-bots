@@ -53,11 +53,11 @@ class Ip < Meth::Plugin
     # parse input
     targets = m.params
     # list of users
-    users = m.channel.nil? ? [m.source] : m.client.users
+    users = m.channel.nil? ? [m.source] : @bot.users
     # filter list against params
     users = Irc::User.filter(targets)
     # remove bot from list
-    users.delete(users.detect{|u| u.nick == m.client.nick})
+    users.delete(users.detect{|u| u.nick == @bot.nick})
     # check the users
     check(users){|results|
       # format output

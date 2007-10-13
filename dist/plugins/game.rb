@@ -7,13 +7,13 @@ class GameModel
 
   include DirectPlay
 
-  attr_accessor :replyto, :user, :client, :hosting#,
+  attr_accessor :replyto, :user, :bot, :hosting#,
 #                :timer, :start_time
 
   def initialize game
     @replyto     = game[:replyto]
     @user        = game[:user]
-    @client      = game[:client]
+    @bot         = game[:bot]
     @hosting     = false
 #    watch
   end
@@ -71,14 +71,14 @@ class GameModel
   @@games = []
 
   def self.create game
-game[:client].say "#tester", @@games
+game[:bot].say "#tester", @@games
     unless g = find_by_name(game[:user].nick)
-game[:client].say "#tester", @@games
+game[:bot].say "#tester", @@games
       g = new(game)
       @@games << g
-game[:client].say "#tester", @@games
+game[:bot].say "#tester", @@games
     end
-game[:client].say "#tester", @@games
+game[:bot].say "#tester", @@games
     g
   end
 
@@ -179,7 +179,7 @@ class Game < Meth::Plugin
     else
       if game = GameModel.create({:replyto => m.replyto,
                                   :user    => m.source,
-                                  :client  => m.client})
+                                  :bot     => @bot)
         m.reply "Game created @ #{game.hostmask}"
       end
     end

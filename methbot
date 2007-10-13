@@ -1,5 +1,9 @@
 #!/usr/bin/env ruby
 
+##
+# Settings
+##
+
 # root directory
 ROOT = File.dirname(__FILE__)
 puts "ROOT: '#{ROOT}'"
@@ -7,6 +11,15 @@ puts "ROOT: '#{ROOT}'"
 # user distribution
 DIST = "#{ROOT}/dist"
 puts "DIST: '#{DIST}'"
+
+# load user configs
+require 'yaml'
+$config = YAML.load(File.open("#{DIST}/conf/methbot.yaml"))
+puts "Loaded methobot.yaml"
+
+##
+# Main Libs
+##
 
 # load event machine
 require 'rubygems'
@@ -17,34 +30,38 @@ puts "EventMachine Loaded"
 require "#{ROOT}/lib/meth.rb"
 puts "Meth Loaded"
 
-# load configs
-require 'yaml'
-$config = YAML.load(File.open("#{DIST}/conf/methbot.yaml"))
-puts "Loaded methobot.yaml"
+##
+# Logging
+#   CAN WE USE EM FILE WRITING FOR LOGGING?
+##
 
 # loggin facility
 require 'logger'
-$logger = Logger.new("#{DIST}/logs/#{$config['logger']['file']}",$config['logger']['rotate'])
-$logger.level = Logger.get_const($config['logger']['severity'])
+if $config['logger']['console']
+  $logger = Logger.new(STDOUT)
+else
+  $logger = Logger.new("#{DIST}/logs/#{$config['logger']['file']}",$config['logger']['rotate'])
+end
+$logger.level = Logger.const_get($config['logger']['severity'])
 puts "Setup Logger"
 
-# CAN WE USE EM FILE WRITING FOR LOGGING?
+##
+# Run
+##
+
 EM.epoll
 EM.run {
   # load up user init.rb
   require "#{DIST}/conf/init"
   # load up the bots
   $config["bots"].each do |config|
-    begin
-      bot = Meth::Bot.new(config)
-      puts "Connecting #{bot.name} to #{bot.server}:#{bot.port}"
-      EM::connect(bot.server, bot.port, bot)
-    rescue
-      puts "Error: #{$!}"
-      $@.each do |line| puts "#{line}" end
-    end
+    Meth::BotManager.connect(config)
   end
 }
+
+##
+# Cleanup
+##
 
 # close file descriptors
 $logger.close
