@@ -1,0 +1,29 @@
+class KeyboardHandler < EM::Connection
+  @@reload = true
+  include EM::Protocols::LineText2
+  def initialize *args
+puts "DEBUG --- 1"
+    super args
+    create_instance
+  end
+  def create_instance
+puts "DEBUG --- 2"
+    @handler = Handler.new
+  end
+  def _load
+puts "DEBUG --- 3"
+    load "#{DIST}/lib/keyboard_handler"
+    create_instance
+  end
+  def method_missing(method,*args)
+puts "DEBUG --- 4"
+    _load if @@reload
+    @handler.send(method,args)
+  end
+  class Handler
+    def receive_line keystrokes
+puts "DEBUG --- 5"
+      puts "I received the following data from the keyboard: #{keystrokes}"
+    end
+  end
+end
