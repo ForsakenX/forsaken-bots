@@ -235,9 +235,8 @@ module Irc
       ###############
       else
 
-        # log
-        # line is allready printed
-        @client._unknown(self)
+        # UnkownMessage's
+        m = UnknownMessage.new(client,line)
 
       end
     end
@@ -250,6 +249,14 @@ module Irc
       @client = client
       @line   = line
       @client._listen(self)
+    end
+  end
+
+  # handles unknown messages
+  class UnknownMessage < Message
+    def initialize(client, line)
+      super(client, line)
+      @client._unknown(self)
     end
   end
 
@@ -424,11 +431,8 @@ module Irc
       # the rest is the message
       @message = line
 
-      begin
-        client._privmsg(self)
-      rescue Exception
-        $logger.error "#{$!} #{$@.join('\n')}"
-      end
+      # send it to the user
+      client._privmsg(self)
 
     end
 
@@ -528,7 +532,7 @@ module Irc
     end
 
     #
-    # Client Callbacks
+    # User Callbacks
     #
 
     def _listen m
@@ -547,6 +551,9 @@ module Irc
     end
   
     def _quit m
+    end
+
+    def _unknown m
     end
 
   end

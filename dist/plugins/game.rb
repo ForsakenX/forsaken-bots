@@ -7,15 +7,14 @@ class GameModel
 
   include DirectPlay
 
-  attr_accessor :replyto, :user, :bot, :hosting#,
-#                :timer, :start_time
+  attr_accessor :replyto, :user, :bot, :hosting, :timer, :start_time
 
   def initialize game
     @replyto     = game[:replyto]
     @user        = game[:user]
     @bot         = game[:bot]
     @hosting     = false
-#    watch
+    watch
   end
 
   def update game
@@ -24,33 +23,24 @@ class GameModel
     end
   end
 
-=begin
-  def started
-    @hosting     = true
-    @start_time  = Time.now
-    @bot.nickchg("_#{@games.length}_fskn_games")
-    @bot.say @replyto, "#{hostmask} has started a game! "
-  end
-
-  def stopped
-    destroy
-    @bot.say @replyto, "#{hostmask} has stopped hosting..."
-    @bot.nickchg("_#{@games.length}_fskn_games")
-  end
-
   def watch
     @start_time = nil
     @timer = nil
-    @timer = @bot.timer.add(5){
-      hosting = hosting? @user.ip
-      if hosting
-        started unless @hosting
-      else
-        stopped if @hosting
-      end
+    @timer = EM::add_periodic_timer ( 5 ) {
+      hosting?( @user.ip,
+        Proc.new{|time|
+          next if @hosting
+          @hosting     = true
+          @start_time  = Time.now
+          @bot.send_nick("_#{@@games.length}_fskn_games")
+          @bot.say @replyto, "#{hostmask} has started a game! "
+        },
+        Proc.new{|time|
+          next unless @hosting
+          destroy
+        })
     }
   end
-=end
 
   def hostmask
     "#{@user.nick}@#{@user.ip}"
@@ -61,7 +51,12 @@ class GameModel
   end
 
   def destroy
-    @games.delete(self)
+    EM::cancel_timer(@timer) if @timer
+    @@games.delete(self)
+    if @hosting
+      @bot.say @replyto, "#{hostmask} has stopped hosting..."
+      @bot.send_nick("_#{@@games.length}_fskn_games")
+    end
   end
 
   #
@@ -71,14 +66,10 @@ class GameModel
   @@games = []
 
   def self.create game
-game[:bot].say "#tester", @@games
     unless g = find_by_name(game[:user].nick)
-game[:bot].say "#tester", @@games
       g = new(game)
       @@games << g
-game[:bot].say "#tester", @@games
     end
-game[:bot].say "#tester", @@games
     g
   end
 
@@ -92,7 +83,7 @@ game[:bot].say "#tester", @@games
   end
 
   def self.find_by_name(name)
-    !@@games.detect{|game|game.name.downcase==name.downcase}.nil?
+    @@games.detect{|game|game.name.downcase==name.downcase}
   end
 
 end
@@ -129,6 +120,9 @@ class Game < Meth::Plugin
         "game status => Print status on running games..."
       when "list"
         "game list => Prints list of games..."
+      when "scan"
+        "game scan [[pattern]...] => Queries a user to see if they are hosting/playing. "+
+        "[[pattern]...] patterns seperated by a space to search for user names."
       else
         "game [command] => game tools.  "+
         "[command] can be one of host, unhost, list, status"
@@ -179,7 +173,7 @@ class Game < Meth::Plugin
     else
       if game = GameModel.create({:replyto => m.replyto,
                                   :user    => m.source,
-                                  :bot     => @bot)
+                                  :bot     => @bot})
         m.reply "Game created @ #{game.hostmask}"
       end
     end
@@ -190,11 +184,50 @@ class Game < Meth::Plugin
   def unhost m
     user = m.source
     unless game = GameModel.find(user.nick)
-      m.reply "You are not hosting..."
+      m.reply "Your not hosting..."
       return
     end
     game.destroy
-    m.reply "Your game '#{game.hostmask}' has been removed..."
+    m.reply "Your game has been removed..."
+  end
+
+  # find hosts
+  def scan m
+    m.reply "One moment please..."
+    # parse input
+    targets = m.params
+    # list of users
+    users = m.channel.nil? ? [m.source] : @bot.users
+    # filter list against params
+    users = Irc::User.filter(targets)
+    # remove bot from list
+    users.delete(users.detect{|u| u.nick == @bot.nick})
+    # check the users
+    check(users){|results|
+      # format output
+      hosts_output = []
+      results[:hosts].each do |user|
+        hosts_output << "#{user.nick}@#{user.ip}"
+      end
+      players_output = []
+      results[:players].each do |user|
+        players_output << "#{user.nick}@#{user.ip}"
+      end
+      m.reply "Scanned #{results[:total_ports_scanned]} ports "+
+               "in #{results[:time_finished]-results[:time_started]} seconds... "+
+               "#{users.length} users were scanned... "+
+               "( #{players_output.length} playing: "+
+               "#{players_output.join(', ')} ) "+
+               "( #{hosts_output.length} hosting: "+
+               "#{hosts_output.join(', ')} ) "
+      # add hosts to watched game list
+      results[:hosts].each do |user|
+        next if GameModel.find(m.source.nick)
+        game = GameModel.create({:replyto => m.replyto,
+                                 :user    => m.source,
+                                 :bot     => @bot})
+      end
+    }
   end
 
 end

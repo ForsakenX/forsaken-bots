@@ -83,9 +83,11 @@ module Meth
     def self.find_const(plugin,m)
       # get constant
       get = Proc.new{
-        const_defined?(plugin.camel_case) ?
-          const_get(plugin.camel_case) :
-          nil
+        if Object.const_defined?(plugin.camel_case)
+          next Object.const_get(plugin.camel_case)
+        else
+          next nil
+        end
       }
       # our constant
       constant = nil
@@ -102,7 +104,7 @@ module Meth
       return constant if constant = get.call()
       # failed
       print "ERROR - "
-      puts m.reply("Loaded plugin '#{plugin.snake_case}' "+
+      puts m.reply ("Loaded plugin '#{plugin.snake_case}' "+
                    "but did not find constant '#{plugin.camel_case}'")
       nil
     end
@@ -115,7 +117,7 @@ module Meth
         # create one and pass in instance of client
         begin
           @@plugins[plugin.snake_case] = const.new(m.client)
-          puts "NOTICE - Initialized Plugin '#{const.class}'"
+          puts "NOTICE - Initialized Plugin '#{const.name}'"
         rescue Exception
           puts "----------------------"
           print "ERROR - "
@@ -236,7 +238,7 @@ module Meth
     end
 
     def _unknown m
-      puts "Unknown Message -> #{m.line}"
+      $logger.warn "Unknown Message <<< #{m.line}"
     end
 
     #
@@ -306,14 +308,16 @@ module Meth
 
       # %w{hi 1 2 3}
       # split words in line
-      m.params = line.split(' ')
+      m.instance_variable_set(:@params,m.line.split(' '))
+      class <<m; attr_accessor :params; end
 
       # "hi"
       # the command
-      m.command = m.params.shift
+      m.instance_variable_set(:@command,m.params.shift)
+      class <<m; attr_accessor :command; end
 
       # invoke the plugin (command)
-      PluginManager.do(command,'privmsg',m)
+      PluginManager.do(m.command,'privmsg',m)
 
     end
   end
