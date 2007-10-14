@@ -1,30 +1,31 @@
-  class Meth::PluginManager
-    @@glob    = "#{DIST}/plugins/*.rb"
-    @@plugins = {}
-    def self.plugins; @@plugins; end
-    def self.list
+class Meth::PluginManager
+  @@glob    = "#{DIST}/plugins/*.rb"
+  @@plugins = {}
+  class << self
+    def plugins; @@plugins; end
+    def list
       Dir[@@glob].map do |plugin|
         File.basename(plugin).gsub('.rb','')
       end
     end
-    def self.path plugin
+    def path plugin
       @@glob.gsub('*',plugin.snake_case)
     end
-    def self.executable? plugin
+    def executable? plugin
       FileTest.executable?(path(plugin))
     end
-    def self.enabled
+    def enabled
       list.collect{|plugin| plugin if enabled?(plugin) }
     end
-    def self.enabled? plugin
+    def enabled? plugin
       return true if @@plugins[plugin]
       return true if executable?(plugin)
       false
     end
-    def self.detect plugin
+    def detect plugin
       list.detect{|p| p.downcase == plugin.downcase }
     end
-    def self._load(plugin,m)
+    def _load(plugin,m)
       unless detect(plugin)
         print "ERROR - "
         puts m.reply("Plugin '#{plugin}' does not exist.")
@@ -48,7 +49,7 @@
       end
       false
     end
-    def self.find_const(plugin,m)
+    def find_const(plugin,m)
       # get constant
       get = Proc.new{
         if Object.const_defined?(plugin.camel_case)
@@ -72,11 +73,11 @@
       return constant if constant = get.call()
       # failed
       print "ERROR - "
-      puts m.reply ("Loaded plugin '#{plugin.snake_case}' "+
+      puts m.reply("Loaded plugin '#{plugin.snake_case}' "+
                    "but did not find constant '#{plugin.camel_case}'")
       nil
     end
-    def self.find_inst(plugin,m)
+    def find_inst(plugin,m)
       # get the constant from plugin name
       return nil unless const = find_const(plugin,m)
       # find the instance
@@ -99,12 +100,12 @@
       # return it
       @@plugins[plugin.snake_case]
     end
-    def self.do_all(method,m)
+    def do_all(method,m)
       enabled.each do |plugin|
         self.do(plugin,method,m)
       end
     end
-    def self.do(plugin, method, m)
+    def do(plugin, method, m)
       i=nil
       # find or create instance of plugin
       return unless i = find_inst(plugin,m)
@@ -127,4 +128,20 @@
         return false
       end
     end
+    def startup bot
+      enabled.each do |plugin|
+        begin
+          load path(plugin)
+          constant = Object.const_get(plugin.camel_case)
+          @@plugins[plugin.snake_case] = constant.new(bot)
+          puts "Loaded Plugin '#{plugin.snake_case}'"
+        rescue Exception
+          puts "----------------------"
+          puts "#{$!}\n#{$@.join("\n")}"
+          puts "----------------------"
+        end
+        false
+      end
+    end
   end
+end

@@ -5,7 +5,7 @@ class Ip < Meth::Plugin
 
   include DirectPlay
 
-  def privmsg m
+  def command m
     # test topic
     case m.params.shift
     when "list"

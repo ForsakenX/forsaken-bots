@@ -4,7 +4,7 @@ class Primes < Meth::Plugin
     "Return a list of prime numbers from <start> to <finish>. "+
     "If <start> is ommited then it defaults to '2'."
   end
-  def privmsg m
+  def command m
     @m = m
     input = m.params.shift
     unless input =~ /^([0-9]+-)*[0-9]+$/

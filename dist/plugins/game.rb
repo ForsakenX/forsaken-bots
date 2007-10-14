@@ -54,7 +54,7 @@ class GameModel
     @bot         = game[:bot]
     @hosting     = false
     @start_time  = nil
-    @timer       = EM::add_periodic_timer ( 5 ) {
+    @timer       = EM::add_periodic_timer( 5 ) {
       puts "GameTimer Called"
       hosting?(
         @user.ip,
@@ -92,7 +92,7 @@ class Game < Meth::Plugin
 
   include DirectPlay
 
-  def privmsg m
+  def command m
     case m.params.shift
     when "status"
       status m

@@ -24,6 +24,8 @@ class Meth::Bot < Irc::Client
     @nick     = config['nick']     || "MethBot_#{username}_#{hostname}"
     @channels = config['channels'] || ["#methbot"]
     @realname = config['realname'] || "MethBot beta"
+    # load plugins
+    Meth::PluginManager.startup self
   end
 
   #
@@ -31,35 +33,43 @@ class Meth::Bot < Irc::Client
   #
 
   def _listen m
-    Meth::PluginManager.do_all('listen',m)
+    #Meth::PluginManager.do_all('listen',m)
+    event.call('irc.message.listen',m)
   end
 
   def _privmsg m
     puts ">>> "+
-         "#{@bot.name} #{m.channel} " +
+         "#{@name} #{m.channel} " +
          "(#{Time.now.strftime('%I:%M:%S %p')}) "+
          "#{m.source.nick}: #{m.message}"
+    event.call('irc.message.privmsg',m)
+    # parses and call command event
     do_command(m)
   end
 
   def _notice m
     puts m.line
+    event.call('irc.message.notice',m)
   end
 
   def _join m
     puts m.line
+    event.call('irc.message.join',m)
   end
 
   def _part m
     puts m.line
+    event.call('irc.message.part',m)
   end
 
   def _quit m
     puts m.line
+    event.call('irc.message.quit',m)
   end
 
   def _unknown m
     $logger.warn "Unknown Message <<< #{m.line}"
+    event.call('irc.message.unknown',m)
   end
 
   #
@@ -74,9 +84,9 @@ class Meth::Bot < Irc::Client
 
   def say to, message
     puts "<<< "+
-         "#{@bot.name} #{to} " +
+         "#{@name} #{to} " +
          "(#{Time.now.strftime('%I:%M:%S %p')}) "+
-         "#{@bot.nick}: #{message}"
+         "#{@nick}: #{message}"
     super(to,message)
   end
   
@@ -137,8 +147,10 @@ class Meth::Bot < Irc::Client
     m.instance_variable_set(:@command,m.params.shift)
     class <<m; attr_accessor :command; end
 
-    # invoke the plugin (command)
-    Meth::PluginManager.do(m.command,'privmsg',m)
+    # call command event
+    event.call("command.#{m.command}",m)
 
   end
 end
+
+

@@ -11,7 +11,7 @@ class Help < Meth::Plugin
       "Help Topics: #{Meth::PluginManager.enabled.join(', ')}"
     end
   end
-  def privmsg m
+  def command m
     m.reply do_help(m)
   end
 end
