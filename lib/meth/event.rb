@@ -9,7 +9,6 @@ class Meth::Event
     def register topic, callback
       @@topics[topic] = [] if @@topics[topic].nil?
       @@topics[topic] << callback
-      puts "REGISTERED FOR #{topic}"
     end
     def unregister topic, callback
       return if @@topics[topic].nil?

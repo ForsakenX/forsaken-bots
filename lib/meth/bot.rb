@@ -148,7 +148,7 @@ class Meth::Bot < Irc::Client
     class <<m; attr_accessor :command; end
 
     # call command event
-    event.call("command.#{m.command}",m)
+    event.call("command.#{m.command.downcase}",m)
 
   end
 end
