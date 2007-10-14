@@ -8,6 +8,9 @@
 ROOT = File.dirname(__FILE__)
 puts "ROOT: '#{ROOT}'"
 
+# set load path
+$: << "#{ROOT}/lib/"
+
 # user distribution
 DIST = "#{ROOT}/dist"
 puts "DIST: '#{DIST}'"
@@ -23,11 +26,11 @@ puts "Loaded methobot.yaml"
 
 # load event machine
 require 'rubygems'
-require "#{ROOT}/lib/eventmachine-0.9.0/lib/eventmachine"
+require "eventmachine-0.9.0/lib/eventmachine"
 puts "EventMachine Loaded"
 
 # meth name space
-require "#{ROOT}/lib/meth.rb"
+require "meth/meth.rb"
 puts "Meth Loaded"
 
 ##

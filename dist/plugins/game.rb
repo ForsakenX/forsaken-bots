@@ -1,63 +1,7 @@
 require "#{DIST}/lib/direct_play.rb"
 class GameModel
 
-  #
-  # Instance
-  #
-
   include DirectPlay
-
-  attr_accessor :replyto, :user, :bot, :hosting, :timer, :start_time
-
-  def initialize game
-    @replyto     = game[:replyto]
-    @user        = game[:user]
-    @bot         = game[:bot]
-    @hosting     = false
-    watch
-  end
-
-  def update game
-    game.each do |prop,val|
-      instance_variable_set(prop.to_s.gsub(/^/,'@').to_sym, val)
-    end
-  end
-
-  def watch
-    @start_time = nil
-    @timer = nil
-    @timer = EM::add_periodic_timer ( 5 ) {
-      hosting?( @user.ip,
-        Proc.new{|time|
-          next if @hosting
-          @hosting     = true
-          @start_time  = Time.now
-          @bot.send_nick("_#{@@games.length}_fskn_games")
-          @bot.say @replyto, "#{hostmask} has started a game! "
-        },
-        Proc.new{|time|
-          next unless @hosting
-          destroy
-        })
-    }
-  end
-
-  def hostmask
-    "#{@user.nick}@#{@user.ip}"
-  end
-
-  def name
-    @user.nick.downcase
-  end
-
-  def destroy
-    EM::cancel_timer(@timer) if @timer
-    @@games.delete(self)
-    if @hosting
-      @bot.say @replyto, "#{hostmask} has stopped hosting..."
-      @bot.send_nick("_#{@@games.length}_fskn_games")
-    end
-  end
 
   #
   # Class Tools
@@ -86,10 +30,67 @@ class GameModel
     @@games.detect{|game|game.name.downcase==name.downcase}
   end
 
+  #
+  # Instance Accessors
+  #
+
+  attr_accessor :replyto, :user, :bot, :hosting, :timer, :start_time
+
+  def hostmask
+    "#{@user.nick}@#{@user.ip}"
+  end
+
+  def name
+    @user.nick.downcase
+  end
+
+  #
+  # Instance
+  #
+
+  def initialize game
+    @replyto     = game[:replyto]
+    @user        = game[:user]
+    @bot         = game[:bot]
+    @hosting     = false
+    @start_time  = nil
+    @timer       = EM::add_periodic_timer ( 5 ) {
+      puts "GameTimer Called"
+      hosting?(
+        @user.ip,
+        # game started
+        Proc.new{|time|
+          next if @hosting
+          @hosting     = true
+          @start_time  = Time.now
+          @bot.send_nick("_#{@@games.length}_fskn_games")
+          @bot.say @replyto, "#{hostmask} has started a game! "
+        },
+        # game finished
+        Proc.new{|time|
+          next unless @hosting
+          destroy
+        })
+    }
+    puts @timer.inspect
+  end
+
+  def destroy
+    EM::cancel_timer(@timer) if @timer
+    @@games.delete(self)
+    if @hosting
+      @hosting = false
+      @bot.say @replyto, "#{hostmask} has stopped hosting..."
+      @bot.send_nick("_#{@@games.length}_fskn_games")
+    end
+  end
+
 end
 
 
 class Game < Meth::Plugin
+
+  include DirectPlay
 
   def privmsg m
     case m.params.shift
