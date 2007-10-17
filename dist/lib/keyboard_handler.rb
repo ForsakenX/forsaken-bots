@@ -15,6 +15,8 @@ class KeyboardHandler < EM::Connection
       say params
     when "set"
       set params
+    when "!"
+      _! params
     # help
     else #when "help"
       reply "Not a recognized command. "+
@@ -48,7 +50,7 @@ class KeyboardHandler < EM::Connection
             help('set')
       return
     end
-    unless @bot = Meth::BotManager.bots[bot]
+    unless @bot = Irc::Client.clients[bot]
       reply "ERROR - Bot '#{bot}' does not exist. "
       return
     end
@@ -57,12 +59,20 @@ class KeyboardHandler < EM::Connection
             help('set')
       return
     end
-    unless @bot.channels.include?(channel)
+    unless @bot.channels[channel]
       reply "ERROR - Not in channel: '#{@bot.name}#{channel}'"
       return 
     end
     @channel = channel
     reply "Channel set to '#{@bot.name}#{@channel}'" 
+  end
+  def _! params=nil
+    code = params.join(' ')
+    begin
+      eval(code)
+    rescue Exception
+      reply "ERROR - #{$!}\n#{$@.join('\n')}"
+    end
   end
   # help
   def help params=[]
@@ -72,6 +82,8 @@ class KeyboardHandler < EM::Connection
       "say <msg>"
     when "set"
       "set <bot-name> <channel>"
+    when "!"
+      "! <code>"
     else
       "Commands: say"
     end

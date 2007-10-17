@@ -5,10 +5,9 @@ class Help < Meth::Plugin
   end
   def do_help m
     if (plugin = m.params.shift)
-      m.command = plugin
-      Meth::PluginManager.do(m.command,'help',m)
+      @bot.plugins[plugin].send('help',m)
     else
-      "Help Topics: #{Meth::PluginManager.enabled.join(', ')}"
+      "Help Topics: #{@bot.plugin_manager.enabled.join(', ')}"
     end
   end
   def command m

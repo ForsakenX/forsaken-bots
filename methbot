@@ -34,7 +34,7 @@ require "meth/meth.rb"
 puts "Meth Loaded"
 
 ##
-# Logging
+# Global Logging
 #   CAN WE USE EM FILE WRITING FOR LOGGING?
 ##
 
@@ -49,6 +49,12 @@ $logger.level = Logger.const_get($config['logger']['severity'])
 puts "Setup Logger"
 
 ##
+#  Global Events
+##
+
+$event = Meth::Event.new($logger)
+
+##
 # Run
 ##
 
@@ -58,7 +64,12 @@ EM.run {
   require "#{DIST}/conf/init"
   # load up the bots
   $config["bots"].each do |config|
-    Meth::BotManager.connect(config)
+    begin
+      Meth::Bot.new(config)
+    rescue
+      puts "Error: #{$!}"
+      $@.each do |line| puts "#{line}" end
+    end
   end
 }
 

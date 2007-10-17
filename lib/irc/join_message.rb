@@ -26,12 +26,12 @@ class Irc::JoinMessage < Irc::Message
     end
 
     # add or update user
-    if @user = Irc::User.find(nick)
-      @user.update({:channel => channel, :user => user,
-                    :host    => host,    :nick => nick})
+    if @user = Irc::User.find(client.server,nick)
+      @user.join(channel)
     else
-      @user = Irc::User.create({:channel => channel, :user => user,
-                                 :host    => host,    :nick => nick})
+      @user = Irc::User.create({:server   => client.server,
+                                :channels => [channel], :user => user,
+                                :host     => host,      :nick => nick})
     end
 
     # call user space

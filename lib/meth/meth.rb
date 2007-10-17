@@ -14,6 +14,5 @@ require 'meth/timer'
 require 'meth/event'
 require 'meth/plugin_manager'
 require 'meth/plugin'
-require 'meth/bot_manager'
 require 'meth/bot'
 

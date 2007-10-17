@@ -5,27 +5,28 @@ class Meth::Bot < Irc::Client
   #
 
   # instance reader/writers
-  attr_reader :name, :server, :nick, :channels
-  attr_accessor :realname, :target
+  attr_reader   :event, :plugin_manager, :logger
+  attr_accessor :target
 
   # easy access from @bot
-  def plugins; Meth::PluginManager.plugins; end
-  def bots;    Meth::BotManager.bots;       end
-  def timer;   Meth::Timer;                 end
-  def event;   Meth::Event;                 end
+  def plugins; @plugin_manager.plugins; end
 
   def initialize(config)
-    # defaults
-    super
-    # copy in configs
-    @name     = config['name']     || "freenode"
-    @target   = config['target']   || ","
-    @server   = config['server']   || "irc.freenode.org"
-    @nick     = config['nick']     || "MethBot_#{username}_#{hostname}"
-    @channels = config['channels'] || ["#methbot"]
-    @realname = config['realname'] || "MethBot beta"
-    # load plugins
-    Meth::PluginManager.startup self
+    # setup bot logger
+    @logger = Logger.new("#{DIST}/logs/#{config['name']}",config['logger']['rotate'])
+    @logger.level = Logger.const_get(config['logger']['severity'])
+    # set defaults
+    @logger.info "Connecting #{config['name']} to #{config['host']}:#{config['port']}"
+    #
+    @event = Meth::Event.new(@logger)
+    @timer = Meth::Timer.new
+    #
+    @target = config['target']||nil
+    # do defaults
+    # and connect
+    super config
+    # needs settings from super
+    @plugin_manager = Meth::PluginManager.new(self)
   end
 
   #
@@ -33,8 +34,7 @@ class Meth::Bot < Irc::Client
   #
 
   def _listen m
-    #Meth::PluginManager.do_all('listen',m)
-    event.call('irc.message.listen',m)
+    @event.call('irc.message.listen',m)
   end
 
   def _privmsg m
@@ -42,34 +42,34 @@ class Meth::Bot < Irc::Client
          "#{@name} #{m.channel} " +
          "(#{Time.now.strftime('%I:%M:%S %p')}) "+
          "#{m.source.nick}: #{m.message}"
-    event.call('irc.message.privmsg',m)
+    @event.call('irc.message.privmsg',m)
     # parses and call command event
     do_command(m)
   end
 
   def _notice m
     puts m.line
-    event.call('irc.message.notice',m)
+    @event.call('irc.message.notice',m)
   end
 
   def _join m
     puts m.line
-    event.call('irc.message.join',m)
+    @event.call('irc.message.join',m)
   end
 
   def _part m
     puts m.line
-    event.call('irc.message.part',m)
+    @event.call('irc.message.part',m)
   end
 
   def _quit m
     puts m.line
-    event.call('irc.message.quit',m)
+    @event.call('irc.message.quit',m)
   end
 
   def _unknown m
-    $logger.warn "Unknown Message <<< #{m.line}"
-    event.call('irc.message.unknown',m)
+    @logger.warn "Unknown Message <<< #{m.line}"
+    @event.call('irc.message.unknown',m)
   end
 
   #
@@ -79,7 +79,7 @@ class Meth::Bot < Irc::Client
 
   def post_init *args
     super *args
-    puts "Connected #{@name} to #{@server}:#{@port}"
+    @logger.info "Connected #{@name} to #{@server[:host]}:#{@server[:port]}"
   end
 
   def say to, message
@@ -91,12 +91,12 @@ class Meth::Bot < Irc::Client
   end
   
   def receive_line line
-    $logger.info "<<< #{line}"
+    @logger.info "<<< #{line}"
     super line
   end
 
   def send_data line
-    $logger.info ">>> #{line}"
+    @logger.info ">>> #{line}"
     super line
   end
 
@@ -116,7 +116,6 @@ class Meth::Bot < Irc::Client
 
     # look for our nick or target as first word
     # then extract them from the message
-
     # "(<nick>: |<target>)"
     unless is_command = !m.message.slice!(/^#{@nick}: /).nil?
       # addressed to target
@@ -127,6 +126,7 @@ class Meth::Bot < Irc::Client
 
     # "hi 1 2 3"
     # now that nick/target is extracted
+
     # the rest is the message
     # that includes the command and params
 
@@ -139,16 +139,24 @@ class Meth::Bot < Irc::Client
 
     # %w{hi 1 2 3}
     # split words in line
-    m.instance_variable_set(:@params,m.line.split(' '))
+    params = m.line.split(' ')
+    m.instance_variable_set(:@params,params)
     class <<m; attr_accessor :params; end
+
 
     # "hi"
     # the command
-    m.instance_variable_set(:@command,m.params.shift)
+    command = m.params.shift
+    m.instance_variable_set(:@command,command)
     class <<m; attr_accessor :command; end
 
+    # "!"
+    # empty command ?
+    return if m.command.nil?
+
     # call command event
-    event.call("command.#{m.command.downcase}",m)
+    @logger.info "Calling command: #{m.command}"
+    @event.call("command.#{m.command.downcase}",m)
 
   end
 end

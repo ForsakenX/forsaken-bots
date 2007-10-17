@@ -1,7 +1,7 @@
 puts "init loaded"
 
 # load lib
-Dir["#{DIST}/lib/*.rb"].each do |m|
+Dir["#{DIST}/lib/*.rb","#{DIST}/models/*.rb"].each do |m|
   if FileTest.executable?(m)
     require m
     puts "Loaded #{File.basename(m)}"

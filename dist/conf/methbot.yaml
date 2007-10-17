@@ -13,11 +13,88 @@ keyboard: KeyboardHandler
 
 # list of servers to connect to
 bots: 
-- name: blitzed
-  server: irc.blitzed.org
+
+#
+# MethBot
+#
+
+- name: methbot_blitzed
+  host: irc.blitzed.org
   channels: 
   - "#kahn"
-  - "#tester"
-  nick: MethBot
+  nick: "_MethBot"
+  realname: MethBot Beta
+  target: "\*"
+  plugins_path: "plugins"
+  logger: 
+    severity: DEBUG
+    rotate: daily
+
+- name: methbot_freenode
+  host: irc.freenode.org
+  channels: 
+  - "#forsaken"
+  nick: "_MethBot"
+  realname: MethBot Beta
+  target: "\*"
+  plugins_path: "plugins"
+  logger: 
+    severity: DEBUG
+    rotate: daily
+
+#
+# Game Manager
+#
+
+- name: fskn_games_freenode
+  host: irc.freenode.org
+  channels: 
+  - "#forsaken"
+  nick: "_0_games"
+  realname: MethBot Beta
   target: ","
+  plugins_path: "fskn_games"
+  logger: 
+   severity: DEBUG
+   rotate: daily
+
+- name: fskn_games_blitzed
+  host: irc.blitzed.org
+  channels: 
+  - "#kahn"
+  nick: "_0_fskn_games"
+  realname: MethBot Beta
+  target: ","
+  plugins_path: "fskn_games"
+  logger: 
+    severity: DEBUG
+    rotate: daily
+
+#
+# Chan Linker
+#
+
+- name: chan_link_freenode
+  host: irc.freenode.org
+  channels: 
+  - "#forsaken"
+  nick: "_chanlink"
+  realname: MethBot Beta
+  plugins_path: "chan_link"
+  logger: 
+    severity: DEBUG
+    rotate: daily
+
+
+- name: chan_link_blitzed
+  host: irc.blitzed.org
+  channels: 
+  - "#kahn"
+  nick: "_chanlink"
+  realname: MethBot Beta
+  plugins_path: "chan_link"
+  logger: 
+    severity: DEBUG
+    rotate: daily
+
 

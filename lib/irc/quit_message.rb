@@ -1,24 +1,23 @@
-  # handles a quit message
-  class Irc::QuitMessage < Irc::Message
-    #:methods!1000@c-68-36-237-152.hsd1.nj.comcast.net QUIT :Quit: Leaving.
-    attr_accessor :user
-    def initialize(client,line)
+class Irc::QuitMessage < Irc::Message
+  attr_accessor :user
+  def initialize(client,line)
+    super(client,line)
 
-      #
-      super(client,line)
-
-      # :MethBot_!1000@c-68-36-237-152.hsd1.nj.comcast.net QUIT :Client closed connection
-      unless line =~ /:([^ ]*)!([^@]*)@([^ ]*) QUIT ([:]*.*)*$/mi
-        throw "Bad QUIT message..."
-      end
-
-      # nick
-      nick = $1
-
-      # add or update user
-      @user.destroy if @user = Irc::User.find(nick)
-
-      @client._quit(self)
+    # :methods!1000@c-68-36-237-152.hsd1.nj.comcast.net QUIT :Quit: Leaving.
+    # :MethBot_!1000@c-68-36-237-152.hsd1.nj.comcast.net QUIT :Client closed connection
+    unless line =~ /:([^ ]*)!([^@]*)@([^ ]*) QUIT ([:]*.*)*$/mi
+      throw "Bad QUIT message..."
     end
+
+    # nick
+    nick = $1
+
+    # add or update user
+    @user.destroy if @user = Irc::User.find(client.server,nick)
+
+    # call client
+    @client._quit(self)
+
   end
+end
 

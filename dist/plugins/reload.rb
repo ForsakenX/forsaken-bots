@@ -12,8 +12,10 @@ class Reload < Meth::Plugin
         m.reply "Plugin is not loaded"
         return
       end
-      if Meth::PluginManager._load(plugin,m)
+      if Meth::PluginManager._load(plugin)
         m.reply "Plugin '#{plugin}' reloaded"
+      else
+        m.reply "Plugin '#{plugin}' failed to reload."
       end
     end
   end

@@ -10,12 +10,14 @@ class Meth::Plugin
   def initialize(bot)
     @bot = bot
     # register command callbak
-    @bot.event.register("command.#{self.class.name.downcase}",Proc.new{|m|command(m)})
+    @bot.event.register("command.#{self.class.name.downcase}",Proc.new{|m|
+      next unless respond_to? :command
+      command(m)
+    })
     # register message call backs
     %w{unknown quit part listen privmsg notice join}.each do |type|
-      @bot.event.register("message.#{type}",Proc.new{|message|
-        next unless method_defined? m.to_sym
-        self.send(m.to_sym, message)
+      @bot.event.register("irc.message.#{type}",Proc.new{|message|
+        send(type.to_sym, message) if respond_to?(type.to_sym)
       })
     end
   end

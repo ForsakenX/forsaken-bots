@@ -4,6 +4,9 @@ end
 # manages users
 require 'irc/user'
 
+# manages channels
+require 'irc/channel'
+
 # handles a message
 require 'irc/handle_message'
 

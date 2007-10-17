@@ -21,9 +21,10 @@
         host = $3
         nick = $1
         # do we know this user allready?
-        unless @source = Irc::User.find(nick) # has more information
+        unless @source = Irc::User.find(client.server,nick) # has more information
           # create a mock user
-          @source = Irc::User.create({:user => user, :host => host, :nick => nick })
+          @source = Irc::User.create({:server => client.server,
+                                      :user => user, :host => host, :nick => nick })
         end
       end
 
@@ -36,7 +37,9 @@
       @to = line.slice!(/^([^ ]*)/)
 
       # channel line ?
-      @channel = (@to =~ /#/) ? @to : nil
+      if @channel = (@to =~ /#/) ? @to : nil
+        @source.join @channel
+      end
 
       # personal line ?
       @personal = @channel ? false : true
@@ -48,6 +51,9 @@
       else
         @replyto = @source.nil? ? nil : @source.nick
       end
+
+      # channel object
+      @channel = client.channels[@channel]
 
       # " :"
       # garbage

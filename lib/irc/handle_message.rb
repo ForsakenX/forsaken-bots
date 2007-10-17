@@ -15,7 +15,7 @@ class Irc::HandleMessage
     # login completed
     when /^:[^ ]* 001 /i
       # join default channels
-      client.join client.channels
+      client.join client.config['channels']
 
     # set nick failed
     when /^:[^ ]* 433 /i
@@ -43,16 +43,15 @@ class Irc::HandleMessage
       realname = $7 # MethBot
 
       # add or update user
-      if u = Irc::User.find(nick)
-        u.update({:server => server, :channel => channel,
-                  :user   => user,   :host    => host,
-                  :nick   => nick,   :flags   => flags,
-                  :realname => realname})
+      if u = Irc::User.find(client.server,nick)
+        u.join channel
+        u.flags = flags
       else
-        u = Irc::User.create({:server => server, :channel => channel,
-                         :user   => user,   :host    => host,
-                         :nick   => nick,   :flags   => flags,
-                         :realname => realname})
+        u = Irc::User.create({
+              :server => client.server, :channels => [channel],
+              :user   => user,          :host     => host,
+              :nick   => nick,          :flags    => flags,
+              :realname => realname})
       end
 
     # end of who list
