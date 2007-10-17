@@ -32,11 +32,13 @@ class GameModel
   attr_reader :replyto, :user, :bot, :hosting, :timer, :start_time
 
   def initialize game
+    @canceled     = false
     @user        = game[:user]
     @hosting     = false
     @start_time  = nil
     @timer       = EM::PeriodicTimer.new( 1 ) { # try every 1 second
-      puts "GameTimer Called"
+      puts "GameTimer (#{hostmask}) Called"
+      next if @canceled
       hosting?(
         @user.ip,
         # game started
@@ -44,7 +46,7 @@ class GameModel
           next if @hosting
           @hosting     = true
           @start_time  = Time.now
-          @timer.interval = 20 # only connect after 20 seconds
+          @timer.interval = 30 # only connect after 20 seconds
           @@event.call("game.started",self)
         },
         # game finished
@@ -76,6 +78,7 @@ class GameModel
   #
 
   def destroy
+    @canceled = true
     @timer.cancel if @timer
     @@games.delete(self)
     if @hosting

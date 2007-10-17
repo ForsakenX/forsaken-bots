@@ -20,7 +20,7 @@ class Irc::Channel
   #
   # Instance
   #
-  attr_reader :server
+  attr_reader :server, :name
   attr_writer :topic
   def initialize(server,channel)
     @server = server

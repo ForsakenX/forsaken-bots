@@ -25,12 +25,9 @@ class Ip < Meth::Plugin
         "Leave blank to get all addresses."
       when "hosting"
         "ip hosting <ip> => Check if an ip is hosting..."
-      when "scan"
-        "ip scan [[pattern]...] => Queries a user to see if they are hosting/playing. "+
-        "[[pattern]...] patterns seperated by a space to search for user names."
       else
         "ip [command] => ip address tools. "+
-        "[command] can be one of: list, scan, hosting"
+        "[command] can be one of: list, hosting"
     end
   end
 
@@ -65,6 +62,7 @@ class Ip < Meth::Plugin
     if m.personal || targets.length>0
       m.reply list
     else
+      puts m.channel.inspect
       m.reply "A full list of ip numbers from #{m.channel.name} has been messaged to you. "+
               "To print the message here you have to specify a search pattern. "+
               "For more info type 'ip help'"
