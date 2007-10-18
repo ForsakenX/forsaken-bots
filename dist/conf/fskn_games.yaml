@@ -15,29 +15,29 @@ keyboard: KeyboardHandler
 bots: 
 
 #
-# MethBot
+# Game Manager
 #
 
-- name: methbot_blitzed
-  host: rockstar.uk.eu.blitzed.org
-  channels: 
-  - "#kahn"
-  nick: "MethBot"
-  realname: MethBot Beta
-  target: "\*"
-  plugins_path: "plugins"
-  logger: 
-    severity: DEBUG
-    rotate: daily
-
-- name: methbot_freenode
+- name: fskn_games_freenode
   host: irc.freenode.org
   channels: 
   - "#forsaken"
-  nick: "MethBot"
+  nick: "_0_games"
   realname: MethBot Beta
-  target: "\*"
-  plugins_path: "plugins"
+  target: ","
+  plugins_path: "fskn_games/plugins"
+  logger: 
+   severity: DEBUG
+   rotate: daily
+
+- name: fskn_games_blitzed
+  host: rockstar.uk.eu.blitzed.org
+  channels: 
+  - "#kahn"
+  nick: "_0_fskn_games"
+  realname: MethBot Beta
+  target: ","
+  plugins_path: "fskn_games/plugins"
   logger: 
     severity: DEBUG
     rotate: daily

@@ -64,6 +64,11 @@
       # the rest is the message
       @message = line
 
+      # ctcp VERSION request
+        # :nick!user@ip-address PRIVMSG your-nick :VERSION
+      if @personal && @message =~ /^VERSION$/i
+      end
+
       # send it to the user
       client._privmsg(self)
 

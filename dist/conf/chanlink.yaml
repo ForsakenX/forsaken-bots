@@ -15,29 +15,28 @@ keyboard: KeyboardHandler
 bots: 
 
 #
-# MethBot
+# Chan Linker
 #
 
-- name: methbot_blitzed
-  host: rockstar.uk.eu.blitzed.org
+- name: chan_link_freenode
+  host: irc.freenode.org
   channels: 
-  - "#kahn"
-  nick: "MethBot"
+  - "#forsaken"
+  nick: "chanlink"
   realname: MethBot Beta
-  target: "\*"
-  plugins_path: "plugins"
+  plugins_path: "chan_link"
   logger: 
     severity: DEBUG
     rotate: daily
 
-- name: methbot_freenode
-  host: irc.freenode.org
+
+- name: chan_link_blitzed
+  host: rockstar.uk.eu.blitzed.org
   channels: 
-  - "#forsaken"
-  nick: "MethBot"
+  - "#kahn"
+  nick: "chanlink"
   realname: MethBot Beta
-  target: "\*"
-  plugins_path: "plugins"
+  plugins_path: "chan_link"
   logger: 
     severity: DEBUG
     rotate: daily

@@ -27,6 +27,10 @@ class Meth::Bot < Irc::Client
     super config
     # needs settings from super
     @plugin_manager = Meth::PluginManager.new(self)
+    # Custom Bot Initializations
+    if File.executable?(path)
+      eval(File.read("#{DIST}/conf/#{$config_file}.rb"))
+    end
   end
 
   #
@@ -35,16 +39,6 @@ class Meth::Bot < Irc::Client
 
   def _listen m
     @event.call('irc.message.listen',m)
-  end
-
-  def _privmsg m
-    puts ">>> "+
-         "#{@name} #{m.channel} " +
-         "(#{Time.now.strftime('%I:%M:%S %p')}) "+
-         "#{m.source.nick}: #{m.message}"
-    @event.call('irc.message.privmsg',m)
-    # parses and call command event
-    do_command(m)
   end
 
   def _notice m
@@ -70,6 +64,77 @@ class Meth::Bot < Irc::Client
   def _unknown m
     @logger.warn "Unknown Message <<< #{m.line}"
     @event.call('irc.message.unknown',m)
+  end
+
+  def _privmsg m
+
+    puts ">>> "+
+         "#{@name} #{m.channel} " +
+         "(#{Time.now.strftime('%I:%M:%S %p')}) "+
+         "#{m.source.nick}: #{m.message}"
+
+    # parse and create command/params properties
+    parse_command m
+
+    # call easy to use command event
+    if m.command
+      @logger.info "Command called: #{m.command.downcase}"
+      @event.call("command.#{m.command.downcase}",m)
+    end
+
+    # call privmsg event
+    @event.call('irc.message.privmsg',m)
+
+  end
+
+  #
+  # Methods
+  #
+  
+  def parse_command m
+
+    # m.message with a command is one of the following
+    # ",hi 1 2 3"
+    # "MethBot: hi 1 2 3"
+
+    # must become...
+    # m.command => hi
+    # m.message => 1 2 3
+
+    # look for our nick or target as first word
+    # then extract them from the message
+    # "(<nick>: |<target>)"
+    unless is_command = !m.message.slice!(/^#{@nick}: /).nil?
+      # addressed to target
+      unless @target.nil?
+        is_command = !m.message.slice!(/^#{@target}/).nil?
+      end
+    end
+
+    # "hi 1 2 3"
+    # now that nick/target is extracted
+    # thats how the message looks
+    # includes the command and params
+
+    # if its a pm then its allways a command
+    is_command = m.personal if !is_command
+
+    # %w{hi 1 2 3}
+    # split words in line
+    params = m.line.split(' ')
+    m.instance_variable_set(:@params,params)
+    class <<m; attr_accessor :params; end
+
+    # "hi"
+    # the command
+    command = m.params.shift
+    m.instance_variable_set(:@command,command)
+    class <<m; attr_accessor :command; end
+
+    # m.message is now the command params
+    # m.command is now the command
+    # m.params is now an array of words after the command
+
   end
 
   #
@@ -100,65 +165,5 @@ class Meth::Bot < Irc::Client
     super line
   end
 
-  #
-  # Bot Methods
-  #
-
-  def do_command m
-
-    # m.message with a command is one of the following
-    # ",hi 1 2 3"
-    # "MethBot: hi 1 2 3"
-
-    # must become...
-    # m.command => hi
-    # m.message => 1 2 3
-
-    # look for our nick or target as first word
-    # then extract them from the message
-    # "(<nick>: |<target>)"
-    unless is_command = !m.message.slice!(/^#{@nick}: /).nil?
-      # addressed to target
-      unless @target.nil?
-        is_command = !m.message.slice!(/^#{@target}/).nil?
-      end
-    end
-
-    # "hi 1 2 3"
-    # now that nick/target is extracted
-
-    # the rest is the message
-    # that includes the command and params
-
-    # if its a pm then its allways a command
-    is_command = m.personal if !is_command
-
-    # at this point if its not a command
-    # where done working with this message
-    return unless is_command
-
-    # %w{hi 1 2 3}
-    # split words in line
-    params = m.line.split(' ')
-    m.instance_variable_set(:@params,params)
-    class <<m; attr_accessor :params; end
-
-
-    # "hi"
-    # the command
-    command = m.params.shift
-    m.instance_variable_set(:@command,command)
-    class <<m; attr_accessor :command; end
-
-    # "!"
-    # empty command ?
-    return if m.command.nil?
-
-    # call command event
-    @logger.info "Calling command: #{m.command}"
-    @event.call("command.#{m.command.downcase}",m)
-
-  end
 end
-
 

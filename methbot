@@ -1,5 +1,10 @@
 #!/usr/bin/env ruby
 
+if ARGV[0].nil?
+  puts "Missing config file argument."
+  exit
+end
+
 ##
 # Settings
 ##
@@ -17,8 +22,9 @@ puts "DIST: '#{DIST}'"
 
 # load user configs
 require 'yaml'
-$config = YAML.load(File.open("#{DIST}/conf/methbot.yaml"))
-puts "Loaded methobot.yaml"
+$config_file = ARGV[0]
+$config = YAML.load(File.open("#{DIST}/conf/#{$config_file}.yaml"))
+puts "Loaded #{$config_file}.yaml"
 
 ##
 # Main Libs
@@ -60,7 +66,7 @@ $event = Meth::Event.new($logger)
 
 EM.epoll
 EM.run {
-  # load up user init.rb
+  # load up main init file
   require "#{DIST}/conf/init"
   # load up the bots
   $config["bots"].each do |config|

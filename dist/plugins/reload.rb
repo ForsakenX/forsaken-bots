@@ -8,11 +8,11 @@ class Reload < Meth::Plugin
     when "",nil
       m.reply help
     else
-      unless Meth::PluginManager.enabled?(plugin)
+      unless @bot.plugin_manager.enabled?(plugin)
         m.reply "Plugin is not loaded"
         return
       end
-      if Meth::PluginManager._load(plugin)
+      if @bot.plugin_manager._load(plugin)
         m.reply "Plugin '#{plugin}' reloaded"
       else
         m.reply "Plugin '#{plugin}' failed to reload."

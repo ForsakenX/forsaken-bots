@@ -6,7 +6,7 @@ class Irc::HandleMessage
 
     # IRCD says fatal error
     when /^ERROR/i
-      exit
+      client.logger.error "ERROR - Server disconnecting..."
 
     # ping
     when /^PING ([^\n]*)$/i
@@ -33,32 +33,43 @@ class Irc::HandleMessage
     # channel topic
     when /^[^ ]* 332/
 
-    # names list but we use who list instead
-    when /^[^ ]* (353|366)/
-
     # 1st whois line (start)
+    # WHO does this
       # :koolaid.ny.us.blitzed.org 311 _0_fskn_games Silence
       # FUHQ c-24-63-156-24.hsd1.ma.comcast.net * :BLABLA
+    when /^[^ ] 311 [^ ]* ([^ ]*) ([^ ]*) ([^ ]*) [^ ]* [:]*([^\n ]*)/
 
     # 2nd whois line
-    # :koolaid.ny.us.blitzed.org 319 _0_fskn_games Silence :#kahn
-    when /^[^ ]* 319 [^ ]* ([^ ]*) [:]*([^ \n]*)/
+      # if you see @# means your in same room as this person
+      # :zelazny.freenode.net 319 _MethBot chino
+      # :#what #crack #meth #ruby-lang @#forsaken
+    when /^[^ ]* 319 [^ ]* ([^ ]*) [:]*(.*)/m
       nick = $1
-      channel = $2
+      # list of channels the user is in
+      channels = "#{$2}".gsub('@','').split(' ')
       # find user
       user = Irc::User.find(client.server,nick)
       # join them to the channel
-      user.join channel
+      channels.each do |channel|
+        user.join channel
+      end
 
     # 3rd whois line
+    # WHO does this
       # :koolaid.ny.us.blitzed.org 312 _0_fskn_games Silence
       #  cookies.on.ca.blitzed.org :C is for c00kie eh?
+    when /^[^ ]* 312 [^ ]* ([^ ]*) [^ ]* /
 
     # 4th whois line (end)
-    # :koolaid.ny.us.blitzed.org 318 _0_fskn_games Silence :End of /WHOIS list.
+    # WHO does this
+      # :koolaid.ny.us.blitzed.org 318 _0_fskn_games Silence :End of /WHOIS list.
     when /^[^ ]* 318/
 
-    # who responses
+    # names list
+    # WHO does this
+    when /^[^ ]* (353|366)/
+
+    # who lines
     # a single user in who list
       # :koolaid.ny.us.blitzed.org 352 _0_fskn_games #kahn
       #  FUHQ c-24-63-156-24.hsd1.ma.comcast.net 
@@ -84,6 +95,9 @@ class Irc::HandleMessage
               :nick   => nick,          :flags    => flags,
               :realname => realname})
       end
+
+      # get list of chats the user is in
+      client.send_data "WHOIS #{u.nick}\n"
 
     # end of who list
     when /:[^ ]* 315/

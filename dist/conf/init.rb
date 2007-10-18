@@ -1,6 +1,7 @@
-puts "init loaded"
+puts "Running init.rb"
 
 # load lib
+puts "Loading Global lib/models"
 Dir["#{DIST}/lib/*.rb","#{DIST}/models/*.rb"].each do |m|
   if FileTest.executable?(m)
     require m
@@ -9,6 +10,7 @@ Dir["#{DIST}/lib/*.rb","#{DIST}/models/*.rb"].each do |m|
 end
 
 # load up keyboard listener
+puts "Loading Keyboard Handler"
 if $config['keyboard']
   if Object.const_defined?($config['keyboard'])
     EM.open_keyboard(KeyboardHandler)
