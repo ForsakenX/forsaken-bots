@@ -14,8 +14,6 @@ class Scan < Meth::Plugin
       return
     end
 
-    m.reply "One moment please..."
-
     # user globs
     patterns = m.params
 
@@ -38,6 +36,13 @@ class Scan < Meth::Plugin
 
     # filter users against patterns
     users = Irc::User.filter(users,patterns)
+
+    # have resulsts ?
+    return unless users.length > 0
+
+    m.reply "One moment please..."
+
+    puts users.inspect
 
     # check the users
     check(users){|results|

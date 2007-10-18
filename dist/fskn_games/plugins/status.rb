@@ -12,8 +12,11 @@ class Status < Meth::Plugin
       return
     end
     hosts = []
+    waiting = []
     games.each { |game|
-      next unless game.hosting
+      unless game.hosting
+        waiting << game
+      end
       seconds = (Time.now - game.start_time).to_i
       minutes = seconds / 60; seconds = seconds % 60
       hours   = minutes / 60; minutes = minutes % 60
@@ -25,6 +28,7 @@ class Status < Meth::Plugin
       hosts << "( #{host} )"
     }
     m.reply "There are #{hosts.length} games up: #{hosts.join(', ')}"
+    m.reply "Still waiting for the following games to start: #{waiting.join(', ')}" if waiting.length
   end
 
 end
