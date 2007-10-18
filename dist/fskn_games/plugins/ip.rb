@@ -1,49 +1,15 @@
-load "#{DIST}/lib/direct_play.rb"
 class Ip < Meth::Plugin
-
-  #@@reload = true
 
   include DirectPlay
 
-  def command m
-    # test topic
-    case m.params.shift
-    when "list"
-      list m
-    when "hosting"
-      is_hosting? m
-    else # default help
-      m.reply help(m)
-    end
-  end
-
   def help m=nil,topic=nil
-    case topic||m.params.shift||""
-      when "list"
-        "ip list [[pattern]...] => Gets a user[s] ip address. "+
-        "(optional) [[pattern]..] patterns seperated by space to search for user names. "+
-        "Leave blank to get all addresses."
-      when "hosting"
-        "ip hosting <ip> => Check if an ip is hosting..."
-      else
-        "ip [command] => ip address tools. "+
-        "[command] can be one of: list, hosting"
-    end
+    "ip [patterns] => "+
+      "Get ip addresses of users in the channel. "+
+      "Optional [patterns] that match user names.  "+
+      "Leave blank to get all addresses."
   end
 
-  def is_hosting? m
-    ip = m.params.shift
-    unless ip
-      m.reply "Missing <ip> argument."
-      return
-    end
-    hosting?(ip,
-             Proc.new { |time| m.reply "#{ip} is hosting..."     },
-             Proc.new { |time| m.reply "#{ip} is NOT hosting..." })
-  end
-
-  # get ip of user
-  def list m
+  def command m
 
     #
     targets = m.params
@@ -51,8 +17,11 @@ class Ip < Meth::Plugin
     # output holder
     list = []
 
+    # users
+    users = m.channel ? m.channel.users : [m.source]
+
     # get and format list of found addresses
-    Irc::User.filter(@bot.users,targets).each do |user|
+    Irc::User.filter(users,targets).each do |user|
       list << "#{user.nick} => #{user.ip}"
     end
 

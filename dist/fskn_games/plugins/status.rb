@@ -2,7 +2,7 @@
 class Status < Meth::Plugin
 
   def help m
-    "status => Print status on running games..."
+    "status => Displays status on running games..."
   end
 
   def command m

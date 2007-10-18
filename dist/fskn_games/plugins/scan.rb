@@ -9,7 +9,7 @@ class Scan < Meth::Plugin
 
   def command m
 
-    if m.personal?
+    if m.personal
       m.reply "This command only works in a channel..."
       return
     end
