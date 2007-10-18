@@ -17,13 +17,13 @@ class Irc::JoinMessage < Irc::Message
     channel  = $4
 
     # We have joined a chat
-    if client.nick == nick
+    #if client.nick == nick
       # get a list of users for channel
       client.send_data "WHO #{channel}\n"
-    else
+    #else
       # get more details on the user
-      client.send_data "WHOIS #{nick}\n"
-    end
+      #client.send_data "WHOIS #{nick}\n"
+    #end
 
     # add or update user
     if @user = Irc::User.find(client.server,nick)

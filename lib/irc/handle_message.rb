@@ -13,7 +13,7 @@ class Irc::HandleMessage
       client.send_data "PONG #{$1}\n"
 
     # login completed
-    when /^:[^ ]* 001 /i
+    when /^:[^ ]* 001 /
       # join default channels
       client.join client.config['channels']
 
@@ -28,53 +28,54 @@ class Irc::HandleMessage
       client.send_nick "#{client.nick_sent}_"
 
     # motd
-    when /^:[^ ]* (375|372|376)/
+    #when /^:[^ ]* (375|372|376)/
 
     # channel topic
-    when /^[^ ]* 332/
+    #when /^[^ ]* 332/
+      #client.channels[channel].topic = topic
 
     # 1st whois line (start)
     # WHO does this
       # :koolaid.ny.us.blitzed.org 311 _0_fskn_games Silence
       # FUHQ c-24-63-156-24.hsd1.ma.comcast.net * :BLABLA
-    when /^[^ ] 311 [^ ]* ([^ ]*) ([^ ]*) ([^ ]*) [^ ]* [:]*([^\n ]*)/
+    #when /^[^ ] 311 [^ ]* ([^ ]*) ([^ ]*) ([^ ]*) [^ ]* [:]*([^\n ]*)/
 
     # 2nd whois line
       # if you see @# means your in same room as this person
       # :zelazny.freenode.net 319 _MethBot chino
       # :#what #crack #meth #ruby-lang @#forsaken
-    when /^[^ ]* 319 [^ ]* ([^ ]*) [:]*(.*)/m
-      nick = $1
+    #when /^[^ ]* 319 [^ ]* ([^ ]*) [:]*(.*)/m
+      #nick = $1
       # list of channels the user is in
-      channels = "#{$2}".gsub('@','').split(' ')
+      #channels = "#{$2}".gsub('@','').split(' ')
       # find user
-      user = Irc::User.find(client.server,nick)
+      #user = Irc::User.find(client.server,nick)
       # join them to the channel
-      channels.each do |channel|
-        user.join channel
-      end
+      #channels.each do |channel|
+      #  user.join channel
+      #end
 
     # 3rd whois line
     # WHO does this
       # :koolaid.ny.us.blitzed.org 312 _0_fskn_games Silence
       #  cookies.on.ca.blitzed.org :C is for c00kie eh?
-    when /^[^ ]* 312 [^ ]* ([^ ]*) [^ ]* /
+    #when /^[^ ]* 312 [^ ]* ([^ ]*) [^ ]* /
 
     # 4th whois line (end)
     # WHO does this
       # :koolaid.ny.us.blitzed.org 318 _0_fskn_games Silence :End of /WHOIS list.
-    when /^[^ ]* 318/
+    #when /^[^ ]* 318/
 
     # names list
     # WHO does this
-    when /^[^ ]* (353|366)/
+    #when /^[^ ]* (353|366)/
 
     # who lines
     # a single user in who list
       # :koolaid.ny.us.blitzed.org 352 _0_fskn_games #kahn
       #  FUHQ c-24-63-156-24.hsd1.ma.comcast.net 
       #  cookies.on.ca.blitzed.org Silence H :2 BLABLA
-    when /:([^ ]*) 352 [^ ]* (#[^ ]*) ([^ ]*) ([^ ]*) [^ ]* ([^ ]*) ([^:]* :[^ ]*) ([\n]*)/i
+    when /:([^ ]*) 352 [^ ]* (#[^ ]*) ([^ ]*) ([^ ]*) [^ ]* ([^ ]*) ([^:]* :[^ ]*) ([\n]*)/
 
       server   = $1 # server
       channel  = $2 # in channel
@@ -97,10 +98,10 @@ class Irc::HandleMessage
       end
 
       # get list of chats the user is in
-      client.send_data "WHOIS #{u.nick}\n"
+      #client.send_data "WHOIS #{u.nick}\n"
 
     # end of who list
-    when /:[^ ]* 315/
+    #when /:[^ ]* 315/
 
     # someone joins a chat
     when /:[^ ]* JOIN/

@@ -1,10 +1,10 @@
-# scan channel users for hosting/playing
-class Scan < Meth::Plugin
+# scan channel users for hosting
+class Hosting < Meth::Plugin
 
   include DirectPlay
 
   def help m
-    "scan => Scans channel users to see if anyone is hosting or playing..."
+    "hosting => Scan channel users to see if anyone is hosting..."
   end
 
   def command m
@@ -45,7 +45,7 @@ class Scan < Meth::Plugin
     puts users.inspect
 
     # check the users
-    check(users){|results|
+    find_hosts(users){|results|
 
       # format hosts output
       hosts_output = []
@@ -53,20 +53,10 @@ class Scan < Meth::Plugin
         hosts_output << "#{user.nick}@#{user.ip}"
       end
 
-      # format player output
-      players_output = []
-      results[:players].each do |user|
-        players_output << "#{user.nick}@#{user.ip}"
-      end
-
       # print results
-      m.reply "Scanned #{results[:total_ports_scanned]} ports "+
-               "in #{results[:time_finished]-results[:time_started]} seconds... "+
-               "#{users.length} users were scanned... "+
-               "( #{players_output.length} playing: "+
-               "#{players_output.join(', ')} ) "+
-               "( #{hosts_output.length} hosting: "+
-               "#{hosts_output.join(', ')} ) "
+      m.reply "#{users.length} users were scanned "+
+               "in #{results[:time_finished]-results[:time_started]} seconds. "+
+               "#{hosts_output.length} where hosting: #{hosts_output.join(', ')} ) "
 
       # add hosts to game list
       results[:hosts].each do |user|

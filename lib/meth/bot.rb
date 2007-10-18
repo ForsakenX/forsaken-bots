@@ -28,8 +28,9 @@ class Meth::Bot < Irc::Client
     # needs settings from super
     @plugin_manager = Meth::PluginManager.new(self)
     # Custom Bot Initializations
-    if File.executable?(path)
-      eval(File.read("#{DIST}/conf/#{$config_file}.rb"))
+    init="#{DIST}/conf/#{$config_file}.rb"
+    if File.executable?(init)
+      eval(File.read(init))
     end
   end
 

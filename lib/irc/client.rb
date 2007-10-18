@@ -85,7 +85,10 @@ class Irc::Client < EM::Connection
     # for each line
     message.split("\n").each do |message|
       # send at chunks of 350 characters
-      message.scan(/([^\n]*\n|.{1,350})/m){|chunk|
+      # scan up to extra 50 non space characters
+      # biggest word in english language is 45 characters
+      # this stops worsd from getting cut up
+      message.scan(/.{1,300}[^ ]{0,50}/m){|chunk|
         send_data "PRIVMSG #{to} :#{chunk}\n"
       }
     end

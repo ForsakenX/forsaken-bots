@@ -21,28 +21,5 @@ class Help < Meth::Plugin
     m.reply do_help(m)
   end
 
-  # check for "help"
-  def privmsg m
-    return if m.command
-    if m.chomp.message =~ /^help/
-      m.reply do_help(m)
-    end
-  end
-
-  # welcome someone when they join chat
-  def join m
-    return if m.user.nick.downcase == @bot.nick.downcase
-    @bot.say m.user.nick, ""+
-       "Hello, I am the forsaken game manager.  "+
-       "I help manage and collect information on games.  "+
-       "Some of my features include: "+
-         "displaying a list of games and their status; "+
-         "detecting if someone in the channel is hosting or playing.  "+
-       "To Host a game simply say host whenever you see me.  "+
-       "You can ask me for status on games too.  "+
-       "At a quick glance you can tell how many games are running by my name. "+
-       "For more information ask me for help."
-  end
-
 end
 

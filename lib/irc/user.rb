@@ -47,6 +47,7 @@ class Irc::User
   attr_accessor :nick, :flags
   # 
   def initialize user
+    @ip = nil
     @channels = {}
     update user
   end

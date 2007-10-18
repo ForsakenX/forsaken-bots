@@ -31,7 +31,7 @@ bots:
    rotate: daily
 
 - name: fskn_games_blitzed
-  host: rockstar.uk.eu.blitzed.org
+  host: irc.blitzed.org
   channels: 
   - "#kahn"
   nick: "_0_fskn_games"

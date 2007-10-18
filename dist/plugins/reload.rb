@@ -3,6 +3,11 @@ class Reload < Meth::Plugin
     "reload [plugin] => Reloads the given [plugin]"
   end
   def command m
+    if m.source.ip != Resolv.getaddress('chino.homelinux.org')
+      puts "Unauthorized: #{m.source.ip}"
+      m.reply "Unauthorized"
+      return
+    end
     plugin = m.params.shift
     case plugin
     when "",nil
