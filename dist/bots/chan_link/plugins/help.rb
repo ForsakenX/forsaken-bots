@@ -9,7 +9,11 @@ class Help < Meth::Plugin
   # get the help message of another plugin
   def do_help m
     if (plugin = m.params.shift)
-      @bot.plugins[plugin].send('help',m)
+      if @bot.plugins[plugin]
+        @bot.plugins[plugin].send('help',m)
+      else
+        "No command by that name.  Say help for a list of commands."
+      end
     else
       "Commands: help, names.  "+
       "If you don't know what to do next type 'help help'"
