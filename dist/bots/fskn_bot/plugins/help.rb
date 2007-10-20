@@ -22,4 +22,3 @@ class Help < Meth::Plugin
   end
 
 end
-

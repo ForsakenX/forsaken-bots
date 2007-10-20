@@ -25,7 +25,6 @@ bots:
   nick: "MethBot"
   realname: MethBot Beta
   target: "\*"
-  plugins_path: "plugins"
   logger: 
     severity: DEBUG
     rotate: daily
@@ -37,7 +36,6 @@ bots:
   nick: "MethBot"
   realname: MethBot Beta
   target: "\*"
-  plugins_path: "plugins"
   logger: 
     severity: DEBUG
     rotate: daily

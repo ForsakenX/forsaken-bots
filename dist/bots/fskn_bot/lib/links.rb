@@ -2,21 +2,21 @@ require 'yaml'
 class LinksPlugin < Meth::Plugin
   def initialize *args
     super *args
-    @db = "#{DIST}/" +  @bot.config['plugins_path'] + "/links.yaml"
+    @db = "#{DIST}/bots/#{$config_file}/db/links.yaml"
   end
   def links
     data = YAML.load_file(@db) if File.exists?(@db)
-    puts "links #{data}"
     data ? data : {}
   end
   def delete name
     data = links
-    data[name] = nil
+    data.delete(name)
     save data
   end
   def save data
-    puts "save #{data}"
-    YAML.dump(data,File.open(@db,'w+'))
+    f = File.open(@db,'w+')
+    YAML.dump(data,f)
+    f.close
   end
   def add(name, url)
     data = links

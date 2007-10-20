@@ -130,7 +130,8 @@ class Meth::Bot < Irc::Client
 
     # "hi"
     # the command
-    command = m.params.shift
+    # so do we have a command?
+    command = is_command ? m.params.shift : nil
     m.instance_variable_set(:@command,command)
     class <<m; attr_accessor :command; end
 

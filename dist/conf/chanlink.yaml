@@ -24,7 +24,6 @@ bots:
   - "#forsaken"
   nick: "chanlink"
   realname: MethBot Beta
-  plugins_path: "chan_link"
   logger: 
     severity: DEBUG
     rotate: daily
@@ -36,7 +35,6 @@ bots:
   - "#kahn"
   nick: "chanlink"
   realname: MethBot Beta
-  plugins_path: "chan_link"
   logger: 
     severity: DEBUG
     rotate: daily

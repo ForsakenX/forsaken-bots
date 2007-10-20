@@ -6,7 +6,7 @@ class Meth::PluginManager
     # we belong to this bot instance
     @bot = bot
     # path to plugins
-    @glob = "#{DIST}/#{bot.config['plugins_path']}/*.rb"
+    @glob = "#{DIST}/bots/#{$config_file}/plugins/*.rb"
     # plugin instances
     @plugins = {}
     # load plugins

@@ -1,6 +1,6 @@
 class Irc::JoinMessage < Irc::Message
 
-  attr_reader :user
+  attr_reader :user, :channel
 
   def initialize(client, line)
     super(client, line)
@@ -12,26 +12,20 @@ class Irc::JoinMessage < Irc::Message
       return
     end
 
-    nick     = $1
-    user     = $2
-    host     = $3
-    channel  = $4
+    nick      = $1
+    user      = $2
+    host      = $3
+    @channel  = $4
 
-    # We have joined a chat
-    #if client.nick == nick
-      # get a list of users for channel
-      client.send_data "WHO #{channel}\n"
-    #else
-      # get more details on the user
-      #client.send_data "WHOIS #{nick}\n"
-    #end
+    # get a list of users for channel
+    client.send_data "WHO #{channel}\n"
 
     # add or update user
     if @user = Irc::User.find(client.server,nick)
-      @user.join(channel)
+      @user.join(@channel)
     else
       @user = Irc::User.create({:server   => client.server,
-                                :channels => [channel], :user => user,
+                                :channels => [@channel], :user => user,
                                 :host     => host,      :nick => nick})
     end
 
