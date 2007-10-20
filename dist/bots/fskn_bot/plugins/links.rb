@@ -6,7 +6,7 @@ class Links < LinksPlugin
   end
   def command m
     if name = m.params.shift
-      m.reply @links[name]
+      m.reply links[name]
     else
       list m
     end
