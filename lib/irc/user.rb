@@ -1,3 +1,4 @@
+require 'resolv'
 class Irc::User
   private_instance_methods :new
   #
@@ -89,7 +90,7 @@ class Irc::User
     return @ip if @ip
     begin
       return (@ip = Resolv.getaddress host)
-    rescue Resolv::Error
+    rescue Exception #Resolv::Error
       puts "DEBUG Resolv::Error #{$!}"
     end
     nil

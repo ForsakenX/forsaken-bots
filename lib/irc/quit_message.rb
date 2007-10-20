@@ -6,7 +6,7 @@ class Irc::QuitMessage < Irc::Message
     # :methods!1000@c-68-36-237-152.hsd1.nj.comcast.net QUIT :Quit: Leaving.
     # :MethBot_!1000@c-68-36-237-152.hsd1.nj.comcast.net QUIT :Client closed connection
     unless line =~ /:([^ ]*)!([^@]*)@([^ ]*) QUIT ([:]*.*)*$/mi
-      throw "Bad QUIT message..."
+      @logger.error "Bad QUIT message..."
     end
 
     # nick

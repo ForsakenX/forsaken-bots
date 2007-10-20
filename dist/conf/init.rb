@@ -18,3 +18,19 @@ if $config['keyboard']
   end
 end
 
+puts "Loading Bot lib"
+Dir["#{DIST}/#{$config_file}/lib/*.rb"].each do |m|
+  if FileTest.executable?(m)
+    require m
+    puts "Loaded: #{File.basename(m)}"
+  end
+end
+
+puts "Loading Bot models"
+Dir["#{DIST}/#{$config_file}/models/*.rb"].each do |m|
+  if FileTest.executable?(m)
+    require m
+    puts "Loaded: #{File.basename(m)}"
+  end
+end
+

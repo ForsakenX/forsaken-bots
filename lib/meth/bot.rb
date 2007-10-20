@@ -32,6 +32,8 @@ class Meth::Bot < Irc::Client
     if File.executable?(init)
       eval(File.read(init))
     end
+    # fucked up
+    @event.call('irc.post_init',nil)
   end
 
   #
@@ -105,10 +107,10 @@ class Meth::Bot < Irc::Client
     # look for our nick or target as first word
     # then extract them from the message
     # "(<nick>: |<target>)"
-    unless is_command = !m.message.slice!(/^#{@nick}: /).nil?
+    unless is_command = !m.message.slice!(/^#{Regexp.escape(@nick)}: /).nil?
       # addressed to target
       unless @target.nil?
-        is_command = !m.message.slice!(/^#{@target}/).nil?
+        is_command = !m.message.slice!(/^#{Regexp.escape(@target)}/).nil?
       end
     end
 

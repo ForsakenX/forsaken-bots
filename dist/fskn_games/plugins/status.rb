@@ -28,7 +28,7 @@ class Status < Meth::Plugin
       hosts << "( #{host} )"
     }
     m.reply "There are #{hosts.length} games up: #{hosts.join(', ')}"
-    m.reply "Still waiting for the following games to start: #{waiting.join(', ')}" if waiting.length
+    m.reply "Still waiting for the following games to start: #{waiting.join(', ')}" if waiting.length > 0
   end
 
 end

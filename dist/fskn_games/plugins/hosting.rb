@@ -56,12 +56,12 @@ class Hosting < Meth::Plugin
       # print results
       m.reply "#{users.length} users were scanned "+
                "in #{results[:time_finished]-results[:time_started]} seconds. "+
-               "#{hosts_output.length} where hosting: #{hosts_output.join(', ')} ) "
+               "#{hosts_output.length} where hosting: #{hosts_output.join(', ')}"
 
       # add hosts to game list
       results[:hosts].each do |user|
-        next if GameModel.find(m.source.ip)
-        game = GameModel.create({:user => m.source})
+        next if GameModel.find(user.ip)
+        game = GameModel.create({:user => user})
       end
 
     }
