@@ -1,6 +1,8 @@
-class Links < LinksPlugin
+require 'yaml'
+class Links < Meth::Plugin
   def initialize *args
     super *args
+    @db = "#{DIST}/bots/#{$bot}/db/links.yaml"
     @bot.command_manager.register("links",self)
     @bot.command_manager.register("link",self)
   end
@@ -20,27 +22,24 @@ class Links < LinksPlugin
   def command m
     case m.command
     when "links"
-      links m
+      cmd_links m
     when "link"
-      link m
+      cmd_link m
     end
   end
-  def links m
+  def cmd_links m
     if name = m.params.shift
       m.reply links[name]
     else
-      list m
+      output = []
+      links.sort.each do |x|
+        (name,url) = x
+        output << "#{name}: #{url}"
+      end
+      m.reply "Links (#{links.length}): #{output.join(', ')}"
     end
   end
-  def list m
-    output = []
-    links.sort.each do |x|
-      (name,url) = x
-      output << "#{name}: #{url}"
-    end
-    m.reply "Links (#{links.length}): #{output.join(', ')}"
-  end
-  def link m
+  def cmd_link m
     (switch,name,url) = m.params
     case switch
     when /^a/
@@ -56,5 +55,25 @@ class Links < LinksPlugin
     else
       m.reply "Unrecognized action.  Type 'help link' for more information."
     end
+  end
+  private
+  def links
+    data = YAML.load_file(@db) if File.exists?(@db)
+    data ? data : {}
+  end
+  def delete name
+    data = links
+    data.delete(name)
+    save data
+  end
+  def save data
+    f = File.open(@db,'w+')
+    YAML.dump(data,f)
+    f.close
+  end
+  def add(name, url)
+    data = links
+    data[name] = url
+    save data
   end
 end
