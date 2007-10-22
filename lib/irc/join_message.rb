@@ -8,7 +8,7 @@ class Irc::JoinMessage < Irc::Message
     # joined
     # :methods!1000@c-68-36-237-152.hsd1.nj.comcast.net JOIN :#kahn
     unless line =~ /:([^ ]*)!([^@]*)@([^ ]*) JOIN :(#[^\n]*)$/i
-      @logger.error "Bad JOIN message: #{line}"
+      client.logger.error "Bad JOIN message: #{line}"
       return
     end
 

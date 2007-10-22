@@ -23,19 +23,33 @@ bots:
   channels: 
   - "#forsaken"
   nick: "chanlink"
+  password: mr.danielaquino@gmail.com
   realname: MethBot Beta
   logger: 
     severity: DEBUG
     rotate: daily
 
 
-- name: chan_link_blitzed
-  host: rockstar.uk.eu.blitzed.org
+#- name: chan_link_blitzed
+#  host: rockstar.uk.eu.blitzed.org
+#  channels: 
+#  - "#kahn"
+#  nick: "chanlink"
+#  realname: MethBot Beta
+#  logger: 
+#    severity: DEBUG
+#    rotate: daily
+
+
+- name: chan_link_gspy
+  host: localhost
+  port: 6668
   channels: 
-  - "#kahn"
-  nick: "chanlink"
-  realname: MethBot Beta
+  - "#GSP!Forsaken"
+  nick: "Deadly_Methods"
+  realname: Methods
   logger: 
     severity: DEBUG
     rotate: daily
+
 

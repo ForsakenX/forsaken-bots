@@ -71,8 +71,11 @@ class Meth::Bot < Irc::Client
 
   def _privmsg m
 
+    channel = m.channel ? m.channel.name : ""
+
     puts ">>> "+
-         "#{@name} #{m.channel} " +
+         "#{@name} "+
+         "#{channel} " +
          "(#{Time.now.strftime('%I:%M:%S %p')}) "+
          "#{m.source.nick}: #{m.message}"
 

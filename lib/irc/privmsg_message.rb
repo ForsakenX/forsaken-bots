@@ -53,7 +53,7 @@
       end
 
       # channel object
-      @channel = client.channels[@channel]
+      @channel = client.channels[@channel] if @channel
 
       # " :"
       # garbage

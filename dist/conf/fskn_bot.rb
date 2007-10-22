@@ -18,10 +18,6 @@ puts "Registering Game Events"
     end
   })
 
-  @event.register('irc.post_init',Proc.new{|n|
-    say "NickServ", "identify mr.danielaquino@gmail.com"
-  })
-
   @event.register("irc.message.join",Proc.new{|m|
     next if m.user.nick.downcase == @nick.downcase
     say m.user.nick, ""+

@@ -1,8 +1,9 @@
 class Link < LinksPlugin
-  def help
-    m.reply "link add <name> <url> => Adds a link to the list.  "+
-            "link delete <name> => Removes a link.  "+
-            "Typing a or d is sufficient."
+  def help m=nil
+    "link add <name> <url> => "+
+      "Adds a link to the list.  "+
+      "link delete <name> => Removes a link.  "+
+      "Typing the first letter of add/delete is sufficient."
   end
   def command m
     (switch,name,url) = m.params

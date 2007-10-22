@@ -18,24 +18,14 @@ bots:
 # MethBot
 #
 
-- name: methbot_blitzed
-  host: rockstar.uk.eu.blitzed.org
-  channels: 
-  - "#kahn"
-  nick: "MethBot"
-  realname: MethBot Beta
-  target: "\*"
-  logger: 
-    severity: DEBUG
-    rotate: daily
-
 - name: methbot_freenode
   host: irc.freenode.org
   channels: 
   - "#forsaken"
   nick: "MethBot"
+  password: mr.danielaquino@gmail.com
   realname: MethBot Beta
-  target: "\*"
+  target: ","
   logger: 
     severity: DEBUG
     rotate: daily

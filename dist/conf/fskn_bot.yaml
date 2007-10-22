@@ -23,6 +23,7 @@ bots:
   channels:
   - "#forsaken"
   nick: "FsknBot"
+  password: mr.danielaquino@gmail.com
   target: ""
   realname: Forsaken Bot
   logger: 

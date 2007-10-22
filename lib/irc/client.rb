@@ -153,6 +153,8 @@ class Irc::Client < EM::Connection
 
   # connection started
   def post_init
+    # send password
+    send_data "PASS #{@config['password']}\n" if @config['password']
     # login
     send_data "USER #{@username} #{@hostname} #{@server[:host]} :#{@realname}\n"
     # send initial nick

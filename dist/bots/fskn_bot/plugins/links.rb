@@ -13,8 +13,9 @@ class Links < LinksPlugin
   end
   def list m
     output = []
-    links.each do |name,url|
-      output << "#{name} => #{url}"
+    links.sort.each do |x|
+      (name,url) = x
+      output << "#{name}: #{url}"
     end
     m.reply "Links (#{links.length}): #{output.join(', ')}"
   end
