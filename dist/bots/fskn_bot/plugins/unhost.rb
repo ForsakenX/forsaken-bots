@@ -1,6 +1,11 @@
 # removes a game from list
 class Unhost < Meth::Plugin
 
+  def initialize *args
+    super *args
+    @bot.command_manager.register("unhost",self)
+  end
+
   def help m
     "unhost => Removes your game from the list..."
   end

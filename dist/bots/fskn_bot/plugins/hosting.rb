@@ -3,6 +3,11 @@ class Hosting < Meth::Plugin
 
   include DirectPlay
 
+  def initialize *args
+    super *args
+    @bot.command_manager.register("hosting",self)
+  end
+
   def help m
     "hosting => Scan channel users to see if anyone is hosting..."
   end
@@ -41,8 +46,6 @@ class Hosting < Meth::Plugin
     return unless users.length > 0
 
     m.reply "One moment please..."
-
-    puts users.inspect
 
     # check the users
     find_hosts(users){|results|

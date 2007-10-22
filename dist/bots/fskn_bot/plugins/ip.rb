@@ -2,6 +2,11 @@ class Ip < Meth::Plugin
 
   include DirectPlay
 
+  def initialize *args
+    super *args
+    @bot.command_manager.register("ip",self)
+  end
+
   def help m=nil,topic=nil
     "ip [patterns] => "+
       "Get ip addresses of users in the channel. "+

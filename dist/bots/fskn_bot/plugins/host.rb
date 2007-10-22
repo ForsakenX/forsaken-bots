@@ -1,6 +1,8 @@
-# host a game
 class Host < Meth::Plugin
-
+  def initialize *args
+    super *args
+    @bot.command_manager.register("host",self)
+  end
   def command m
     if game = GameModel.find(m.source.ip)
       m.reply "You already have a listed..."

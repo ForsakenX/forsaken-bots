@@ -1,4 +1,8 @@
 class Link < LinksPlugin
+  def initialize *args
+    super *args
+    @bot.command_manager.register("link",self)
+  end
   def help m=nil
     "link add <name> <url> => "+
       "Adds a link to the list.  "+

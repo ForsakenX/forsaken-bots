@@ -1,6 +1,11 @@
 # get status of running games
 class Status < Meth::Plugin
 
+  def initialize *args
+    super *args
+    @bot.command_manager.register("status",self)
+  end
+
   def help m
     "status => Displays status on running games..."
   end
