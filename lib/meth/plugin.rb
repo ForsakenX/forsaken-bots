@@ -27,5 +27,6 @@ class Meth::Plugin
     Meth::PluginManager._load(self.class)
   end
 
+
 end
 

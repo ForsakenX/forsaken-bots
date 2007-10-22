@@ -70,7 +70,7 @@ class Irc::PrivMessage < Irc::Message
     end
 
     # send it to the user
-    @client.call('irc.message.privmsg',self)
+    @client.event.call('irc.message.privmsg',self)
 
   end
 

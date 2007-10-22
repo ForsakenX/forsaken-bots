@@ -31,14 +31,18 @@ class Meth::PluginManager
 
   # list of plugins
   def list
-    Dir[@glob].map do |plugin|
+    Dir["#{DIST}/plugins/*.rb",@glob].map do |plugin|
       File.basename(plugin).gsub('.rb','')
     end
   end
     
   # path to plugin
   def path plugin
-    @glob.gsub('*',plugin.snake_case)
+    bot_path = @glob.gsub('*',plugin.snake_case)
+    global_path = "#{DIST}/plugins/#{plugin.snake_case}.rb"
+    return bot_path if FileTest.exists?(bot_path) # bot_path takes precedence
+    return global_path if FileTest.exists?(global_path) # global plugin?
+    bot_path # default bot_path
   end
 
   # plugin executable?

@@ -33,34 +33,27 @@ class Meth::Bot < Irc::Client
     end
     # fucked up
     @event.call('irc.post_init',nil)
-    # events
-    @event.register('irc.message.privmsg',Proc.new{|m|
-      privmsg m
-    })
+
+    @event.register('irc.message.privmsg',Proc.new{|m| privmsg m })
   end
-
+ 
   def privmsg m
+      channel = m.channel ? m.channel.name : ""
+  
+      puts ">>> "+
+           "#{@name} "+
+           "#{channel} " +
+           "(#{Time.now.strftime('%I:%M:%S %p')}) "+
+           "#{m.source.nick}: #{m.message}"
 
-    channel = m.channel ? m.channel.name : ""
+      # parse and create command/params properties
+      parse_command m
 
-    puts ">>> "+
-         "#{@name} "+
-         "#{channel} " +
-         "(#{Time.now.strftime('%I:%M:%S %p')}) "+
-         "#{m.source.nick}: #{m.message}"
-
-    # parse and create command/params properties
-    parse_command m
-
-    # call easy to use command event
-    if m.command
-      @logger.info "Command called: #{m.command.downcase}"
-      @event.call("command.#{m.command.downcase}",m)
-    end
-
-    # call privmsg event
-    @event.call('irc.message.privmsg',m)
-
+      # call easy to use command event
+      if m.command
+        @logger.info "Command called: #{m.command.downcase}"
+        @event.call("command.#{m.command.downcase}",m)
+      end
   end
 
   #
