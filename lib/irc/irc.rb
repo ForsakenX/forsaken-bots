@@ -1,6 +1,9 @@
 module Irc
 end
 
+# event system
+require 'irc/event'
+
 # manages users
 require 'irc/user'
 
