@@ -1,1 +1,0 @@
-../../../bots/meth_bot/plugins/reload.rb
