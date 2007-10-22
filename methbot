@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 if ARGV[0].nil?
-  puts "Missing config file argument."
+  puts "Missing bot name argument."
   exit
 end
 
@@ -22,9 +22,9 @@ puts "DIST: '#{DIST}'"
 
 # load user configs
 require 'yaml'
-$config_file = ARGV[0]
-$config = YAML.load(File.open("#{DIST}/conf/#{$config_file}.yaml"))
-puts "Loaded #{$config_file}.yaml"
+$bot = ARGV[0]
+$config = YAML.load(File.open("#{DIST}/bots/#{$bot}/conf/settings.yaml"))
+puts "Loaded config file."
 
 ##
 # Main Libs
@@ -49,7 +49,8 @@ require 'logger'
 if $config['logger']['console']
   $logger = Logger.new(STDOUT)
 else
-  $logger = Logger.new("#{DIST}/logs/#{$config['logger']['file']}",$config['logger']['rotate'])
+  $logger = Logger.new("#{DIST}/bots/#{$bot}/logs/#{$config['logger']['file']}",
+                       $config['logger']['rotate'])
 end
 $logger.level = Logger.const_get($config['logger']['severity'])
 puts "Setup Logger"

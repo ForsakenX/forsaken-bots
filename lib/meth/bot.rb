@@ -13,7 +13,7 @@ class Meth::Bot < Irc::Client
 
   def initialize(config)
     # setup bot logger
-    @logger = Logger.new("#{DIST}/logs/#{config['name']}",config['logger']['rotate'])
+    @logger = Logger.new("#{DIST}/bots/#{$bot}/logs/#{config['name']}",config['logger']['rotate'])
     @logger.level = Logger.const_get(config['logger']['severity'])
     # set defaults
     @logger.info "Connecting #{config['name']} to #{config['host']}:#{config['port']}"
@@ -28,7 +28,7 @@ class Meth::Bot < Irc::Client
     # needs settings from super
     @plugin_manager = Meth::PluginManager.new(self)
     # Custom Bot Initializations
-    init="#{DIST}/conf/#{$config_file}.rb"
+    init="#{DIST}/bots/#{$bot}/conf/init.rb"
     if File.executable?(init)
       eval(File.read(init))
     end

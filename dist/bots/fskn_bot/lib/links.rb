@@ -2,7 +2,7 @@ require 'yaml'
 class LinksPlugin < Meth::Plugin
   def initialize *args
     super *args
-    @db = "#{DIST}/bots/#{$config_file}/db/links.yaml"
+    @db = "#{DIST}/bots/#{$bot}/db/links.yaml"
   end
   def links
     data = YAML.load_file(@db) if File.exists?(@db)
