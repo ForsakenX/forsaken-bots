@@ -1,0 +1,32 @@
+---
+
+# main logging facility
+logger: 
+  console: false
+  file: main
+  severity: DEBUG
+  rotate: daily
+
+# Keyboard Handler Class Name
+# Leave blank to not handle keyboard
+keyboard: KeyboardHandler
+
+# list of servers to connect to
+bots: 
+
+#
+# MethBot
+#
+
+- name: methbot_freenode
+  host: irc.freenode.org
+  channels: 
+  - "#forsaken"
+  nick: "MethBot"
+  password: mr.danielaquino@gmail.com
+  realname: MethBot Beta
+  target: ","
+  logger: 
+    severity: DEBUG
+    rotate: daily
+
