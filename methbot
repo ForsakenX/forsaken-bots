@@ -59,7 +59,7 @@ puts "Setup Logger"
 #  Global Events
 ##
 
-$event = Meth::Event.new($logger)
+$event = Irc::Event.new($logger)
 
 ##
 # Run

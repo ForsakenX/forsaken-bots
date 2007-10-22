@@ -18,7 +18,6 @@ class Meth::Bot < Irc::Client
     # set defaults
     @logger.info "Connecting #{config['name']} to #{config['host']}:#{config['port']}"
     #
-    @event = Meth::Event.new(@logger)
     @timer = Meth::Timer.new
     #
     @target = config['target']||nil
@@ -34,42 +33,13 @@ class Meth::Bot < Irc::Client
     end
     # fucked up
     @event.call('irc.post_init',nil)
+    # events
+    @event.register('irc.message.privmsg',Proc.new{|m|
+      privmsg m
+    })
   end
 
-  #
-  # Callbacks
-  #
-
-  def _listen m
-    @event.call('irc.message.listen',m)
-  end
-
-  def _notice m
-    puts m.line
-    @event.call('irc.message.notice',m)
-  end
-
-  def _join m
-    puts m.line
-    @event.call('irc.message.join',m)
-  end
-
-  def _part m
-    puts m.line
-    @event.call('irc.message.part',m)
-  end
-
-  def _quit m
-    puts m.line
-    @event.call('irc.message.quit',m)
-  end
-
-  def _unknown m
-    @logger.warn "Unknown Message <<< #{m.line}"
-    @event.call('irc.message.unknown',m)
-  end
-
-  def _privmsg m
+  def privmsg m
 
     channel = m.channel ? m.channel.name : ""
 
@@ -155,10 +125,7 @@ class Meth::Bot < Irc::Client
   end
 
   def say to, message
-    puts "<<< "+
-         "#{@name} #{to} " +
-         "(#{Time.now.strftime('%I:%M:%S %p')}) "+
-         "#{@nick}: #{message}"
+    puts ":#{@name} #{to} (#{Time.now.strftime('%I:%M:%S %p')}) #{@nick}: #{message}"
     super(to,message)
   end
   

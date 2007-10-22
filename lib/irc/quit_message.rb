@@ -16,8 +16,7 @@ class Irc::QuitMessage < Irc::Message
     @user.destroy if @user = Irc::User.find(client.server,nick)
 
     # call client
-    @client._quit(self)
+    @client.event.call('irc.message.quit',self)
 
   end
 end
-

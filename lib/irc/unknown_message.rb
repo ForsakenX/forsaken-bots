@@ -1,9 +1,6 @@
- 
-  # handles unknown messages
-  class Irc::UnknownMessage < Irc::Message
-    def initialize(client, line)
-      super(client, line)
-      @client._unknown(self)
-    end
+class Irc::UnknownMessage < Irc::Message
+  def initialize(client, line)
+    super(client, line)
+    @client.event.call('irc.message.unknown',self)
   end
-
+end

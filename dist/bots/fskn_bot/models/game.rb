@@ -7,7 +7,7 @@ class GameModel
   #
 
   @@games = []
-  @@event = Meth::Event.new($logger)
+  @@event = Irc::Event.new($logger)
 
   def self.games; @@games; end
   def self.event; @@event; end

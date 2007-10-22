@@ -30,7 +30,7 @@ class Irc::JoinMessage < Irc::Message
     end
 
     # call user space
-    @client._join(self)
+    @client.event.call('irc.message.join',self)
 
   end
 

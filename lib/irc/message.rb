@@ -4,6 +4,6 @@ class Irc::Message
   def initialize(client,line)
     @client = client
     @line   = line
-    @client._listen(self)
+    @client.event.call('irc.message.listen',self)
   end
 end

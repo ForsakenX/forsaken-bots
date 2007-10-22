@@ -1,4 +1,3 @@
-# handles a part message
 class Irc::PartMessage < Irc::Message
   attr_reader :user, :channel
   def initialize(client,line)
@@ -19,7 +18,7 @@ class Irc::PartMessage < Irc::Message
     @user.leave(@channel) if @user = Irc::User.find(client.server,nick)
       
     # notify client
-    @client._part(self)
+    @client.event.call('irc.message.part',self)
 
   end
 end

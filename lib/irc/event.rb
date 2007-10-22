@@ -1,4 +1,4 @@
-class Meth::Event
+class Irc::Event
   def initialize(logger)
     @logger = logger
     @topics = {}

@@ -16,6 +16,8 @@ class Irc::Client < EM::Connection
 
   # startup
   def initialize(config)
+    #
+    @event = Irc::Event.new(@logger)
     # 
     @config = config
     @name   = @config['name']
@@ -110,31 +112,6 @@ class Irc::Client < EM::Connection
       @nick_sent = nick
       send_data "NICK #{nick}\n"
     end
-  end
-
-  #
-  # User Callbacks
-  #
-
-  def _listen m
-  end
-
-  def _privmsg m
-  end
-
-  def _notice m
-  end
-
-  def _join m
-  end
-
-  def _part m
-  end
-
-  def _quit m
-  end
-
-  def _unknown m
   end
 
   #
