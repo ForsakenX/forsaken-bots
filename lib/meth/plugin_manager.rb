@@ -16,16 +16,7 @@ class Meth::PluginManager
   # load all the plugins
   def startup
     enabled.each do |plugin|
-      begin
-        _load plugin
-        constant = Object.const_get(plugin.camel_case)
-        @plugins[plugin.snake_case] = constant.new(@bot)
-      rescue Exception
-        puts "----------------------"
-        puts "#{$!}\n#{$@.join("\n")}"
-        puts "----------------------"
-      end
-      false
+      _load plugin
     end
   end
 
@@ -43,6 +34,11 @@ class Meth::PluginManager
     return bot_path if FileTest.exists?(bot_path) # bot_path takes precedence
     return global_path if FileTest.exists?(global_path) # global plugin?
     bot_path # default bot_path
+  end
+
+  #
+  def exists? plugin
+    FileTest.exists?(path(plugin))
   end
 
   # plugin executable?
@@ -69,7 +65,19 @@ class Meth::PluginManager
 
   # loads a plugin
   def _load plugin
-    load path(plugin)
+    begin
+      if p = @plugins[plugin.snake_case]
+        p.cleanup
+        @plugins.delete(p)
+      end
+      load path(plugin)
+      constant = Object.const_get(plugin.camel_case)
+      @plugins[plugin.snake_case] = constant.new(@bot)
+    rescue Exception
+      puts "----------------------"
+      puts "#{$!}\n#{$@.join("\n")}"
+      puts "----------------------"
+    end
     @bot.logger.info "Bot (#{bot.name}) Loaded Plugin (#{plugin.snake_case})"
   end
 

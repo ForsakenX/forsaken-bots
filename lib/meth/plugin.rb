@@ -9,11 +9,6 @@ class Meth::Plugin
   # pass down instance of bot
   def initialize(bot)
     @bot = bot
-    # register command callbak
-    @bot.event.register("command.#{self.class.name.downcase}",Proc.new{|m|
-      next unless respond_to? :command
-      command(m)
-    })
     # register message call backs
     %w{unknown quit part listen privmsg notice join}.each do |type|
       @bot.event.register("irc.message.#{type}",Proc.new{|message|
@@ -24,9 +19,11 @@ class Meth::Plugin
 
   # reload the plugin
   def reload
-    Meth::PluginManager._load(self.class)
+    @bot.plugin_manager._load(self.class.name)
   end
 
+  def cleanup
+    @bot.command_manager.cleanup(self)
+  end
 
 end
-

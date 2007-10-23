@@ -1,4 +1,8 @@
 class Names < Meth::Plugin
+  def initialize *args
+    super *args
+    @bot.command_manager.register("names",self)
+  end
   def help m=nil
     "names => Sends you a list of names on all linked channels."
   end

@@ -1,4 +1,5 @@
 class Irc::Event
+  attr_reader :topics
   def initialize(logger)
     @logger = logger
     @topics = {}

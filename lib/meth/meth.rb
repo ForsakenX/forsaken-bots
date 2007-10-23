@@ -6,6 +6,9 @@ require "irc/irc"
 module Meth
 end
 
+#
+require 'meth/command_manager'
+
 # extend string
 require 'meth/string'
 

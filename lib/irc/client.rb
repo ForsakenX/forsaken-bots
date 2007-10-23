@@ -46,7 +46,7 @@ class Irc::Client < EM::Connection
   # Readers
   #
   
-  attr_reader :name, :nick_sent, :realname, :server, :username, :hostname, :config
+  attr_reader :event, :name, :nick_sent, :realname, :server, :username, :hostname, :config
   attr_accessor :nick
 
   def servers

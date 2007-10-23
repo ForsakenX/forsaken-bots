@@ -1,4 +1,8 @@
 class Reload < Meth::Plugin
+  def initialize *args
+    super *args
+    @bot.command_manager.register("reload",self)
+  end
   def help m=nil
     "reload [plugin] => Reloads the given [plugin]"
   end
@@ -17,16 +21,29 @@ class Reload < Meth::Plugin
       return
     end
 =end
-    plugin = m.params.shift
-    case plugin
+    command = m.params.shift
+    case command
     when "",nil
       m.reply help
     else
-      unless @bot.plugin_manager.enabled?(plugin)
-        m.reply "Plugin is not loaded"
+      plugin = @bot.command_manager.commands[command][:obj].class.name.snake_case
+      unless @bot.plugin_manager.exists?(plugin)
+        m.reply "Plugin '#{plugin}' does not exist."
         return
       end
-      if @bot.plugin_manager._load(plugin)
+      unless @bot.plugin_manager.enabled?(plugin)
+        m.reply "Plugin '#{plugin}' is not enabled."
+        return
+      end
+      unless @bot.plugin_manager.plugins[plugin]
+        if @bot.plugin_manager._load(plugin)
+          m.reply "Plugin '#{plugin}' loaded"
+        else
+          m.reply "Plugin '#{plugin}' failed to load."
+        end
+        return
+      end
+      if @bot.plugin_manager.plugins[plugin].reload
         m.reply "Plugin '#{plugin}' reloaded"
       else
         m.reply "Plugin '#{plugin}' failed to reload."

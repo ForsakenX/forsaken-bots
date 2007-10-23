@@ -30,7 +30,7 @@ class Irc::User
         if patterns.length > 0
           matched = false
           patterns.each do |pattern|
-            matched = true if user.nick =~ /#{pattern}/i
+            matched = true if user.nick =~ /#{Regexp.escape(pattern)}/i
           end
           next if matched == false
         end

@@ -5,7 +5,7 @@ class Meth::Bot < Irc::Client
   #
 
   # instance reader/writers
-  attr_reader   :event, :plugin_manager, :logger
+  attr_reader   :plugin_manager, :command_manager, :logger
   attr_accessor :target
 
   # easy access from @bot
@@ -24,6 +24,8 @@ class Meth::Bot < Irc::Client
     # do defaults
     # and connect
     super config
+    # command manager
+    @command_manager = Meth::CommandManager.new(self)
     # needs settings from super
     @plugin_manager = Meth::PluginManager.new(self)
     # Custom Bot Initializations
@@ -33,84 +35,23 @@ class Meth::Bot < Irc::Client
     end
     # fucked up
     @event.call('irc.post_init',nil)
-
+    # events
     @event.register('irc.message.privmsg',Proc.new{|m| privmsg m })
-  end
- 
-  def privmsg m
-      channel = m.channel ? m.channel.name : ""
-  
-      puts ">>> "+
-           "#{@name} "+
-           "#{channel} " +
-           "(#{Time.now.strftime('%I:%M:%S %p')}) "+
-           "#{m.source.nick}: #{m.message}"
-
-      # parse and create command/params properties
-      parse_command m
-
-      # call easy to use command event
-      if m.command
-        @logger.info "Command called: #{m.command.downcase}"
-        @event.call("command.#{m.command.downcase}",m)
-      end
-  end
-
-  #
-  # Methods
-  #
-  
-  def parse_command m
-
-    # m.message with a command is one of the following
-    # ",hi 1 2 3"
-    # "MethBot: hi 1 2 3"
-
-    # must become...
-    # m.command => hi
-    # m.message => 1 2 3
-
-    # look for our nick or target as first word
-    # then extract them from the message
-    # "(<nick>: |<target>)"
-    unless is_command = !m.message.slice!(/^#{Regexp.escape(@nick)}: /).nil?
-      # addressed to target
-      unless @target.nil?
-        is_command = !m.message.slice!(/^#{Regexp.escape(@target)}/).nil?
-      end
-    end
-
-    # "hi 1 2 3"
-    # now that nick/target is extracted
-    # thats how the message looks
-    # includes the command and params
-
-    # if its a pm then its allways a command
-    is_command = m.personal if !is_command
-
-    # %w{hi 1 2 3}
-    # split words in line
-    params = m.line.split(' ')
-    m.instance_variable_set(:@params,params)
-    class <<m; attr_accessor :params; end
-
-    # "hi"
-    # the command
-    # so do we have a command?
-    command = is_command ? m.params.shift : nil
-    m.instance_variable_set(:@command,command)
-    class <<m; attr_accessor :command; end
-
-    # m.message is now the command params
-    # m.command is now the command
-    # m.params is now an array of words after the command
-
   end
 
   #
   #  Console
   #  Loggers
   #
+ 
+  def privmsg m
+    channel = m.channel ? m.channel.name : ""
+    puts ">>> "+
+         "#{@name} "+
+         "#{channel} " +
+         "(#{Time.now.strftime('%I:%M:%S %p')}) "+
+         "#{m.source.nick}: #{m.message}"
+  end
 
   def post_init *args
     super *args

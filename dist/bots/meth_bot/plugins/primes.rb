@@ -1,4 +1,8 @@
 class Primes < Meth::Plugin
+  def initialize *args
+    super *args
+    @bot.command_manager.register("primes",self)
+  end
   def help m=nil
     "primes [<start>-]<finish> => "+
     "Return a list of prime numbers from <start> to <finish>. "+

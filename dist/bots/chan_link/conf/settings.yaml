@@ -46,8 +46,8 @@ bots:
   port: 6668
   channels: 
   - "#GSP!Forsaken"
-  nick: "Deadly_Methods"
-  realname: Methods
+  nick: "krocked"
+  realname: krocked
   logger: 
     severity: DEBUG
     rotate: daily
