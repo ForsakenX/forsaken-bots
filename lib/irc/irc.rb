@@ -3,20 +3,15 @@ end
 
 # event system
 require 'irc/event'
+require 'irc/timer'
 
-# manages users
+# 
 require 'irc/user'
-
-# manages channels
 require 'irc/channel'
 
 # handles a message
 require 'irc/handle_message'
-
-# master message class
-require 'irc/message' # super class
-
-# message types
+require 'irc/message' 
 require 'irc/privmsg_message'
 require 'irc/join_message'
 require 'irc/part_message'
