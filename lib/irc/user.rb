@@ -85,7 +85,6 @@ class Irc::User
   #
   def username; "#{@user}@#{@host}"; end
   # get user ip number
-  require 'resolv'
   def ip
     return @ip if @ip
     begin
