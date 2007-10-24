@@ -15,7 +15,7 @@ class Irc::HandleMessage
     # login completed
     when /^:[^ ]* 001 /
       # join default channels
-      client.join client.config['channels']
+      client.send_join client.config['channels']
 
     # set nick succeeded
     # :_0_fskn_games!1000@c-68-36-237-152.hsd1.nj.comcast.net NICK :_1_fskn_games
