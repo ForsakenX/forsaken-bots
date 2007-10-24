@@ -13,7 +13,6 @@ require 'meth/command_manager'
 require 'meth/string'
 
 # meth parts
-require 'meth/timer'
 require 'meth/plugin_manager'
 require 'meth/plugin'
 require 'meth/bot'
