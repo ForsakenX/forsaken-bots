@@ -30,3 +30,13 @@ bots:
    severity: DEBUG
    rotate: daily
 
+- name: fskn_bot_games
+  host: irc.freenode.org
+  channels:
+  - "#forsaken"
+  nick: "_0_games"
+  logger:
+    severity: DEBUG
+    rotate: daily
+
+
