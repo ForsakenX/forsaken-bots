@@ -18,6 +18,7 @@ class Irc::Client < EM::Connection
   def initialize(config)
     #
     @event = Irc::Event.new(@logger)
+    @timer = Irc::Timer.new
     # 
     @config = config
     @name   = @config['name']
@@ -39,7 +40,7 @@ class Irc::Client < EM::Connection
     @hostname = Socket.gethostname
     #
     #
-    EM::connect(@server[:host], @server[:port], self)
+    connect
   end
 
   #
@@ -77,7 +78,7 @@ class Irc::Client < EM::Connection
   end
 
   #
-  # Irc Actions
+  # Irc Send Helpers
   #
 
   # send a message to user or channel
@@ -98,7 +99,7 @@ class Irc::Client < EM::Connection
   end
 
   # join chat/chats
-  def join channels
+  def send_join channels
     return if channels.nil?
     channels = channels.split(' ') if channels.is_a? String
     channels.each do |channel|
@@ -126,6 +127,15 @@ class Irc::Client < EM::Connection
     @signature = sig
     post_init
     self
+  end
+
+  #
+  # close_connection
+  # close_connection_after_writing
+  # reconnect
+  #
+  def connect
+    EM::connect(@server[:host], @server[:port], self)
   end
 
   # connection started
