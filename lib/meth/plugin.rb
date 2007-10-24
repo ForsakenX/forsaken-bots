@@ -1,11 +1,5 @@
 class Meth::Plugin
 
-  # should reload automatically ?
-  @@reload = false
-
-  # accessor
-  def self.reload; @@reload; end
-
   # pass down instance of bot
   def initialize(bot)
     @bot = bot
