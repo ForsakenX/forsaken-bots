@@ -18,8 +18,6 @@ class Meth::Bot < Irc::Client
     # set defaults
     @logger.info "Connecting #{config['name']} to #{config['host']}:#{config['port']}"
     #
-    @timer = Meth::Timer.new
-    #
     @target = config['target']||nil
     # do defaults
     # and connect
