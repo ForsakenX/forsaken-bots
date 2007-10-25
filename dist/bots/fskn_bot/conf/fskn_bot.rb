@@ -1,4 +1,4 @@
-puts "Registering Game Events"
+puts "Loading fskn_bot.rb"
 
 GameModel.event.register("game.started",Proc.new{|game|
   channels.each do |name,channel|
@@ -9,6 +9,13 @@ GameModel.event.register("game.started",Proc.new{|game|
 GameModel.event.register("game.finished",Proc.new{|game|
   channels.each do |name,channel|
     say name, "#{game.hostmask} has stopped hosting..."
+  end
+})
+
+GameModel.event.register("game.time.out",Proc.new{|game|
+  channels.each do |name,channel|
+    say name, "#{game.hostmask} has been removed...  "+
+              "This is because it never started within timely fashion."
   end
 })
 
@@ -23,6 +30,8 @@ GameModel.event.register("game.finished",Proc.new{|game|
      "To Host a game simply say host whenever you see me.  "+
      "You can ask me for status on games too.  "+
      "At a quick glance you can tell how many games are running by my name. "+
-     "For more information ask me for help."
+     "For more information ask me for help.  "+
+     "NOTE: If your not registered/identified you can't send private messages!  "+
+     "To register you can follow the instructions @ http://chino.homelinux.org/~daquino/forsaken/chat/"
 })
 

@@ -19,8 +19,9 @@ class Status < Meth::Plugin
     hosts = []
     waiting = []
     games.each { |game|
-      unless game.hosting
-        waiting << game
+      unless game.start_time
+        waiting << game.hostmask
+        next
       end
       seconds = (Time.now - game.start_time).to_i
       minutes = seconds / 60; seconds = seconds % 60

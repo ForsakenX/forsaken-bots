@@ -7,7 +7,7 @@ class Host < Meth::Plugin
 
   def command m
     if game = GameModel.find(m.source.ip)
-      m.reply "You already have a listed..."
+      m.reply "You already have a game listed..."
       return
     end
     if game = GameModel.create({:user => m.source})

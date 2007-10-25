@@ -35,7 +35,23 @@ bots:
   channels:
   - "#forsaken"
   nick: "_0_games"
+  realname: Game Display
   logger:
+    severity: DEBUG
+    rotate: daily
+
+#
+# Chan Linker
+#
+
+- name: krocked
+  host: localhost
+  port: 6668
+  channels: 
+  - "#GSP!Forsaken"
+  nick: "krocked"
+  realname: krocked
+  logger: 
     severity: DEBUG
     rotate: daily
 

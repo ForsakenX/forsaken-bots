@@ -29,18 +29,6 @@ bots:
     severity: DEBUG
     rotate: daily
 
-
-#- name: chan_link_blitzed
-#  host: rockstar.uk.eu.blitzed.org
-#  channels: 
-#  - "#kahn"
-#  nick: "chanlink"
-#  realname: MethBot Beta
-#  logger: 
-#    severity: DEBUG
-#    rotate: daily
-
-
 - name: chan_link_gspy
   host: localhost
   port: 6668

@@ -12,6 +12,8 @@ $event.register('chan.link',Proc.new{|args|
 
 @event.register('irc.message.privmsg',Proc.new{|m|
   next if m.personal
+  next if m.client.name == 'chan_link_freenode' &&
+          !m.command
   message = "#{m.source.nick}: #{m.message}"
   $event.call('chan.link',[self,message])
 })

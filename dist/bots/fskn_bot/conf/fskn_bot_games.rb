@@ -1,4 +1,4 @@
-puts "Registering Nick Changer"
+puts "Loading fskn_bot_games"
 
 GameModel.event.register("game.started",Proc.new{|game|
   nick = @nick.gsub(/^_[0-9]*_/,"_#{GameModel.games.length}_")

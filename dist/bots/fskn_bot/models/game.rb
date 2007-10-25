@@ -35,24 +35,38 @@ class GameModel
     @canceled     = false
     @user        = game[:user]
     @hosting     = false
+    @created_at  = Time.now
     @start_time  = nil
     @timer       = EM::PeriodicTimer.new( 1 ) { # try every 1 second
       puts "GameTimer (#{hostmask}) Called"
       next if @canceled
       hosting?(
         @user.ip,
-        # game started
+        # the port is open
         Proc.new{|time|
+          # we are allready hosting
           next if @hosting
+          # create the game
           @hosting     = true
           @start_time  = Time.now
-          @timer.interval = 30 # only connect after 20 seconds
+          @timer.interval = 30
           @@event.call("game.started",self)
         },
-        # game finished
+        # the port is closed
         Proc.new{|time|
-          next unless @hosting
-          destroy
+          # is the game up yet ?
+          # or did it just finish ?
+          if @hosting
+            # game just finished close shop
+            destroy
+          # the game hasn't started yet
+          else
+            seconds = (Time.now - @created_at).to_i
+            if seconds > (60*10) # 10 minutes not started yet
+              destroy
+              @@event.call('game.time.out',self)
+            end
+          end
         })
     }
   end
