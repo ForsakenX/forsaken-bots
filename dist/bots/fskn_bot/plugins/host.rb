@@ -6,6 +6,10 @@ class Host < Meth::Plugin
   end
 
   def command m
+    if m.source.ip == nil
+      m.reply "You don't have an ip number..."
+      return
+    end
     if game = GameModel.find(m.source.ip)
       m.reply "You already have a game listed..."
       return

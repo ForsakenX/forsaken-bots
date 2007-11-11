@@ -35,5 +35,3 @@ class Irc::JoinMessage < Irc::Message
   end
 
 end
-
-

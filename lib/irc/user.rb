@@ -55,26 +55,33 @@ class Irc::User
   #
   def update user
     user.each do |key,val|
-      next if key == :channels 
+      next if key == :channels || key == :host
       i = key.to_s.gsub(/^/,'@').to_sym
       instance_variable_set(i,val)
     end
-    return if user[:channels].nil?
-    user[:channels].each do |channel|
-      join channel
+    #
+    @host = nil
+    @host = user[:host] if ! (user[:host] =~ /^unaffiliated\/#{@nick.downcase}$/)
+    #
+    if user[:channels]
+      user[:channels].each do |channel|
+        join channel
+      end
     end
   end
   # join a channel
   def join channel
-    return if @channels[channel]
-    @channels[channel] = Irc::Channel.join(@server,channel)
+    return if @channels[channel.downcase]
+    @channels[channel.downcase] = Irc::Channel.join(@server,channel)
   end
   #
   def leave channel
-    @channels.each do |name,c|
-      @channels.delete(channel) if name == channel
+    @channels.delete(channel.downcase)
+    puts "[-------------------] #{@channels.inspect}"
+    if @channels.length < 1
+      puts "[-------------------] @channels.length < 1"
+      destroy
     end
-    #destroy unless @channels.length
   end
   # 
   def destroy
@@ -86,6 +93,7 @@ class Irc::User
   def username; "#{@user}@#{@host}"; end
   # get user ip number
   def ip
+    return nil if host == nil
     return @ip if @ip
     begin
       return (@ip = Resolv.getaddress host)

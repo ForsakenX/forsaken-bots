@@ -13,7 +13,7 @@ class Meth::Plugin
 
   # reload the plugin
   def reload
-    @bot.plugin_manager._load(self.class.name)
+    @bot.plugin_manager._load(self.class.name.snake_case)
   end
 
   def cleanup

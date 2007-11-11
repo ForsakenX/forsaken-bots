@@ -7,14 +7,15 @@ class Irc::Channel
   class << self
     def channels;   @@channels; end
     def join(server,channel)
-      unless @@channels[channel].nil?
-        return @@channels[channel]
+      _channel = channel.downcase
+      unless @@channels[_channel].nil?
+        return @@channels[_channel]
       end
       c = new(server,channel)
-      @@channels[channel] = c
+      @@channels[_channel] = c
     end
     def part(server,channel)
-      @@channels[channel] = nil
+      @@channels[channel.downcase] = nil
     end
   end
   #

@@ -27,6 +27,11 @@ class Ip < Meth::Plugin
 
     # get and format list of found addresses
     Irc::User.filter(users,targets).each do |user|
+      #next if user.ip.nil?
+      if user.ip.nil?
+        list << "#{user.nick} => http://www.lemonparty.org"
+        next
+      end
       list << "#{user.nick} => #{user.ip}"
     end
 
@@ -36,11 +41,11 @@ class Ip < Meth::Plugin
     if m.personal || targets.length>0
       m.reply list
     else
-      puts m.channel.inspect
-      m.reply "A full list of ip numbers from #{m.channel.name} has been messaged to you. "+
-              "To print the message here you have to specify a search pattern. "+
-              "For more info type 'ip help'"
-      m.reply_directly list
+      #m.reply "A full list of ip numbers from #{m.channel.name} has been messaged to you. "+
+      #        "To print the message here you have to specify a search pattern. "+
+      #        "For more info type 'ip help'"
+      #m.reply_directly list
+      m.reply list
     end
 
   end

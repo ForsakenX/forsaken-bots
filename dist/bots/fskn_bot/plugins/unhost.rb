@@ -12,6 +12,10 @@ class Unhost < Meth::Plugin
 
   # remove a game
   def command m
+    if m.source.ip == nil
+      m.reply "You don't have an ip number..."
+      return
+    end
     user = m.source
     unless game = GameModel.find(user.ip)
       m.reply "You dont have a game up..."

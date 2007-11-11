@@ -2,6 +2,8 @@ class Irc::HandleMessage
 
   def initialize(client,line)
 
+    puts "[INPUT] " + line
+
     case line
 
     # IRCD says fatal error
@@ -18,10 +20,25 @@ class Irc::HandleMessage
       client.send_join client.config['channels']
 
     # set nick succeeded
-    # :_0_fskn_games!1000@c-68-36-237-152.hsd1.nj.comcast.net NICK :_1_fskn_games
-    when /^:[^ ]+![^@]*@[^ ]* NICK [:]*([^ ]*)/i
-      nick = $1
-      client.nick = nick
+      # :_0_fskn_games!1000@c-68-36-237-152.hsd1.nj.comcast.net NICK :_1_fskn_games
+      #:tes1!i=1000@c-68-36-237-152.hsd1.nj.comcast.net NICK :methods
+    when /^:([^ ]+)![^@]*@[^ ]* NICK [:]*([^ ]*)/i
+      old_nick = $1
+      new_nick = $2
+
+      # i successfully changed my nick
+      if client.nick.downcase == old_nick.downcase
+        client.nick = new_nick
+      # someone else changed their nick
+      else
+        puts Irc::User.users.collect{|u|u.nick}.join(', ')
+        if user = Irc::User.find(client.server,old_nick)
+          user.nick = new_nick
+        # this is fine cause multiple bots can share a user list if on same server
+        else
+          #puts "[ERROR] Got nick change from '#{old_nick}' to '#{new_nick}' but user does not exist..."
+        end
+      end
 
     # set nick failed
     when /^:[^ ]* 433 /i
@@ -75,7 +92,7 @@ class Irc::HandleMessage
       # :koolaid.ny.us.blitzed.org 352 _0_fskn_games #kahn
       #  FUHQ c-24-63-156-24.hsd1.ma.comcast.net 
       #  cookies.on.ca.blitzed.org Silence H :2 BLABLA
-    when /:([^ ]*) 352 [^ ]* (#[^ ]*) ([^ ]*) ([^ ]*) [^ ]* ([^ ]*) ([^:]* :[^ ]*) ([\n]*)/
+    when /^:([^ ]*) 352 [^ ]* (#[^ ]*) ([^ ]*) ([^ ]*) [^ ]* ([^ ]*) ([^:]* :[^ ]*) ([\n]*)/
 
       server   = $1 # server
       channel  = $2 # in channel
@@ -101,18 +118,19 @@ class Irc::HandleMessage
       #client.send_data "WHOIS #{u.nick}\n"
 
     # end of who list
-    #when /:[^ ]* 315/
+    #when /^:[^ ]* 315/
 
     # someone joins a chat
-    when /:[^ ]* JOIN/
+    when /^:[^ ]* JOIN/
       m = Irc::JoinMessage.new(client,line)
 
     # part
-    when /:[^ ]* PART/i
+    when /^:[^ ]* PART/i
       m = Irc::PartMessage.new(client,line)
 
     # quit
-    when /:[^ ]* QUIT/i
+      # :methods!i=1000@c-68-36-237-152.hsd1.nj.comcast.net PRIVMSG #forsaken :i'm quiting
+    when /^:[^ ]* QUIT/i
       m = Irc::QuitMessage.new(client,line)
 
     # privmsg

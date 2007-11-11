@@ -34,7 +34,7 @@ class Links < Meth::Plugin
       output = []
       links.sort.each do |x|
         (name,url) = x
-        output << "#{name}: #{url}"
+        output << "#{name}"#: #{url}"
       end
       m.reply "Links (#{links.length}): #{output.join(', ')}"
     end

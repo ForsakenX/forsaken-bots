@@ -23,7 +23,7 @@ class Hosting < Meth::Plugin
     patterns = m.params
 
     # list of users
-    users = m.channel.users
+    users = m.channel.users.select{|u| u.ip}
 
     # remove bots from list
     Irc::Client.clients.each do |name,client|

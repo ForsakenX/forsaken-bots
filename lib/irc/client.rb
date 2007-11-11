@@ -95,6 +95,7 @@ class Irc::Client < EM::Connection
         send_data "PRIVMSG #{to} :#{chunk}\n"
       }
     end
+    send_data "\n\n"  # some servers need some flushing...
     message
   end
 
@@ -146,6 +147,11 @@ class Irc::Client < EM::Connection
     send_data "USER #{@username} #{@hostname} #{@server[:host]} :#{@realname}\n"
     # send initial nick
     send_nick @nick
+  end
+
+  # connect closed
+  def unbind
+    reconnect @server[:host], @server[:port]
   end
 
   # new line recieved

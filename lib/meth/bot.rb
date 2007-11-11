@@ -31,20 +31,28 @@ class Meth::Bot < Irc::Client
     if File.executable?(init)
       eval(File.read(init))
     end
+    # custom instance initalization
+    init="#{DIST}/bots/#{$bot}/conf/#{@name}.rb"
+    if File.executable?(init)
+      eval(File.read(init))
+    end
+    # fucked up
     # fucked up
     @event.call('irc.post_init',nil)
     # events
     @event.register('irc.message.privmsg',Proc.new{|m| privmsg m })
+    @event.register('irc.message.listen',Proc.new{|m|
+      puts m.line
+    })
   end
 
   #
-  #  Console
   #  Loggers
   #
  
   def privmsg m
     channel = m.channel ? m.channel.name : ""
-    puts ">>> "+
+    @logger.info ">>> "+
          "#{@name} "+
          "#{channel} " +
          "(#{Time.now.strftime('%I:%M:%S %p')}) "+
@@ -52,12 +60,12 @@ class Meth::Bot < Irc::Client
   end
 
   def post_init *args
-    super *args
     @logger.info "Connected #{@name} to #{@server[:host]}:#{@server[:port]}"
+    super *args
   end
 
   def say to, message
-    puts ":#{@name} #{to} (#{Time.now.strftime('%I:%M:%S %p')}) #{@nick}: #{message}"
+    @logger.info ":#{@name} #{to} (#{Time.now.strftime('%I:%M:%S %p')}) #{@nick}: #{message}"
     super(to,message)
   end
   

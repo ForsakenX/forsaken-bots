@@ -25,7 +25,7 @@ bots:
   nick: "MethBot"
   password: mr.danielaquino@gmail.com
   realname: MethBot Beta
-  target: ","
+  target: ""
   logger: 
     severity: DEBUG
     rotate: daily

@@ -7,11 +7,15 @@ class Alias < Meth::Plugin
     @bot.command_manager.register("aliases",self)
     @db = "#{DIST}/bots/#{$bot}/db/aliases.yaml"
     if File.exists?(@db) 
-      @aliases = YAML.load_file(@db)
+      unless @aliases = YAML.load_file(@db)
+        @bot.logger.warn "[ALIAS] could not load #{@db}..."
+        @aliases = {}
+      end
       @aliases.each do |new,old|
         do_alias(new,old)
       end
     else
+      @bot.logger.warn "[ALIAS] #{@db} does not exist..."
       @aliases = {}
     end
   end
@@ -72,10 +76,17 @@ class Alias < Meth::Plugin
     m.reply "Alias created..."
   end
   def do_alias(new,old)
-    return if @bot.command_manager.commands[new]
-    o = @bot.command_manager.commands[old]
+    if @bot.command_manager.commands[new]
+      @bot.logger.info "[ALIAS] command '#{new}' allready exists."
+      return 
+    end
+    unless o = @bot.command_manager.commands[old]
+      @bot.logger.error "[ALIAS] old command '#{old}' did not exist"
+      return
+    end
     @bot.command_manager.register(new,o[:obj],o[:callback])
     @aliases[new] = old
+    @bot.logger.warn "[ALIAS] aliased #{new} to #{old}"
     save
   end
   private

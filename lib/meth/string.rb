@@ -7,7 +7,7 @@ class String
 
   # "foo_bar".camel_case #=> "FooBar"
   def camel_case
-    split('_').map{|e| e.capitalize}.join
+    split('_').map{|e| e.capitalize }.join
   end
 
   def snake_case!

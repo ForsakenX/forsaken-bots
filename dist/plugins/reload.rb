@@ -26,7 +26,14 @@ class Reload < Meth::Plugin
     when "",nil
       m.reply help
     else
-      plugin = @bot.command_manager.commands[command][:obj].class.name.snake_case
+      # use command name to find plugin
+      if c = @bot.command_manager.commands[command]
+        plugin = c[:obj].class.name.snake_case
+      # default use plugin name
+      else
+        plugin = command
+      end
+      #
       unless @bot.plugin_manager.exists?(plugin)
         m.reply "Plugin '#{plugin}' does not exist."
         return

@@ -27,6 +27,7 @@ class Meth::CommandManager
 
   def privmsg m
 
+
     # m.message with a command is one of the following
     # ",hi 1 2 3"
     # "MethBot: hi 1 2 3"
@@ -43,6 +44,8 @@ class Meth::CommandManager
       unless @bot.target.nil?
         is_command = !m.message.slice!(/^#{Regexp.escape(@bot.target)}/).nil?
       end
+    else
+      named = true
     end
 
     # "hi 1 2 3"
@@ -65,6 +68,10 @@ class Meth::CommandManager
     command = is_command ? m.params.shift : nil
     m.instance_variable_set(:@command,command)
     class <<m; attr_accessor :command; end
+
+    # was our name addressed?
+    m.instance_variable_set(:@named,named)
+    class <<m; attr_accessor :named; end
 
     # m.message is now the command params
     # m.command is now the command

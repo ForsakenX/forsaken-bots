@@ -22,7 +22,7 @@ class Meth::PluginManager
 
   # list of plugins
   def list
-    Dir["#{DIST}/plugins/*.rb",@glob].map do |plugin|
+    Dir[@glob,"#{DIST}/plugins/*.rb"].map do |plugin|
       File.basename(plugin).gsub('.rb','')
     end
   end
@@ -64,15 +64,16 @@ class Meth::PluginManager
   end
 
   # loads a plugin
+  # expects snake case
   def _load plugin
     begin
-      if p = @plugins[plugin.snake_case]
+      if p = @plugins[plugin]
         p.cleanup
         @plugins.delete(p)
       end
       load path(plugin)
       constant = Object.const_get(plugin.camel_case)
-      @plugins[plugin.snake_case] = constant.new(@bot)
+      @plugins[plugin] = constant.new(@bot)
     rescue Exception
       puts "----------------------"
       puts "#{$!}\n#{$@.join("\n")}"
