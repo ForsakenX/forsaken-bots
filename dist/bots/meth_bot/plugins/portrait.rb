@@ -41,6 +41,8 @@ class Portrait < Meth::Plugin
   end
   private
   def save
-    YAML.dump(@portraits,File.open(@db,'w+'))
+    file = File.open(@db,'w+')
+    YAML.dump(@portraits,file)
+    file.close
   end
 end
