@@ -1,0 +1,4 @@
+added per-instance configurability to SmtpServer
+--This line, and those below, will be ignored--
+
+M    protocols/smtpserver.rb
