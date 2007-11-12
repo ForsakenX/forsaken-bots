@@ -5,21 +5,28 @@ class Alias < Meth::Plugin
     @bot.command_manager.register("alias",self)
     @bot.command_manager.register("aliasrm",self)
     @bot.command_manager.register("aliases",self)
-    @db = "#{DIST}/bots/#{$bot}/db/aliases.yaml"
+    @db = File.expand_path("#{DIST}/bots/#{$bot}/db/aliases.yaml")
     if File.exists?(@db) 
       unless @aliases = YAML.load_file(@db)
-        @bot.logger.warn "[ALIAS] could not load #{@db}..."
+        @bot.logger.warn "[ALIAS] could not load #{@db}... "
+        @bot.logger.warn "Contents were #{File.read(@db)}"
+        @bot.logger.warn "Size was #{FileTest.size(@db)}"
+        file = File.open(@db,'r')
+        @bot.logger.warn "path was => #{file.path}"
+        file.close
         @aliases = {}
       end
-      @aliases.each do |new,old|
-        do_alias(new,old)
-      end
+      @bot.event.register('meth.plugins.loaded',Proc.new{|m|
+        @aliases.each do |new,old|
+          do_alias(new,old)
+        end
+      })
     else
       @bot.logger.warn "[ALIAS] #{@db} does not exist..."
       @aliases = {}
     end
   end
-  def help m
+  def help(m=nil, topic=nil)
     case m.params[0]
     when "alias"
       "alias [new] [old] => Sets an alias for [old] called [new]."
@@ -65,8 +72,13 @@ class Alias < Meth::Plugin
   end
   def cmd_alias m
     (new,old) = m.params
+    if old.nil?
+      m.reply "Missing argument.  Use help alias for syntax."
+      return
+    end
     unless old_command = @bot.command_manager.commands[old]
       m.reply "Note #{old} does not exist..."
+      return
     end
     if @bot.command_manager.commands[new]
       m.reply "Command #{new} allready exists..."
@@ -91,6 +103,8 @@ class Alias < Meth::Plugin
   end
   private
   def save
-    YAML.dump(@aliases,File.open(@db,'w+'))
+    file = File.open(@db,'w+')
+    YAML.dump(@aliases,file)
+    file.close
   end
 end

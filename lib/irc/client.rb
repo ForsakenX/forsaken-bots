@@ -17,6 +17,8 @@ class Irc::Client < EM::Connection
   # startup
   def initialize(config)
     #
+    @ignored = [] # ignore users... 
+    #
     @event = Irc::Event.new(@logger)
     @timer = Irc::Timer.new
     # 
@@ -48,7 +50,7 @@ class Irc::Client < EM::Connection
   #
   
   attr_reader :event, :name, :nick_sent, :realname, :server, :username, :hostname, :config
-  attr_accessor :nick
+  attr_accessor :nick, :ignored
 
   def servers
     servers = []

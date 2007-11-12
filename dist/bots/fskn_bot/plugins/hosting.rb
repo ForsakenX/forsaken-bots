@@ -8,7 +8,7 @@ class Hosting < Meth::Plugin
     @bot.command_manager.register("hosting",self)
   end
 
-  def help m
+  def help m=nil, topic=nil
     "hosting => Scan channel users to see if anyone is hosting..."
   end
 

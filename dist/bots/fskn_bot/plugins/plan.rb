@@ -11,13 +11,16 @@ class Plan < Meth::Plugin
   def initialize *args
     super *args
     @bot.command_manager.register("plan",self)
+    @bot.command_manager.register("unplan",self)
     @bot.command_manager.register("planned",self)
   end
 
-  def help m
-    case m.params.shift
+  def help m=nil, topic=nil
+    case (topic||m.params.shift)
     when "plan"
-      ""
+      "plan [description] => Add a plan to the list..."
+    when "unplan"
+      "unplan [index] => Remove plan by index...  To get index type planned."
     when "planned"
       "planned => Display planned games..."
     end
@@ -29,19 +32,41 @@ class Plan < Meth::Plugin
       plan m
     when "planned"
       planned m
+    when 'unplan'
+      unplan m
     end
   end
 
+  def unplan m
+    i = m.params.shift.to_i
+    @@planned.delete_at(i)
+    m.reply "Plan removed..."
+  end
+
   def planned m
+    if @@planned.length < 1
+      m.reply "There are no plans..."
+      return
+    end
+    output = []
+    @@planned.each_with_index do |plan,x|
+      output << "#{x}: #{plan[:user]} says #{plan[:desc]}"
+    end
+    m.reply output.join('; ')
   end
 
   def plan m
-    (time, desc) = m.slice(m.command).message.split(',')
-    @@planned[] << {
-      user => m.user,
-      time => Time.new(),
-      desc => desc,
+    message = m.message
+    message.slice!(m.command)
+    if message == ""
+      m.reply "Missing description.  Type help plan for more info."
+      return
+    end
+    @@planned << {
+      :user => m.source.nick,
+      :desc => message,
     }
+    m.reply "Plan created..."
   end
 
 end

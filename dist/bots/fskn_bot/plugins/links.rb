@@ -6,7 +6,7 @@ class Links < Meth::Plugin
     @bot.command_manager.register("links",self)
     @bot.command_manager.register("link",self)
   end
-  def help m=nil
+  def help m=nil, topic=nil
     case m.params[0]
     when "links"
       "links <name> => "+

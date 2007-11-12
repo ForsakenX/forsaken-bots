@@ -27,7 +27,6 @@ class Meth::CommandManager
 
   def privmsg m
 
-
     # m.message with a command is one of the following
     # ",hi 1 2 3"
     # "MethBot: hi 1 2 3"

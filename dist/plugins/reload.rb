@@ -3,7 +3,7 @@ class Reload < Meth::Plugin
     super *args
     @bot.command_manager.register("reload",self)
   end
-  def help m=nil
+  def help(m=nil, topic=nil)
     "reload [plugin] => Reloads the given [plugin]"
   end
   def command m

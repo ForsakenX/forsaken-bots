@@ -3,7 +3,7 @@ class Hi < Meth::Plugin
     super *args
     @bot.command_manager.register("hi",self)
   end
-  def help m
+  def help m=nil, topic=nil
     "hi => Reply's with 'Hey, Whats up!'"
   end
   def command m

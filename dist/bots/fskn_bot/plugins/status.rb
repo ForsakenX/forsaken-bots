@@ -6,7 +6,7 @@ class Status < Meth::Plugin
     @bot.command_manager.register("status",self)
   end
 
-  def help m
+  def help m=nil, topic=nil
     "status => Displays status on running games..."
   end
 

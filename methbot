@@ -65,7 +65,7 @@ $event = Irc::Event.new($logger)
 # Run
 ##
 
-EM.epoll
+#EM.epoll
 EM.run {
   # load up main init file
   require "#{DIST}/conf/init"

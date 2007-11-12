@@ -17,11 +17,17 @@ class KeyboardHandler < EM::Connection
       set params
     when "!"
       _! params
+    when "bots"
+      bots
     # help
     else #when "help"
       reply "Not a recognized command. "+
             help(params)
     end
+  end
+  # bots
+  def bots
+    reply Irc::Client.clients.keys.join(', ')
   end
   # say <msg>
   def say params
@@ -84,8 +90,10 @@ class KeyboardHandler < EM::Connection
       "set <bot-name> <channel>"
     when "!"
       "! <code>"
+    when "bots"
+      "bots => returns bots"
     else
-      "Commands: say"
+      "Commands: help, say, set, !"
     end
   end
   # reply

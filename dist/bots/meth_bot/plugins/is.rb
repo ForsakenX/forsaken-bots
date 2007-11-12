@@ -10,7 +10,7 @@ class Is < Meth::Plugin
     super *args
     @bot.event.unregister('irc.message.privmsg',@p)
   end
-  def help m
+  def help m=nil, topic=nil
     "learned => list learned associations."
   end
   def command m

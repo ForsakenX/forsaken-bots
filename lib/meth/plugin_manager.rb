@@ -18,6 +18,7 @@ class Meth::PluginManager
     enabled.each do |plugin|
       _load plugin
     end
+    @bot.event.call('meth.plugins.loaded',nil)
   end
 
   # list of plugins

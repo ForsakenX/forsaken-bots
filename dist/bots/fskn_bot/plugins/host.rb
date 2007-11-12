@@ -19,7 +19,7 @@ class Host < Meth::Plugin
     end
   end
 
-  def help m
+  def help m=nil, topic=nil
     "host => "+
       "Creates a game.  "+
       "I will test your host port continously until you have a game up.  "+

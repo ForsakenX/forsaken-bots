@@ -28,6 +28,9 @@ class Irc::PrivMessage < Irc::Message
       end
     end
 
+    # check ignore list
+    return if @client.ignored.include? @source.nick.downcase
+
     # " PRIVMSG "
     # garbage
     line.slice!(/ PRIVMSG /)
