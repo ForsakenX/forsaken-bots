@@ -24,7 +24,8 @@ class Reload < Meth::Plugin
     command = m.params.shift
     case command
     when "",nil
-      m.reply help
+      plugins = @bot.plugin_manager.reload_all
+      m.reply "Reloaded Plugins: #{plugins.join(', ')}"
     else
       # use command name to find plugin
       if c = @bot.command_manager.commands[command]
