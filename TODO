@@ -1,0 +1,9 @@
+Support for CTCP events
+Move more of system to events
+Proper data structure for multiple servers
+Curses client
+Better structure for modules (example: keyboard_handler)
+Throttling
+More message objects for wrapping irc commands
+Better ignore capabilities
+Irc::Parse object for centralized regex's ?

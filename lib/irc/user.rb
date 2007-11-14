@@ -1,6 +1,5 @@
 require 'resolv'
 class Irc::User
-  private_instance_methods :new
   #
   #  User Model
   #
@@ -47,6 +46,9 @@ class Irc::User
   attr_reader :server, :realname, :user, :host, :channels
   attr_accessor :nick, :flags
   # 
+  # USE CONSTRUCTOR ONLY FOR TEMPORARY USER OBJECT
+  # using User#new directly does not add the user to the internal list
+  # user User::create to add a user to the internal db
   def initialize user
     @ip = nil
     @channels = {}
@@ -77,11 +79,7 @@ class Irc::User
   #
   def leave channel
     @channels.delete(channel.downcase)
-    puts "[-------------------] #{@channels.inspect}"
-    if @channels.length < 1
-      puts "[-------------------] @channels.length < 1"
-      destroy
-    end
+    destroy if @channels.length < 1
   end
   # 
   def destroy

@@ -5,8 +5,9 @@ class Irc::PartMessage < Irc::Message
 
     # :methods!1000@c-68-36-237-152.hsd1.nj.comcast.net PART #kahn
     # :methods!1000@c-68-36-237-152.hsd1.nj.comcast.net PART #tester
-    unless line =~ /:([^!]*)![^@]*@[^ ]* PART [:]*(#[^\n]*)$/i
-      puts "Error: badly formed PART message"
+    # :Deadly_Methods!22510264@68.36.237.152 PART #GSP!forsaken :
+    unless line =~ /:([^!]*)![^@]*@[^ ]* PART (#[^ ]+)/i
+      @client.logger.error "Badly formed PART message: #{line}"
       return
     end
 

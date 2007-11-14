@@ -23,8 +23,10 @@ class Irc::PrivMessage < Irc::Message
       # do we know this user allready?
       unless @source = Irc::User.find(client.server,nick) # has more information
         # create a mock user
-        @source = Irc::User.create({:server => client.server,
-                                    :user => user, :host => host, :nick => nick })
+        @source = Irc::User.new({:server => client.server,
+                                 :user   => user,
+                                 :host   => host,
+                                 :nick   => nick })
       end
     end
 

@@ -83,4 +83,10 @@ class Meth::PluginManager
     @bot.logger.info "Bot (#{bot.name}) Loaded Plugin (#{plugin.snake_case})"
   end
 
+  def reload_all
+    enabled.each do |plugin|
+      @plugins[plugin].reload
+    end
+  end
+
 end
