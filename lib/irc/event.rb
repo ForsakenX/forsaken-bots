@@ -1,22 +1,20 @@
 class Irc::Event
   attr_reader :topics
-  def initialize(logger)
+  def initialize(logger=Logger.new(STDOUT))
     @logger = logger
-    @topics = {}
+    @topics = Hash.new {|h,k| h[k] = []}
   end
   # register to listen to a topic
   def register topic, callback
-    @topics[topic] = [] if @topics[topic].nil?
     @topics[topic] << callback
   end
+  # unregister to listen to a topic
   def unregister topic, callback
-    return if @topics[topic].nil?
     @topics[topic].delete callback
   end
   # call the callbacks
   def call topic, data
-    return if @topics[topic].nil?
-    @topics[topic].each do |callback|
+    @topics[topic].dup.each do |callback|
       begin
         callback.call(data)
       rescue Exception

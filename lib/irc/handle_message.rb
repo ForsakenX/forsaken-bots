@@ -2,8 +2,6 @@ class Irc::HandleMessage
 
   def initialize(client,line)
 
-    puts "[INPUT] " + line
-
     case line
 
     # IRCD says fatal error

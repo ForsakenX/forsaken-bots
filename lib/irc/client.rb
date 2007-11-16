@@ -85,6 +85,7 @@ class Irc::Client < EM::Connection
 
   # send a message to user or channel
   def say to, message
+    return if @ignored.
     return message unless message
     message = message.to_s
     # for each line
