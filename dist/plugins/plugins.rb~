@@ -1,0 +1,23 @@
+class Plugins < Meth::Plugin
+  def initialize *args
+    super *args
+    @bot.command_manager.register('plugins',self)
+  end
+  def help m=nil, topic=nil
+    "plugins [enabled [plugin]] => Display list of plugins.  "+
+    "Use [enabled] to see only enabled plugins.  "+
+    "Use [enabled [plugin]] to check if a plugin is enabled."
+  end
+  def command m
+    case m.params.shift
+    when "enabled"
+      if plugin = m.params.shift
+        m.reply @bot.plugin_manager.enabled?(plugin)
+      else
+        m.reply @bot.plugin_manager.enabled.join(', ')
+      end
+    when "",nil
+      m.reply @bot.plugin_manager.list.join(', ')
+    end
+  end
+end
