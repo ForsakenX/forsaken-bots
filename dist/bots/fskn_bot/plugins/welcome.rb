@@ -26,7 +26,7 @@ class Welcome < Meth::Plugin
         # dont send to my self
         next if m.user.nick.downcase == @bot.nick.downcase
         # dont send to ignored users
-        next if @client.ignored.include? @source.nick.downcase
+        next if @bot.ignored.include? m.user.nick.downcase
         # send the message
         @bot.say(m.user.nick, welcome_message)
       }

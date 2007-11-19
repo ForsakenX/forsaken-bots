@@ -1,0 +1,129 @@
+# Logfile created on Mon Nov 19 11:19:47 -0500 2007 by /
+I, [2007-11-19T11:19:47.229990 #449]  INFO -- : Connecting methbot_freenode to irc.freenode.org:
+I, [2007-11-19T11:19:47.271094 #449]  INFO -- : Connected methbot_freenode to irc.freenode.org:6667
+I, [2007-11-19T11:19:47.271353 #449]  INFO -- : [OUTPUT] USER 1000 forsaken irc.freenode.org :MethBot Beta
+
+I, [2007-11-19T11:19:47.271622 #449]  INFO -- : [OUTPUT] NICK embot
+
+I, [2007-11-19T11:19:47.347559 #449]  INFO -- : Bot (methbot_freenode) Loaded Plugin (resolve)
+I, [2007-11-19T11:19:47.348337 #449]  INFO -- : Bot (methbot_freenode) Loaded Plugin (plugins)
+I, [2007-11-19T11:19:47.349047 #449]  INFO -- : Bot (methbot_freenode) Loaded Plugin (mode)
+I, [2007-11-19T11:19:47.349761 #449]  INFO -- : Bot (methbot_freenode) Loaded Plugin (help)
+I, [2007-11-19T11:19:47.350756 #449]  INFO -- : Bot (methbot_freenode) Loaded Plugin (reload)
+I, [2007-11-19T11:19:47.351608 #449]  INFO -- : Bot (methbot_freenode) Loaded Plugin (topic)
+W, [2007-11-19T11:19:47.353018 #449]  WARN -- : [ALIAS] /home/daquino/local/var/checkouts/methbot/dist/bots/em_bot/db/aliases.yaml does not exist...
+I, [2007-11-19T11:19:47.353216 #449]  INFO -- : Bot (methbot_freenode) Loaded Plugin (alias)
+I, [2007-11-19T11:19:47.353805 #449]  INFO -- : Bot (methbot_freenode) Loaded Plugin (time_plugin)
+I, [2007-11-19T11:19:47.354865 #449]  INFO -- : Bot (methbot_freenode) Loaded Plugin (ping)
+I, [2007-11-19T11:19:47.362826 #449]  INFO -- : Bot (methbot_freenode) Loaded Plugin (ignore)
+I, [2007-11-19T11:19:47.520503 #449]  INFO -- : [INPUT] NOTICE AUTH :*** Looking up your hostname...
+I, [2007-11-19T11:19:47.635427 #449]  INFO -- : [INPUT] NOTICE AUTH :*** Found your hostname, welcome back
+I, [2007-11-19T11:19:47.635828 #449]  INFO -- : [INPUT] NOTICE AUTH :*** Checking ident
+I, [2007-11-19T11:19:47.649239 #449]  INFO -- : [INPUT] NOTICE AUTH :*** No identd (auth) response
+I, [2007-11-19T11:19:47.649610 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 001 embot :Welcome to the freenode IRC Network embot
+I, [2007-11-19T11:19:47.649781 #449]  INFO -- : [OUTPUT] JOIN #eventmachine
+
+I, [2007-11-19T11:19:47.649931 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 002 embot :Your host is kornbluth.freenode.net[freenode.freenode.net/6667], running version hyperion-1.0.2b
+I, [2007-11-19T11:19:47.650168 #449]  INFO -- : [INPUT] NOTICE embot :*** Your host is kornbluth.freenode.net[freenode.freenode.net/6667], running version hyperion-1.0.2b
+I, [2007-11-19T11:19:47.650411 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 003 embot :This server was created Fri Dec 22 00:08:18 UTC 2006
+I, [2007-11-19T11:19:47.650649 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 004 embot kornbluth.freenode.net hyperion-1.0.2b aAbBcCdDeEfFGhHiIjkKlLmMnNopPQrRsStTuUvVwWxXyYzZ01234569*@ bcdefFhiIklmnoPqstv
+I, [2007-11-19T11:19:47.650881 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 005 embot IRCD=dancer CAPAB CHANTYPES=# EXCEPTS INVEX CHANMODES=bdeIq,k,lfJD,cgijLmnPQrRstz CHANLIMIT=#:20 PREFIX=(ov)@+ MAXLIST=bdeI:50 MODES=4 STATUSMSG=@ KNOCK NICKLEN=16 :are supported by this server
+I, [2007-11-19T11:19:47.651102 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 005 embot SAFELIST CASEMAPPING=ascii CHANNELLEN=30 TOPICLEN=450 KICKLEN=450 KEYLEN=23 USERLEN=10 HOSTLEN=63 SILENCE=50 :are supported by this server
+I, [2007-11-19T11:19:47.651331 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 251 embot :There are 22202 listed and 17459 unlisted users on 27 servers
+I, [2007-11-19T11:19:47.651549 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 252 embot 30 :flagged staff members
+I, [2007-11-19T11:19:47.651767 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 254 embot 17070 :channels formed
+I, [2007-11-19T11:19:47.652066 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 255 embot :I have 4635 clients and 0 servers
+I, [2007-11-19T11:19:47.652340 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 265 embot :Current local  users: 4635  Max: 6967
+I, [2007-11-19T11:19:47.754114 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 266 embot :Current global users: 39661  Max: 43147
+I, [2007-11-19T11:19:47.754621 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 250 embot :Highest connection count: 6969 (6967 clients) (1483416 since server was (re)started)
+I, [2007-11-19T11:19:47.754882 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 375 embot :- kornbluth.freenode.net Message of the Day - 
+I, [2007-11-19T11:19:47.755111 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 372 embot :- Welcome to kornbluth.freenode.net in Frankfurt, DE, EU. 
+I, [2007-11-19T11:19:47.755335 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 372 embot :- Thanks to Probe Networks (www.probe-networks.de) for
+I, [2007-11-19T11:19:47.755563 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 372 embot :- sponsoring this server!
+I, [2007-11-19T11:19:47.755781 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 372 embot :- 
+I, [2007-11-19T11:19:47.756005 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 372 embot :- KORNBLUTH, CYRIL M. [1923-1958].  Born in New York City and
+I, [2007-11-19T11:19:47.756224 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 372 embot :- an active member of the Futurians, Cyril Kornbluth sold his
+I, [2007-11-19T11:19:47.756449 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 372 embot :- first story professionally at age 15.  By the 1940's his
+I, [2007-11-19T11:19:47.756671 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 372 embot :- stories appeared widely under several pennames, including
+I, [2007-11-19T11:19:47.756880 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 372 embot :- S.D. Gottesman and Cecil Corman.  He left his university
+I, [2007-11-19T11:19:47.757106 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 372 embot :- studies in Chicago to serve in the Army in Europe during
+I, [2007-11-19T11:19:47.757321 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 372 embot :- WWII, then returned to school and work in Chicago until he
+I, [2007-11-19T11:19:47.757544 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 372 embot :- began writing full-time in 1951.  The author of The Marching
+I, [2007-11-19T11:19:47.757771 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 372 embot :- Morons and the novels The Space Merchants (with Frederik
+I, [2007-11-19T11:19:47.758040 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 372 embot :- Pohl) and The Syndic, he's best known for his biting social
+I, [2007-11-19T11:19:47.758285 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 372 embot :- satire and his collaborations with Pohl and with Judith
+I, [2007-11-19T11:19:47.758837 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 372 embot :- Merril.
+I, [2007-11-19T11:19:47.759086 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 372 embot :- 
+I, [2007-11-19T11:19:47.759312 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 372 embot :- You're using freenode, a service of Peer-Directed Projects
+I, [2007-11-19T11:19:47.759537 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 372 embot :- Center (http://freenode.net/pdpc.shtml).
+I, [2007-11-19T11:19:47.759761 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 372 embot :- 
+I, [2007-11-19T11:19:47.759977 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 372 embot :- freenode runs an open proxy scanner. Your use of the network
+I, [2007-11-19T11:19:47.760201 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 372 embot :- indicates your acceptance of this policy. For details on
+I, [2007-11-19T11:19:47.760417 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 372 embot :- freenode network policy, please take a look at our policy
+I, [2007-11-19T11:19:47.760644 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 372 embot :- page (http://freenode.net/policy.shtml). Thank you for using
+I, [2007-11-19T11:19:47.760867 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 372 embot :- the network!
+I, [2007-11-19T11:19:47.761085 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 372 embot :- 
+I, [2007-11-19T11:19:47.761303 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 372 embot :- freenode is a service of Peer-Directed Projects Center, an
+I, [2007-11-19T11:19:47.761517 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 372 embot :- IRS 501(c)(3) not-for-profit organization.  Our yearly
+I, [2007-11-19T11:19:47.761792 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 372 embot :- fundraiser will begin soon; if you'd like to donate early,
+I, [2007-11-19T11:19:47.762023 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 372 embot :- please see http://freenode.net/pdpc_donations.shtml for more
+I, [2007-11-19T11:19:47.762253 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 372 embot :- information.  Thank you for using freenode!
+I, [2007-11-19T11:19:47.762503 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 372 embot :- 
+I, [2007-11-19T11:19:47.767482 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 376 embot :End of /MOTD command.
+I, [2007-11-19T11:19:48.005361 #449]  INFO -- : [INPUT] :freenode-connect!freenode@freenode/bot/connect PRIVMSG embot :VERSION
+I, [2007-11-19T11:19:48.006006 #449]  INFO -- : [COMMAND] version
+I, [2007-11-19T11:19:48.006267 #449]  INFO -- : >>> methbot_freenode  (11:19:48 AM) freenode-connect: VERSION
+I, [2007-11-19T11:19:49.689869 #449]  INFO -- : [INPUT] :embot!n=1000@c-68-36-237-152.hsd1.nj.comcast.net JOIN :#eventmachine
+I, [2007-11-19T11:19:49.690242 #449]  INFO -- : [OUTPUT] WHO #eventmachine
+
+I, [2007-11-19T11:19:49.690388 #449]  INFO -- : [OUTPUT] MODE #eventmachine
+
+I, [2007-11-19T11:19:49.690749 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 332 embot #eventmachine :EventMachine (0.5.3): http://rubyeventmachine.com | RubyForge: http://rubyforge.org/projects/eventmachine | Wiki: http://eventmachine.rubyforge.org/wiki/wiki.pl
+I, [2007-11-19T11:19:49.691023 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 333 embot #eventmachine chino 1195448790
+I, [2007-11-19T11:19:49.691248 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 353 embot = #eventmachine :embot @chino +tmm1 @wyhaines @ChanServ 
+I, [2007-11-19T11:19:49.691469 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 366 embot #eventmachine :End of /NAMES list.
+I, [2007-11-19T11:19:49.820938 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 352 embot #eventmachine n=1000 c-68-36-237-152.hsd1.nj.comcast.net irc.freenode.net embot H :0 MethBot Beta
+I, [2007-11-19T11:19:49.821282 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 352 embot #eventmachine n=daquino c-68-36-237-152.hsd1.nj.comcast.net irc.freenode.net chino H@ :0 purple
+I, [2007-11-19T11:19:49.821579 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 352 embot #eventmachine n=aman c-71-62-100-113.hsd1.va.comcast.net irc.freenode.net tmm1 H+ :0 Aman Gupta
+I, [2007-11-19T11:19:49.821865 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 352 embot #eventmachine n=wyhaines sbrouter.vistabeam.com irc.freenode.net wyhaines H@ :0 Kirk Haines
+I, [2007-11-19T11:19:49.822153 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 352 embot #eventmachine ChanServ services. irc.freenode.net ChanServ H@ :0 Channel Services
+I, [2007-11-19T11:19:49.822460 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 315 embot #eventmachine :End of /WHO list.
+I, [2007-11-19T11:19:49.822735 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 324 embot #eventmachine +mtncgz 
+I, [2007-11-19T11:19:49.822912 #449]  INFO -- : [INPUT] :kornbluth.freenode.net 329 embot #eventmachine 1192309186
+I, [2007-11-19T11:19:50.058979 #449]  INFO -- : [INPUT] :ChanServ!ChanServ@services. MODE #eventmachine +v embot 
+I, [2007-11-19T11:20:00.193489 #449]  INFO -- : [INPUT] :chino!n=daquino@c-68-36-237-152.hsd1.nj.comcast.net PRIVMSG #eventmachine :heh
+I, [2007-11-19T11:20:00.194092 #449]  INFO -- : [COMMAND] heh
+I, [2007-11-19T11:20:00.194344 #449]  INFO -- : >>> methbot_freenode #eventmachine (11:20:00 AM) chino: heh
+I, [2007-11-19T11:20:01.005380 #449]  INFO -- : [INPUT] :chino!n=daquino@c-68-36-237-152.hsd1.nj.comcast.net PRIVMSG #eventmachine :help
+I, [2007-11-19T11:20:01.005974 #449]  INFO -- : [COMMAND] help
+I, [2007-11-19T11:20:01.006210 #449]  INFO -- : :methbot_freenode #eventmachine (11:20:01 AM) embot: Commands: alias, aliases, aliasrm, help, ignore, ignored, mode, ping, plugins, reload, resolve, time, topic, unignore.  Type 'help help' if you don't know what to do next.
+I, [2007-11-19T11:20:01.006455 #449]  INFO -- : [OUTPUT] PRIVMSG #eventmachine :Commands: alias, aliases, aliasrm, help, ignore, ignored, mode, ping, plugins, reload, resolve, time, topic, unignore.  Type 'help help' if you don't know what to do next.
+
+I, [2007-11-19T11:20:01.006706 #449]  INFO -- : >>> methbot_freenode #eventmachine (11:20:01 AM) chino: help
+I, [2007-11-19T11:23:01.684814 #449]  INFO -- : [INPUT] PING :kornbluth.freenode.net
+I, [2007-11-19T11:23:01.685075 #449]  INFO -- : [OUTPUT] PONG :kornbluth.freenode.net
+
+I, [2007-11-19T11:26:02.662334 #449]  INFO -- : [INPUT] PING :kornbluth.freenode.net
+I, [2007-11-19T11:26:02.662605 #449]  INFO -- : [OUTPUT] PONG :kornbluth.freenode.net
+
+I, [2007-11-19T11:29:03.639648 #449]  INFO -- : [INPUT] PING :kornbluth.freenode.net
+I, [2007-11-19T11:29:03.639919 #449]  INFO -- : [OUTPUT] PONG :kornbluth.freenode.net
+
+I, [2007-11-19T11:32:04.632534 #449]  INFO -- : [INPUT] PING :kornbluth.freenode.net
+I, [2007-11-19T11:32:04.632805 #449]  INFO -- : [OUTPUT] PONG :kornbluth.freenode.net
+
+I, [2007-11-19T11:35:05.795641 #449]  INFO -- : [INPUT] PING :kornbluth.freenode.net
+I, [2007-11-19T11:35:05.795916 #449]  INFO -- : [OUTPUT] PONG :kornbluth.freenode.net
+
+I, [2007-11-19T11:38:06.701668 #449]  INFO -- : [INPUT] PING :kornbluth.freenode.net
+I, [2007-11-19T11:38:06.701938 #449]  INFO -- : [OUTPUT] PONG :kornbluth.freenode.net
+
+I, [2007-11-19T11:41:07.660208 #449]  INFO -- : [INPUT] PING :kornbluth.freenode.net
+I, [2007-11-19T11:41:07.660495 #449]  INFO -- : [OUTPUT] PONG :kornbluth.freenode.net
+
+I, [2007-11-19T11:44:08.646679 #449]  INFO -- : [INPUT] PING :kornbluth.freenode.net
+I, [2007-11-19T11:44:08.646958 #449]  INFO -- : [OUTPUT] PONG :kornbluth.freenode.net
+
+I, [2007-11-19T11:47:09.637024 #449]  INFO -- : [INPUT] PING :kornbluth.freenode.net
+I, [2007-11-19T11:47:09.637295 #449]  INFO -- : [OUTPUT] PONG :kornbluth.freenode.net
+
