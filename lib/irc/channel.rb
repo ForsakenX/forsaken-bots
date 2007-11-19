@@ -21,12 +21,14 @@ class Irc::Channel
   #
   # Instance
   #
-  attr_reader :server, :name
-  attr_writer :topic
-  def initialize(server,channel)
+  attr_reader   :server, :name
+  attr_writer   :topic
+  attr_accessor :mode
+  def initialize(server,channel,mode=nil)
     @server = server
     @name   = channel
     @topic  = nil
+    @mode   = mode
   end
   def users
     users = []

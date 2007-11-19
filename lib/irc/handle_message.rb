@@ -117,7 +117,24 @@ class Irc::HandleMessage
     # end of who list
     #when /^:[^ ]* 315/
 
-    # someone joins a chat
+    # mode responses
+      # me > MODE #forsaken
+      # me < :kornbluth.freenode.net 324 FsknBot #forsaken +tncz
+      # me < :kornbluth.freenode.net 329 FsknBot #forsaken 1192567839
+    when /^:[^ ]* 324 [^ ]* (#[^ ]*) ([^ ]*)/
+      channel = $1
+      mode    = $2
+
+      if channel = client.channels[channel]
+        channel.mode = mode
+      else
+        client.logger.warn "[324] unknown channel."
+      end
+
+    # mode changes
+      # :ChanServ!ChanServ@services. MODE #projectx +o methods
+
+    # join
     when /^:[^ ]* JOIN/
       m = Irc::JoinMessage.new(client,line)
 

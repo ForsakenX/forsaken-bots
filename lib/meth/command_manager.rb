@@ -78,8 +78,9 @@ class Meth::CommandManager
 
     # call easy to use command event
     if m.command
-      @bot.logger.info "[EVENT] meth.command.#{m.command.downcase}"
+      @bot.logger.info "[COMMAND] #{m.command.downcase}"
       @bot.event.call("meth.command.#{m.command.downcase}",m)
+      @bot.event.call("meth.command",m)
     end
 
   end

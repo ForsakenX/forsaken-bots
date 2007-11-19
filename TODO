@@ -7,3 +7,17 @@ Throttling
 More message objects for wrapping irc commands
 Better ignore capabilities
 Irc::Parse object for centralized regex's ?
+Support for knowing something is a chanlink
+Catch MODE lines
+Pidgin Plugin for Special CTCP broadcast of status
+
+Call irc.message.raw event
+Move some of bot to plugins... PrivMsg, Ping, etc...
+
+command mananger also greps text...
+allowing key words to show up as commands...
+and fire events ?
+
+
+Seperate manager for built in plugins?
+Or ability to add yoru own plugin directory on fly?

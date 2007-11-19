@@ -41,9 +41,9 @@ class Meth::Bot < Irc::Client
     @event.call('irc.post_init',nil)
     # events
     @event.register('irc.message.privmsg',Proc.new{|m| privmsg m })
-    @event.register('irc.message.listen',Proc.new{|m|
-      puts m.line
-    })
+#    @event.register('irc.message.listen',Proc.new{|m|
+#      puts m.line
+#    })
   end
 
   #
@@ -70,12 +70,12 @@ class Meth::Bot < Irc::Client
   end
   
   def receive_line line
-    @logger.info "<<< #{line}"
+    @logger.info "[INPUT] #{line}"
     super line
   end
 
   def send_data line
-    @logger.info ">>> #{line}"
+    @logger.info "[OUTPUT] #{line}"
     super line
   end
 

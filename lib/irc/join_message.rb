@@ -17,8 +17,11 @@ class Irc::JoinMessage < Irc::Message
     host      = $3
     @channel  = $4
 
-    # get a list of users for channel
+    # get a list of users details for channel
     client.send_data "WHO #{channel}\n"
+
+    # get channel mode
+    client.send_data "MODE #{channel}\n"
 
     # add or update user
     if @user = Irc::User.find(client.server,nick)
