@@ -96,7 +96,7 @@ class Irc::User
     begin
       return (@ip = Resolv.getaddress host)
     rescue Exception #Resolv::Error
-      puts "DEBUG Resolv::Error #{$!}"
+      $logger.error "DEBUG Resolv::Error #{$!}"
     end
     nil
   end

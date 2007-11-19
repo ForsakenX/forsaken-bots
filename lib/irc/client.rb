@@ -85,9 +85,9 @@ class Irc::Client < EM::Connection
 
   # send a message to user or channel
   def say to, message
-    return if @ignored.
+#    return if @ignored.include?(to.downcase)
+    message = message.to_s if message.respond_to?(:to_s)
     return message unless message
-    message = message.to_s
     # for each line
     message.split("\n").each do |message|
       # send at chunks of 350 characters
@@ -95,10 +95,10 @@ class Irc::Client < EM::Connection
       # biggest word in english language is 45 characters
       # this stops worsd from getting cut up
       message.scan(/.{1,300}[^ ]{0,50}/m){|chunk|
+        next if chunk.length < 1
         send_data "PRIVMSG #{to} :#{chunk}\n"
       }
     end
-    send_data "\n\n"  # some servers need some flushing...
     message
   end
 

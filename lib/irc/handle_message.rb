@@ -29,12 +29,11 @@ class Irc::HandleMessage
         client.nick = new_nick
       # someone else changed their nick
       else
-        puts Irc::User.users.collect{|u|u.nick}.join(', ')
         if user = Irc::User.find(client.server,old_nick)
           user.nick = new_nick
         # this is fine cause multiple bots can share a user list if on same server
         else
-          #puts "[ERROR] Got nick change from '#{old_nick}' to '#{new_nick}' but user does not exist..."
+          #$logger.error "[ERROR] Got nick change from '#{old_nick}' to '#{new_nick}' but user does not exist..."
         end
       end
 
@@ -127,9 +126,16 @@ class Irc::HandleMessage
       m = Irc::PartMessage.new(client,line)
 
     # quit
-      # :methods!i=1000@c-68-36-237-152.hsd1.nj.comcast.net PRIVMSG #forsaken :i'm quiting
+      # :methods!1000@c-68-36-237-152.hsd1.nj.comcast.net
+      # QUIT :Quit: Leaving.
     when /^:[^ ]* QUIT/i
       m = Irc::QuitMessage.new(client,line)
+
+    # kick
+      # :methods!n=daquino@c-68-36-237-152.hsd1.nj.comcast.net
+      # KICK #forsaken DIII-The_Lion :methods
+    when /^:[^ ]* KICK/i
+      m = Irc::KickMessage.new(client,line)
 
     # privmsg
     when /^:[^ ]* PRIVMSG/i
@@ -138,7 +144,7 @@ class Irc::HandleMessage
     # notice
     when /^:[^ ]* NOTICE/i
       m = Irc::NoticeMessage.new(client,line)
-    
+
     # unknown
     else
       m = Irc::UnknownMessage.new(client,line)
