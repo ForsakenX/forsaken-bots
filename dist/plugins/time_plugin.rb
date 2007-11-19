@@ -7,6 +7,7 @@ class TimePlugin < Meth::Plugin
     "time => Display the server time."
   end
   def command m
-    m.reply Time.now
+    # Wednesday 11-14-2007 7:51 pm EST
+    m.reply Time.now.strftime("%A %m-%d-%Y %I:%M %p %Z")
   end
 end

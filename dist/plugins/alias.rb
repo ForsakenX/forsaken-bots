@@ -16,11 +16,18 @@ class Alias < Meth::Plugin
         file.close
         @aliases = {}
       end
-      @bot.event.register('meth.plugins.loaded',Proc.new{|m|
+      # wait for initial load of plugins
+      initial_load = Proc.new{
         @aliases.each do |new,old|
           do_alias(new,old)
         end
-      })
+        @bot.event.unregister('meth.plugins.loaded',initial_load)
+        # listen for subsequent reloads
+        @bot.event.register('meth.plugin.loaded',Proc.new{|plugin_name|
+          @bot.plugin_manager.plugins['alias'].re_alias plugin_name
+        })
+      }
+      @bot.event.register('meth.plugins.loaded',initial_load)
     else
       @bot.logger.warn "[ALIAS] #{@db} does not exist..."
       @aliases = {}
@@ -86,6 +93,13 @@ class Alias < Meth::Plugin
     end
     do_alias(new,old)
     m.reply "Alias created..."
+  end
+  def re_alias(plugin_name)
+    @aliases.each do |new,old|
+      if old == plugin_name
+        do_alias(new,old)
+      end
+    end
   end
   def do_alias(new,old)
     if @bot.command_manager.commands[new]

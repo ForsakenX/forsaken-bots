@@ -4,20 +4,21 @@ class Resolve < Meth::Plugin
     @bot.command_manager.register("resolve",self)
   end
   def help(m=nil, topic=nil)
-    "resolve [dns] => Performs an ip lookup for dns."
-  end
-  def do_help m
-    if (ip = m.params[0])
-      begin
-        return Resolv.getaddress ip
-      rescue Exception
-        "Error: #{$!}"
-      end
-    else
-      help
-    end
+    "resolve [name] => Performs an ip lookup for dns."
   end
   def command m
-    m.reply do_help(m)
+    unless ip = m.params.shift
+      m.reply help
+    else
+      m.reply resolve(ip)
+    end
+  end
+  private
+  def resolve ip
+    begin
+      Resolv.getaddress(ip)
+    rescue Exception
+      "Error: #{$!}"
+    end
   end
 end
