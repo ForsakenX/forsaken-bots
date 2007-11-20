@@ -14,6 +14,10 @@ class Topic < Meth::Plugin
   # command called
   def command m
     message = m.params.join(' ')
+    if message.length < 1
+      m.reply help
+      return
+    end
     handler = Proc.new{|m2|
       next unless m2.source.nick.downcase == m.source.nick.downcase
       # check response

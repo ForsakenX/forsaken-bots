@@ -21,3 +21,13 @@ and fire events ?
 
 Seperate manager for built in plugins?
 Or ability to add yoru own plugin directory on fly?
+
+Add statistics saving for users to hangman
+add allow interactivity to guests in chats of hosts game
+
+
+move bots to seperate processes
+use drb for communication between bots
+allow single plugin system etc for each instance
+
+

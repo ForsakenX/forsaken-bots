@@ -38,19 +38,12 @@ class ChanLink < Meth::Plugin
       next if (args.nil? || !args.is_a?(Array))
       # rename args
       (instance,message,m) = args
-      # sending to gamespy requires semi colon to send
-      next if m.class.name == 'PrivMessage' &&
-              @bot.name    == 'krocked'     &&
-              message.slice!(/^;/).nil?
+      # dont send to same server
+      next if self == instance
       # send to all channels
       @bot.channels.keys.each do |channel|
-
-        # dont send to same server
-        next if self == instance
-
         # mirror messages to other channel
         @bot.say(channel, message)
-
       end
     }
     
@@ -58,7 +51,11 @@ class ChanLink < Meth::Plugin
     @privmsg_event = Proc.new{|m|
       next if m.personal
       next unless @bot.command_manager.commands[m.command].nil?
-      output = "#{m.source.nick}: #{m.message}"
+      message = m.message
+      # sending to gamespy requires semi colon to send
+      next if @bot.nick    != 'krocked' &&
+              message.slice!(/^;/).nil?
+      output = "#{m.source.nick}: #{message}"
       $event.call('chan.link',[self,output,m])
     }
 
