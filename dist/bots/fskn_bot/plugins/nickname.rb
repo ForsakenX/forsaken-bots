@@ -16,13 +16,19 @@ class Nickname < Meth::Plugin
     end
   end
   def command m
-    if m.command == 'nicknames'
-      m.reply "No nicknames set!" if @nicks.length < 1
-      m.reply @nicks.map{|n,a| "#{n} => #{a.join(', ')}"}.join("; ")
-      return
+    case m.command
+    when 'nicknames'
+      list m
+    when 'nickname'
+      case m.params[0]
+      when "",nil
+        random m
+      else
+        add m
+      end
     end
-    name = m.params.shift
-    m.reply(help(m)) unless name
+  end
+  def add m
     if (nick = m.params.join(' ').chomp) != ""
       @nicks[name.downcase] ?
         @nicks[name.downcase] << nick :
@@ -33,6 +39,15 @@ class Nickname < Meth::Plugin
       m.reply("#{name} has no nicknames.") unless nicks = @nicks[name.downcase]
       m.reply nicks[rand(nicks.length)]
     end
+  end
+  def random m
+    names = @nicks.keys
+    name  = names[rand(names.length)]
+    m.reply "#{name} => #{@nicks[name]}"
+  end
+  def list m
+    m.reply "No nicknames set!" if @nicks.length < 1
+    m.reply @nicks.map{|n,a| "#{n} => #{a.join(', ')}"}.join("; ")
   end
   private
   def save

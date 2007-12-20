@@ -8,6 +8,9 @@ class Welcome < Meth::Plugin
     super *args
     setup_join_event
     @bot.command_manager.register('welcome',self)
+    # turn off list
+    @db = File.expand_path("#{DIST}/bots/#{$bot}/db/welcomed.yaml")
+    @welcomed = File.exists?(@db) ? (YAML.load_file(@db)||[]) : []
   end
 
   def cleanup *args
@@ -27,6 +30,8 @@ class Welcome < Meth::Plugin
         next if m.user.nick.downcase == @bot.nick.downcase
         # dont send to ignored users
         next if @bot.ignored.include? m.user.nick.downcase
+        # dont send to poeple who opted out
+        next if @welcomed.include? m.user.nick.downcase
         # send the message
         @bot.say(m.user.nick, welcome_message)
       }
@@ -45,16 +50,30 @@ class Welcome < Meth::Plugin
   #
 
   def help m=nil, topic=nil
-    "welcome [user] => Send welcome message to user."
+    "welcome [user] => Send welcome message to user.  "+
+    "welcome off => Stop sending you welcome message when you join the channel.  "+
+    "welcome on => Start sending you welcome message when you join the channel."
   end
 
   def command m
-    # check params
-    unless nick = m.params.shift
+    nick = m.source.nick.downcase
+    case m.params[0]
+    when "",nil
       m.reply help
-      return
+    when "off"
+      @welcomed << nick unless @welcomed.include?(nick)
+      m.reply "Welcome message turned off..."
+      save
+    when "on"
+      @welcomed.delete nick
+      m.reply "Welcome message turned on..."
+      save
     end
+  end
+
+  def send m
     # check user in channel
+    nick = m.params.shift
     unless m.channel.users.detect{|u|u.nick.downcase == nick.downcase}
       m.reply "User does not exist in channel..."
       return
@@ -70,10 +89,17 @@ class Welcome < Meth::Plugin
   #
 
   private
+
   def welcome_message
     file_path = "#{DIST}/bots/#{$bot}/db/welcome_message.txt"
     next unless FileTest.exist? file_path
     File.read(file_path).gsub(/\n/,' ')
+  end
+
+  def save
+    file = File.open(@db,'w+')
+    YAML.dump(@welcomed,file)
+    file.close
   end
 
 end
