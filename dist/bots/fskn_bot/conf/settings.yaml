@@ -14,27 +14,17 @@ keyboard: KeyboardHandler
 # list of servers to connect to
 bots: 
 
-#- name: krocked
-#  host: GameSpy
-#  port: 6668
-##  channels: 
-#  - "#GSP!Forsaken"
-#  nick: "krocked"
-#  target: ""
-#  realname: krocked
-#  logger: 
-#    severity: DEBUG
-#    rotate: daily
-
-#- name: fskn_bot_games
-#  host: irc.freenode.org
-#  channels:
-#  - "#forsaken"
-#  nick: "_0_games"
-#  realname: Game Display
-#  logger:
-#    severity: DEBUG
-#    rotate: daily
+- name: krocked
+  host: GameSpy
+  port: 6668
+  channels: 
+  - "#GSP!Forsaken"
+  nick: "krocked"
+  target: ""
+  realname: krocked
+  logger: 
+    severity: DEBUG
+    rotate: daily
 
 - name: fskn_bot
   host: irc.freenode.org
