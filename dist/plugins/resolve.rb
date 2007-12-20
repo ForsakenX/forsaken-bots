@@ -7,18 +7,15 @@ class Resolve < Meth::Plugin
     "resolve [name] => Performs an ip lookup for dns."
   end
   def command m
-    unless ip = m.params.shift
-      m.reply help
-    else
-      m.reply resolve(ip)
-    end
-  end
-  private
-  def resolve ip
+    return unless target = m.params.shift
     begin
-      Resolv.getaddress(ip)
+      if target =~ Resolv::AddressRegex
+        m.reply Resolv.getname(target)
+      else
+        m.reply Resolv.getaddress(target)
+      end
     rescue Exception
-      "Error: #{$!}"
+      m.reply "Error: #{$!}"
     end
   end
 end

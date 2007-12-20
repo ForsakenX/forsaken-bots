@@ -8,6 +8,6 @@ class TimePlugin < Meth::Plugin
   end
   def command m
     # Wednesday 11-14-2007 7:51 pm EST
-    m.reply Time.now.strftime("%A %m-%d-%Y %I:%M %p %Z")
+    m.reply "my time: " + Time.now.strftime("%A %m-%d-%Y %I:%M %p %Z")
   end
 end

@@ -92,3 +92,339 @@ I, [2007-11-20T01:29:32.297930 #549]  INFO -- : [OUTPUT] PONG :kornbluth.freenod
 I, [2007-11-20T01:32:33.425949 #549]  INFO -- : [INPUT] PING :kornbluth.freenode.net
 I, [2007-11-20T01:32:33.426220 #549]  INFO -- : [OUTPUT] PONG :kornbluth.freenode.net
 
+I, [2007-11-20T01:35:34.291152 #549]  INFO -- : [INPUT] PING :kornbluth.freenode.net
+I, [2007-11-20T01:35:34.291430 #549]  INFO -- : [OUTPUT] PONG :kornbluth.freenode.net
+
+I, [2007-11-20T01:38:35.359634 #549]  INFO -- : [INPUT] PING :kornbluth.freenode.net
+I, [2007-11-20T01:38:35.359915 #549]  INFO -- : [OUTPUT] PONG :kornbluth.freenode.net
+
+I, [2007-11-20T01:40:57.802879 #5832]  INFO -- : Connecting methbot_freenode to irc.freenode.org:
+I, [2007-11-20T01:40:57.835001 #5832]  INFO -- : Connected methbot_freenode to irc.freenode.org:6667
+I, [2007-11-20T01:40:57.835254 #5832]  INFO -- : [OUTPUT] USER 1000 forsaken irc.freenode.org :MethBot Beta
+
+I, [2007-11-20T01:40:57.835524 #5832]  INFO -- : [OUTPUT] NICK embot
+
+I, [2007-11-20T01:40:57.840837 #5832]  INFO -- : Bot (methbot_freenode) Loaded Plugin (resolve)
+I, [2007-11-20T01:40:57.841580 #5832]  INFO -- : Bot (methbot_freenode) Loaded Plugin (plugins)
+I, [2007-11-20T01:40:57.842306 #5832]  INFO -- : Bot (methbot_freenode) Loaded Plugin (mode)
+I, [2007-11-20T01:40:57.843029 #5832]  INFO -- : Bot (methbot_freenode) Loaded Plugin (help)
+I, [2007-11-20T01:40:57.843838 #5832]  INFO -- : Bot (methbot_freenode) Loaded Plugin (reload)
+I, [2007-11-20T01:40:57.844800 #5832]  INFO -- : Bot (methbot_freenode) Loaded Plugin (topic)
+W, [2007-11-20T01:40:57.846259 #5832]  WARN -- : [ALIAS] /home/daquino/local/var/checkouts/methbot/dist/bots/em_bot/db/aliases.yaml does not exist...
+I, [2007-11-20T01:40:57.846462 #5832]  INFO -- : Bot (methbot_freenode) Loaded Plugin (alias)
+I, [2007-11-20T01:40:57.847050 #5832]  INFO -- : Bot (methbot_freenode) Loaded Plugin (time_plugin)
+I, [2007-11-20T01:40:57.847676 #5832]  INFO -- : Bot (methbot_freenode) Loaded Plugin (ping)
+I, [2007-11-20T01:40:57.848925 #5832]  INFO -- : Bot (methbot_freenode) Loaded Plugin (fortune)
+I, [2007-11-20T01:40:57.850372 #5832]  INFO -- : Bot (methbot_freenode) Loaded Plugin (hangman)
+I, [2007-11-20T01:40:57.851497 #5832]  INFO -- : Bot (methbot_freenode) Loaded Plugin (ignore)
+I, [2007-11-20T01:40:58.079438 #5832]  INFO -- : [INPUT] NOTICE AUTH :*** Looking up your hostname...
+I, [2007-11-20T01:40:58.201550 #5832]  INFO -- : [INPUT] NOTICE AUTH :*** Found your hostname, welcome back
+I, [2007-11-20T01:40:58.201989 #5832]  INFO -- : [INPUT] NOTICE AUTH :*** Checking ident
+I, [2007-11-20T01:40:58.211063 #5832]  INFO -- : [INPUT] NOTICE AUTH :*** No identd (auth) response
+I, [2007-11-20T01:40:58.211475 #5832]  INFO -- : [INPUT] :calvino.freenode.net 001 embot :Welcome to the freenode IRC Network embot
+I, [2007-11-20T01:40:58.211628 #5832]  INFO -- : [OUTPUT] JOIN #eventmachine
+
+I, [2007-11-20T01:40:58.211784 #5832]  INFO -- : [INPUT] :calvino.freenode.net 002 embot :Your host is calvino.freenode.net[calvino.freenode.net/6667], running version hyperion-1.0.2b
+I, [2007-11-20T01:40:58.212126 #5832]  INFO -- : [INPUT] NOTICE embot :*** Your host is calvino.freenode.net[calvino.freenode.net/6667], running version hyperion-1.0.2b
+I, [2007-11-20T01:40:58.212393 #5832]  INFO -- : [INPUT] :calvino.freenode.net 003 embot :This server was created Fri May  4 22:15:15 UTC 2007
+I, [2007-11-20T01:40:58.212635 #5832]  INFO -- : [INPUT] :calvino.freenode.net 004 embot calvino.freenode.net hyperion-1.0.2b aAbBcCdDeEfFGhHiIjkKlLmMnNopPQrRsStTuUvVwWxXyYzZ01234569*@ bcdefFhiIklmnoPqstv
+I, [2007-11-20T01:40:58.212874 #5832]  INFO -- : [INPUT] :calvino.freenode.net 005 embot IRCD=dancer CAPAB CHANTYPES=# EXCEPTS INVEX CHANMODES=bdeIq,k,lfJD,cgijLmnPQrRstz CHANLIMIT=#:20 PREFIX=(ov)@+ MAXLIST=bdeI:50 MODES=4 STATUSMSG=@ KNOCK NICKLEN=16 :are supported by this server
+I, [2007-11-20T01:40:58.213120 #5832]  INFO -- : [INPUT] :calvino.freenode.net 005 embot SAFELIST CASEMAPPING=ascii CHANNELLEN=30 TOPICLEN=450 KICKLEN=450 KEYLEN=23 USERLEN=10 HOSTLEN=63 SILENCE=50 :are supported by this server
+I, [2007-11-20T01:40:58.213368 #5832]  INFO -- : [INPUT] :calvino.freenode.net 251 embot :There are 17638 listed and 16324 unlisted users on 27 servers
+I, [2007-11-20T01:40:58.213604 #5832]  INFO -- : [INPUT] :calvino.freenode.net 252 embot 33 :flagged staff members
+I, [2007-11-20T01:40:58.213842 #5832]  INFO -- : [INPUT] :calvino.freenode.net 254 embot 16745 :channels formed
+I, [2007-11-20T01:40:58.214071 #5832]  INFO -- : [INPUT] :calvino.freenode.net 255 embot :I have 1033 clients and 0 servers
+I, [2007-11-20T01:40:58.214309 #5832]  INFO -- : [INPUT] :calvino.freenode.net 265 embot :Current local  users: 1033  Max: 1424
+I, [2007-11-20T01:40:58.214541 #5832]  INFO -- : [INPUT] :calvino.freenode.net 266 embot :Current global users: 33962  Max: 42052
+I, [2007-11-20T01:40:58.322751 #5832]  INFO -- : [INPUT] :calvino.freenode.net 250 embot :Highest connection count: 1426 (1424 clients) (11098 since server was (re)started)
+I, [2007-11-20T01:40:58.323187 #5832]  INFO -- : [INPUT] :calvino.freenode.net 375 embot :- calvino.freenode.net Message of the Day - 
+I, [2007-11-20T01:40:58.323450 #5832]  INFO -- : [INPUT] :calvino.freenode.net 372 embot :- Welcome to the freenode IRC server in Milan, Italy. Thanks to
+I, [2007-11-20T01:40:58.323694 #5832]  INFO -- : [INPUT] :calvino.freenode.net 372 embot :- I.Net S.p.A. (http://www.inet.it/) for sponsoring this
+I, [2007-11-20T01:40:58.323944 #5832]  INFO -- : [INPUT] :calvino.freenode.net 372 embot :- server.
+I, [2007-11-20T01:40:58.324195 #5832]  INFO -- : [INPUT] :calvino.freenode.net 372 embot :- 
+I, [2007-11-20T01:40:58.324435 #5832]  INFO -- : [INPUT] :calvino.freenode.net 372 embot :- CALVINO, ITALO [1923-1985].  Born in Cuba, Italo Calvino grew
+I, [2007-11-20T01:40:58.324671 #5832]  INFO -- : [INPUT] :calvino.freenode.net 372 embot :- up in San Remo, Italy.  During World War II, he joined the
+I, [2007-11-20T01:40:58.324916 #5832]  INFO -- : [INPUT] :calvino.freenode.net 372 embot :- partisans during the German occupation and, after writing a
+I, [2007-11-20T01:40:58.325170 #5832]  INFO -- : [INPUT] :calvino.freenode.net 372 embot :- series of stories which drew on his experiences, he became a
+I, [2007-11-20T01:40:58.325411 #5832]  INFO -- : [INPUT] :calvino.freenode.net 372 embot :- journalist. His work included Mr. Palomar, Under the
+I, [2007-11-20T01:40:58.325650 #5832]  INFO -- : [INPUT] :calvino.freenode.net 372 embot :- Jaguar Sun, Cosmicomics and t zero.  Calvino made
+I, [2007-11-20T01:40:58.325880 #5832]  INFO -- : [INPUT] :calvino.freenode.net 372 embot :- important contributions to Italian literature in the middle
+I, [2007-11-20T01:40:58.326125 #5832]  INFO -- : [INPUT] :calvino.freenode.net 372 embot :- of the last century.
+I, [2007-11-20T01:40:58.326350 #5832]  INFO -- : [INPUT] :calvino.freenode.net 372 embot :- 
+I, [2007-11-20T01:40:58.326605 #5832]  INFO -- : [INPUT] :calvino.freenode.net 372 embot :- You're using freenode, a service of Peer-Directed Projects
+I, [2007-11-20T01:40:58.326845 #5832]  INFO -- : [INPUT] :calvino.freenode.net 372 embot :- Center (http://freenode.net/pdpc.shtml).
+I, [2007-11-20T01:40:58.327169 #5832]  INFO -- : [INPUT] :calvino.freenode.net 372 embot :- 
+I, [2007-11-20T01:40:58.327492 #5832]  INFO -- : [INPUT] :calvino.freenode.net 372 embot :- freenode runs an open proxy scanner. Your use of the network
+I, [2007-11-20T01:40:58.327765 #5832]  INFO -- : [INPUT] :calvino.freenode.net 372 embot :- indicates your acceptance of this policy. For details on
+I, [2007-11-20T01:40:58.328000 #5832]  INFO -- : [INPUT] :calvino.freenode.net 372 embot :- freenode network policy, please take a look at our policy
+I, [2007-11-20T01:40:58.328252 #5832]  INFO -- : [INPUT] :calvino.freenode.net 372 embot :- page (http://freenode.net/policy.shtml). Thank you for using
+I, [2007-11-20T01:40:58.328490 #5832]  INFO -- : [INPUT] :calvino.freenode.net 372 embot :- the network!
+I, [2007-11-20T01:40:58.328734 #5832]  INFO -- : [INPUT] :calvino.freenode.net 372 embot :- 
+I, [2007-11-20T01:40:58.328965 #5832]  INFO -- : [INPUT] :calvino.freenode.net 372 embot :- freenode is a service of Peer-Directed Projects Center, an
+I, [2007-11-20T01:40:58.329210 #5832]  INFO -- : [INPUT] :calvino.freenode.net 372 embot :- IRS 501(c)(3) not-for-profit organization.  Our yearly
+I, [2007-11-20T01:40:58.329459 #5832]  INFO -- : [INPUT] :calvino.freenode.net 372 embot :- fundraiser will begin soon; if you'd like to donate early,
+I, [2007-11-20T01:40:58.329697 #5832]  INFO -- : [INPUT] :calvino.freenode.net 372 embot :- please see http://freenode.net/pdpc_donations.shtml for more
+I, [2007-11-20T01:40:58.329944 #5832]  INFO -- : [INPUT] :calvino.freenode.net 372 embot :- information.  Thank you for using freenode!
+I, [2007-11-20T01:40:58.330179 #5832]  INFO -- : [INPUT] :calvino.freenode.net 372 embot :- 
+I, [2007-11-20T01:40:58.330416 #5832]  INFO -- : [INPUT] :calvino.freenode.net 376 embot :End of /MOTD command.
+I, [2007-11-20T01:40:58.518281 #5832]  INFO -- : [INPUT] :freenode-connect!freenode@freenode/bot/connect PRIVMSG embot :VERSION
+I, [2007-11-20T01:40:58.518924 #5832]  INFO -- : [COMMAND] version
+I, [2007-11-20T01:40:58.519211 #5832]  INFO -- : >>> methbot_freenode  (01:40:58 AM) freenode-connect: VERSION
+I, [2007-11-20T01:40:59.298772 #5832]  INFO -- : [INPUT] :embot!n=1000@c-68-36-237-152.hsd1.nj.comcast.net JOIN :#eventmachine
+I, [2007-11-20T01:40:59.299164 #5832]  INFO -- : [OUTPUT] WHO #eventmachine
+
+I, [2007-11-20T01:40:59.299306 #5832]  INFO -- : [OUTPUT] MODE #eventmachine
+
+I, [2007-11-20T01:40:59.299624 #5832]  INFO -- : [INPUT] :calvino.freenode.net 332 embot #eventmachine :EventMachine (0.5.3): http://rubyeventmachine.com | RubyForge: http://rubyforge.org/projects/eventmachine | Wiki: http://eventmachine.rubyforge.org/wiki/wiki.pl
+I, [2007-11-20T01:40:59.299930 #5832]  INFO -- : [INPUT] :calvino.freenode.net 333 embot #eventmachine chino 1195448790
+I, [2007-11-20T01:40:59.300199 #5832]  INFO -- : [INPUT] :calvino.freenode.net 353 embot = #eventmachine :embot +Aria @chino @wyhaines +tmm1 @ChanServ 
+I, [2007-11-20T01:40:59.300444 #5832]  INFO -- : [INPUT] :calvino.freenode.net 366 embot #eventmachine :End of /NAMES list.
+I, [2007-11-20T01:40:59.427174 #5832]  INFO -- : [INPUT] :calvino.freenode.net 352 embot #eventmachine n=1000 c-68-36-237-152.hsd1.nj.comcast.net irc.freenode.net embot H :0 MethBot Beta
+I, [2007-11-20T01:40:59.427518 #5832]  INFO -- : [INPUT] :calvino.freenode.net 352 embot #eventmachine n=aredride acrux.theinternetco.net irc.freenode.net Aria H+ :0 Aredridel
+I, [2007-11-20T01:40:59.427824 #5832]  INFO -- : [INPUT] :calvino.freenode.net 352 embot #eventmachine n=daquino c-68-36-237-152.hsd1.nj.comcast.net irc.freenode.net chino H@ :0 purple
+I, [2007-11-20T01:40:59.428131 #5832]  INFO -- : [INPUT] :calvino.freenode.net 352 embot #eventmachine n=wyhaines sbrouter.vistabeam.com irc.freenode.net wyhaines H@ :0 Kirk Haines
+I, [2007-11-20T01:40:59.428423 #5832]  INFO -- : [INPUT] :calvino.freenode.net 352 embot #eventmachine n=aman c-71-62-100-113.hsd1.va.comcast.net irc.freenode.net tmm1 H+ :0 Aman Gupta
+I, [2007-11-20T01:40:59.428720 #5832]  INFO -- : [INPUT] :calvino.freenode.net 352 embot #eventmachine ChanServ services. irc.freenode.net ChanServ H@ :0 Channel Services
+I, [2007-11-20T01:40:59.429099 #5832]  INFO -- : [INPUT] :calvino.freenode.net 315 embot #eventmachine :End of /WHO list.
+I, [2007-11-20T01:40:59.429396 #5832]  INFO -- : [INPUT] :calvino.freenode.net 324 embot #eventmachine +mtncgz 
+I, [2007-11-20T01:40:59.429563 #5832]  INFO -- : [INPUT] :calvino.freenode.net 329 embot #eventmachine 1192309186
+I, [2007-11-20T01:40:59.614041 #5832]  INFO -- : [INPUT] :ChanServ!ChanServ@services. MODE #eventmachine +v embot 
+I, [2007-11-20T01:41:29.391831 #5836]  INFO -- : Connecting methbot_freenode to irc.freenode.org:
+I, [2007-11-20T01:41:29.393898 #5836]  INFO -- : Connected methbot_freenode to irc.freenode.org:6667
+I, [2007-11-20T01:41:29.394137 #5836]  INFO -- : [OUTPUT] USER 1000 forsaken irc.freenode.org :MethBot Beta
+
+I, [2007-11-20T01:41:29.394405 #5836]  INFO -- : [OUTPUT] NICK embot
+
+I, [2007-11-20T01:41:29.395879 #5836]  INFO -- : Bot (methbot_freenode) Loaded Plugin (resolve)
+I, [2007-11-20T01:41:29.396586 #5836]  INFO -- : Bot (methbot_freenode) Loaded Plugin (plugins)
+I, [2007-11-20T01:41:29.397272 #5836]  INFO -- : Bot (methbot_freenode) Loaded Plugin (mode)
+I, [2007-11-20T01:41:29.398298 #5836]  INFO -- : Bot (methbot_freenode) Loaded Plugin (help)
+I, [2007-11-20T01:41:29.399134 #5836]  INFO -- : Bot (methbot_freenode) Loaded Plugin (reload)
+I, [2007-11-20T01:41:29.399918 #5836]  INFO -- : Bot (methbot_freenode) Loaded Plugin (topic)
+W, [2007-11-20T01:41:29.401289 #5836]  WARN -- : [ALIAS] /home/daquino/local/var/checkouts/methbot/dist/bots/em_bot/db/aliases.yaml does not exist...
+I, [2007-11-20T01:41:29.401488 #5836]  INFO -- : Bot (methbot_freenode) Loaded Plugin (alias)
+I, [2007-11-20T01:41:29.414272 #5836]  INFO -- : Bot (methbot_freenode) Loaded Plugin (time_plugin)
+I, [2007-11-20T01:41:29.414899 #5836]  INFO -- : Bot (methbot_freenode) Loaded Plugin (ping)
+I, [2007-11-20T01:41:29.415593 #5836]  INFO -- : Bot (methbot_freenode) Loaded Plugin (fortune)
+I, [2007-11-20T01:41:29.416943 #5836]  INFO -- : Bot (methbot_freenode) Loaded Plugin (hangman)
+I, [2007-11-20T01:41:29.418205 #5836]  INFO -- : Bot (methbot_freenode) Loaded Plugin (ignore)
+I, [2007-11-20T01:41:29.556682 #5836]  INFO -- : [INPUT] NOTICE AUTH :*** Looking up your hostname...
+I, [2007-11-20T01:41:29.638311 #5836]  INFO -- : [INPUT] NOTICE AUTH :*** Found your hostname, welcome back
+I, [2007-11-20T01:41:29.638725 #5836]  INFO -- : [INPUT] NOTICE AUTH :*** Checking ident
+I, [2007-11-20T01:41:29.652516 #5836]  INFO -- : [INPUT] NOTICE AUTH :*** No identd (auth) response
+I, [2007-11-20T01:41:29.652914 #5836]  INFO -- : [INPUT] :simmons.freenode.net 001 embot :Welcome to the freenode IRC Network embot
+I, [2007-11-20T01:41:29.653063 #5836]  INFO -- : [OUTPUT] JOIN #eventmachine
+
+I, [2007-11-20T01:41:29.653215 #5836]  INFO -- : [INPUT] :simmons.freenode.net 002 embot :Your host is simmons.freenode.net[simmons.freenode.net/6667], running version hyperion-1.0.2b
+I, [2007-11-20T01:41:29.653448 #5836]  INFO -- : [INPUT] NOTICE embot :*** Your host is simmons.freenode.net[simmons.freenode.net/6667], running version hyperion-1.0.2b
+I, [2007-11-20T01:41:29.653708 #5836]  INFO -- : [INPUT] :simmons.freenode.net 003 embot :This server was created Wed Jun 13 13:37:44 UTC 2007
+I, [2007-11-20T01:41:29.653949 #5836]  INFO -- : [INPUT] :simmons.freenode.net 004 embot simmons.freenode.net hyperion-1.0.2b aAbBcCdDeEfFGhHiIjkKlLmMnNopPQrRsStTuUvVwWxXyYzZ01234569*@ bcdefFhiIklmnoPqstv
+I, [2007-11-20T01:41:29.654183 #5836]  INFO -- : [INPUT] :simmons.freenode.net 005 embot IRCD=dancer CAPAB CHANTYPES=# EXCEPTS INVEX CHANMODES=bdeIq,k,lfJD,cgijLmnPQrRstz CHANLIMIT=#:20 PREFIX=(ov)@+ MAXLIST=bdeI:50 MODES=4 STATUSMSG=@ KNOCK NICKLEN=16 :are supported by this server
+I, [2007-11-20T01:41:29.654425 #5836]  INFO -- : [INPUT] :simmons.freenode.net 005 embot SAFELIST CASEMAPPING=ascii CHANNELLEN=30 TOPICLEN=450 KICKLEN=450 KEYLEN=23 USERLEN=10 HOSTLEN=63 SILENCE=50 :are supported by this server
+I, [2007-11-20T01:41:29.654665 #5836]  INFO -- : [INPUT] :simmons.freenode.net 251 embot :There are 17637 listed and 16322 unlisted users on 27 servers
+I, [2007-11-20T01:41:29.654980 #5836]  INFO -- : [INPUT] :simmons.freenode.net 252 embot 33 :flagged staff members
+I, [2007-11-20T01:41:29.655232 #5836]  INFO -- : [INPUT] :simmons.freenode.net 254 embot 16744 :channels formed
+I, [2007-11-20T01:41:29.655463 #5836]  INFO -- : [INPUT] :simmons.freenode.net 255 embot :I have 3170 clients and 0 servers
+I, [2007-11-20T01:41:29.655704 #5836]  INFO -- : [INPUT] :simmons.freenode.net 265 embot :Current local  users: 3170  Max: 4327
+I, [2007-11-20T01:41:29.655937 #5836]  INFO -- : [INPUT] :simmons.freenode.net 266 embot :Current global users: 33959  Max: 43148
+I, [2007-11-20T01:41:29.720720 #5836]  INFO -- : [INPUT] :simmons.freenode.net 250 embot :Highest connection count: 4328 (4327 clients) (952403 since server was (re)started)
+I, [2007-11-20T01:41:29.721145 #5836]  INFO -- : [INPUT] :simmons.freenode.net 375 embot :- simmons.freenode.net Message of the Day - 
+I, [2007-11-20T01:41:29.721394 #5836]  INFO -- : [INPUT] :simmons.freenode.net 372 embot :- You're using freenode, a service of Peer-Directed Projects
+I, [2007-11-20T01:41:29.721659 #5836]  INFO -- : [INPUT] :simmons.freenode.net 372 embot :- Center (http://freenode.net/pdpc.shtml).
+I, [2007-11-20T01:41:29.721906 #5836]  INFO -- : [INPUT] :simmons.freenode.net 372 embot :- 
+I, [2007-11-20T01:41:29.722133 #5836]  INFO -- : [INPUT] :simmons.freenode.net 372 embot :- freenode runs an open proxy scanner. Your use of the network
+I, [2007-11-20T01:41:29.722371 #5836]  INFO -- : [INPUT] :simmons.freenode.net 372 embot :- indicates your acceptance of this policy. For details on
+I, [2007-11-20T01:41:29.722608 #5836]  INFO -- : [INPUT] :simmons.freenode.net 372 embot :- freenode network policy, please take a look at our policy
+I, [2007-11-20T01:41:29.722836 #5836]  INFO -- : [INPUT] :simmons.freenode.net 372 embot :- page (http://freenode.net/policy.shtml). Thank you for using
+I, [2007-11-20T01:41:29.723072 #5836]  INFO -- : [INPUT] :simmons.freenode.net 372 embot :- the network!
+I, [2007-11-20T01:41:29.723302 #5836]  INFO -- : [INPUT] :simmons.freenode.net 372 embot :- 
+I, [2007-11-20T01:41:29.723537 #5836]  INFO -- : [INPUT] :simmons.freenode.net 372 embot :- freenode is a service of Peer-Directed Projects Center, an
+I, [2007-11-20T01:41:29.723768 #5836]  INFO -- : [INPUT] :simmons.freenode.net 372 embot :- IRS 501(c)(3) not-for-profit organization.  Our yearly
+I, [2007-11-20T01:41:29.724012 #5836]  INFO -- : [INPUT] :simmons.freenode.net 372 embot :- fundraiser will begin soon; if you'd like to donate early,
+I, [2007-11-20T01:41:29.724264 #5836]  INFO -- : [INPUT] :simmons.freenode.net 372 embot :- please see http://freenode.net/pdpc_donations.shtml for more
+I, [2007-11-20T01:41:29.724506 #5836]  INFO -- : [INPUT] :simmons.freenode.net 372 embot :- information.  Thank you for using freenode!
+I, [2007-11-20T01:41:29.724750 #5836]  INFO -- : [INPUT] :simmons.freenode.net 372 embot :- 
+I, [2007-11-20T01:41:29.724977 #5836]  INFO -- : [INPUT] :simmons.freenode.net 376 embot :End of /MOTD command.
+I, [2007-11-20T01:41:30.043612 #5836]  INFO -- : [INPUT] :freenode-connect!freenode@freenode/bot/connect PRIVMSG embot :VERSION
+I, [2007-11-20T01:41:30.044255 #5836]  INFO -- : [COMMAND] version
+I, [2007-11-20T01:41:30.044527 #5836]  INFO -- : >>> methbot_freenode  (01:41:30 AM) freenode-connect: VERSION
+I, [2007-11-20T01:41:31.313536 #5836]  INFO -- : [INPUT] :embot!n=1000@c-68-36-237-152.hsd1.nj.comcast.net JOIN :#eventmachine
+I, [2007-11-20T01:41:31.313950 #5836]  INFO -- : [OUTPUT] WHO #eventmachine
+
+I, [2007-11-20T01:41:31.314100 #5836]  INFO -- : [OUTPUT] MODE #eventmachine
+
+I, [2007-11-20T01:41:31.314422 #5836]  INFO -- : [INPUT] :simmons.freenode.net 332 embot #eventmachine :EventMachine (0.5.3): http://rubyeventmachine.com | RubyForge: http://rubyforge.org/projects/eventmachine | Wiki: http://eventmachine.rubyforge.org/wiki/wiki.pl
+I, [2007-11-20T01:41:31.314769 #5836]  INFO -- : [INPUT] :simmons.freenode.net 333 embot #eventmachine chino 1195448790
+I, [2007-11-20T01:41:31.315089 #5836]  INFO -- : [INPUT] :simmons.freenode.net 353 embot = #eventmachine :embot +Aria @chino @wyhaines +tmm1 @ChanServ 
+I, [2007-11-20T01:41:31.315345 #5836]  INFO -- : [INPUT] :simmons.freenode.net 366 embot #eventmachine :End of /NAMES list.
+I, [2007-11-20T01:41:31.407906 #5836]  INFO -- : [INPUT] :simmons.freenode.net 352 embot #eventmachine n=1000 c-68-36-237-152.hsd1.nj.comcast.net irc.freenode.net embot H :0 MethBot Beta
+I, [2007-11-20T01:41:31.408226 #5836]  INFO -- : [INPUT] :simmons.freenode.net 352 embot #eventmachine n=aredride acrux.theinternetco.net irc.freenode.net Aria H+ :0 Aredridel
+I, [2007-11-20T01:41:31.408515 #5836]  INFO -- : [INPUT] :simmons.freenode.net 352 embot #eventmachine n=daquino c-68-36-237-152.hsd1.nj.comcast.net irc.freenode.net chino H@ :0 purple
+I, [2007-11-20T01:41:31.408810 #5836]  INFO -- : [INPUT] :simmons.freenode.net 352 embot #eventmachine n=wyhaines sbrouter.vistabeam.com irc.freenode.net wyhaines H@ :0 Kirk Haines
+I, [2007-11-20T01:41:31.409096 #5836]  INFO -- : [INPUT] :simmons.freenode.net 352 embot #eventmachine n=aman c-71-62-100-113.hsd1.va.comcast.net irc.freenode.net tmm1 H+ :0 Aman Gupta
+I, [2007-11-20T01:41:31.409453 #5836]  INFO -- : [INPUT] :simmons.freenode.net 352 embot #eventmachine ChanServ services. irc.freenode.net ChanServ H@ :0 Channel Services
+I, [2007-11-20T01:41:31.410082 #5836]  INFO -- : [INPUT] :simmons.freenode.net 315 embot #eventmachine :End of /WHO list.
+I, [2007-11-20T01:41:31.410428 #5836]  INFO -- : [INPUT] :simmons.freenode.net 324 embot #eventmachine +mtncgz 
+I, [2007-11-20T01:41:31.410613 #5836]  INFO -- : [INPUT] :simmons.freenode.net 329 embot #eventmachine 1192309186
+I, [2007-11-20T01:41:31.593486 #5836]  INFO -- : [INPUT] :ChanServ!ChanServ@services. MODE #eventmachine +v embot 
+I, [2007-11-20T01:43:07.037202 #5845]  INFO -- : Connecting methbot_freenode to irc.freenode.org:
+I, [2007-11-20T01:43:07.139680 #5845]  INFO -- : Connected methbot_freenode to irc.freenode.org:6667
+I, [2007-11-20T01:43:07.139930 #5845]  INFO -- : [OUTPUT] USER 1000 forsaken irc.freenode.org :MethBot Beta
+
+I, [2007-11-20T01:43:07.140201 #5845]  INFO -- : [OUTPUT] NICK embot
+
+I, [2007-11-20T01:43:07.141712 #5845]  INFO -- : Bot (methbot_freenode) Loaded Plugin (resolve)
+I, [2007-11-20T01:43:07.143879 #5845]  INFO -- : Bot (methbot_freenode) Loaded Plugin (plugins)
+I, [2007-11-20T01:43:07.144687 #5845]  INFO -- : Bot (methbot_freenode) Loaded Plugin (mode)
+I, [2007-11-20T01:43:07.145406 #5845]  INFO -- : Bot (methbot_freenode) Loaded Plugin (help)
+I, [2007-11-20T01:43:07.146653 #5845]  INFO -- : Bot (methbot_freenode) Loaded Plugin (reload)
+I, [2007-11-20T01:43:07.147583 #5845]  INFO -- : Bot (methbot_freenode) Loaded Plugin (topic)
+W, [2007-11-20T01:43:07.148997 #5845]  WARN -- : [ALIAS] /home/daquino/local/var/checkouts/methbot/dist/bots/em_bot/db/aliases.yaml does not exist...
+I, [2007-11-20T01:43:07.149199 #5845]  INFO -- : Bot (methbot_freenode) Loaded Plugin (alias)
+I, [2007-11-20T01:43:07.149781 #5845]  INFO -- : Bot (methbot_freenode) Loaded Plugin (time_plugin)
+I, [2007-11-20T01:43:07.150426 #5845]  INFO -- : Bot (methbot_freenode) Loaded Plugin (ping)
+I, [2007-11-20T01:43:07.151138 #5845]  INFO -- : Bot (methbot_freenode) Loaded Plugin (fortune)
+I, [2007-11-20T01:43:07.152502 #5845]  INFO -- : Bot (methbot_freenode) Loaded Plugin (hangman)
+I, [2007-11-20T01:43:07.153576 #5845]  INFO -- : Bot (methbot_freenode) Loaded Plugin (ignore)
+I, [2007-11-20T01:43:07.315804 #5845]  INFO -- : [INPUT] NOTICE AUTH :*** Looking up your hostname...
+I, [2007-11-20T01:43:07.401060 #5845]  INFO -- : [INPUT] NOTICE AUTH :*** Found your hostname, welcome back
+I, [2007-11-20T01:43:07.401471 #5845]  INFO -- : [INPUT] NOTICE AUTH :*** Checking ident
+I, [2007-11-20T01:43:07.401711 #5845]  INFO -- : [INPUT] NOTICE AUTH :*** No identd (auth) response
+I, [2007-11-20T01:43:07.408728 #5845]  INFO -- : [INPUT] :niven.freenode.net 001 embot :Welcome to the freenode IRC Network embot
+I, [2007-11-20T01:43:07.409007 #5845]  INFO -- : [OUTPUT] JOIN #eventmachine
+
+I, [2007-11-20T01:43:07.409239 #5845]  INFO -- : [INPUT] :niven.freenode.net 002 embot :Your host is niven.freenode.net[niven.freenode.net/6667], running version hyperion-1.0.2b
+I, [2007-11-20T01:43:07.409520 #5845]  INFO -- : [INPUT] NOTICE embot :*** Your host is niven.freenode.net[niven.freenode.net/6667], running version hyperion-1.0.2b
+I, [2007-11-20T01:43:07.409765 #5845]  INFO -- : [INPUT] :niven.freenode.net 003 embot :This server was created Sat May 19 03:08:31 UTC 2007
+I, [2007-11-20T01:43:07.410000 #5845]  INFO -- : [INPUT] :niven.freenode.net 004 embot niven.freenode.net hyperion-1.0.2b aAbBcCdDeEfFGhHiIjkKlLmMnNopPQrRsStTuUvVwWxXyYzZ01234569*@ bcdefFhiIklmnoPqstv
+I, [2007-11-20T01:43:07.410255 #5845]  INFO -- : [INPUT] :niven.freenode.net 005 embot IRCD=dancer CAPAB CHANTYPES=# EXCEPTS INVEX CHANMODES=bdeIq,k,lfJD,cgijLmnPQrRstz CHANLIMIT=#:20 PREFIX=(ov)@+ MAXLIST=bdeI:50 MODES=4 STATUSMSG=@ KNOCK NICKLEN=16 :are supported by this server
+I, [2007-11-20T01:43:07.410507 #5845]  INFO -- : [INPUT] :niven.freenode.net 005 embot SAFELIST CASEMAPPING=ascii CHANNELLEN=30 TOPICLEN=450 KICKLEN=450 KEYLEN=23 USERLEN=10 HOSTLEN=63 SILENCE=50 :are supported by this server
+I, [2007-11-20T01:43:07.410748 #5845]  INFO -- : [INPUT] :niven.freenode.net 251 embot :There are 17644 listed and 16321 unlisted users on 27 servers
+I, [2007-11-20T01:43:07.410972 #5845]  INFO -- : [INPUT] :niven.freenode.net 252 embot 33 :flagged staff members
+I, [2007-11-20T01:43:07.411199 #5845]  INFO -- : [INPUT] :niven.freenode.net 254 embot 16743 :channels formed
+I, [2007-11-20T01:43:07.411420 #5845]  INFO -- : [INPUT] :niven.freenode.net 255 embot :I have 2079 clients and 0 servers
+I, [2007-11-20T01:43:07.411651 #5845]  INFO -- : [INPUT] :niven.freenode.net 265 embot :Current local  users: 2079  Max: 4025
+I, [2007-11-20T01:43:07.411874 #5845]  INFO -- : [INPUT] :niven.freenode.net 266 embot :Current global users: 33965  Max: 43148
+I, [2007-11-20T01:43:07.494363 #5845]  INFO -- : [INPUT] :niven.freenode.net 250 embot :Highest connection count: 4027 (4025 clients) (848358 since server was (re)started)
+I, [2007-11-20T01:43:07.494782 #5845]  INFO -- : [INPUT] :niven.freenode.net 375 embot :- niven.freenode.net Message of the Day - 
+I, [2007-11-20T01:43:07.495038 #5845]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- Welcome to niven.freenode.net in Corvallis, Oregon, US.  Our
+I, [2007-11-20T01:43:07.495273 #5845]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- thanks to Oregon State University for sponsoring this server!
+I, [2007-11-20T01:43:07.495526 #5845]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- 
+I, [2007-11-20T01:43:07.495753 #5845]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- NIVEN, LAWRENCE VAN COTT [1938-].  Architect of Known Space,
+I, [2007-11-20T01:43:07.495996 #5845]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- the setting of Protector, World of Ptaavs and the
+I, [2007-11-20T01:43:07.496234 #5845]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- Ringworld series.  Author of "Flash Crowd", a canonical
+I, [2007-11-20T01:43:07.496465 #5845]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- sociological hard science fiction short story dealing with
+I, [2007-11-20T01:43:07.496703 #5845]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- effects of near instantaneous transportation on a modern
+I, [2007-11-20T01:43:07.496937 #5845]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- technological society.  In addition, he is well known for his
+I, [2007-11-20T01:43:07.497172 #5845]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- collaborations with Jerry Pournelle, including The Mote in
+I, [2007-11-20T01:43:07.497402 #5845]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- God's Eye and Lucifer's Hammer.
+I, [2007-11-20T01:43:07.497625 #5845]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- 
+I, [2007-11-20T01:43:07.497868 #5845]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- You're using freenode, a service of Peer-Directed Projects
+I, [2007-11-20T01:43:07.498197 #5845]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- Center (http://freenode.net/pdpc.shtml).
+I, [2007-11-20T01:43:07.498460 #5845]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- 
+I, [2007-11-20T01:43:07.498690 #5845]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- freenode runs an open proxy scanner. Your use of the network
+I, [2007-11-20T01:43:07.498938 #5845]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- indicates your acceptance of this policy. For details on
+I, [2007-11-20T01:43:07.499186 #5845]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- freenode network policy, please take a look at our policy
+I, [2007-11-20T01:43:07.499411 #5845]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- page (http://freenode.net/policy.shtml). Thank you for using
+I, [2007-11-20T01:43:07.499647 #5845]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- the network!
+I, [2007-11-20T01:43:07.499880 #5845]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- 
+I, [2007-11-20T01:43:07.500111 #5845]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- freenode is a service of Peer-Directed Projects Center, an
+I, [2007-11-20T01:43:07.500339 #5845]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- IRS 501(c)(3) not-for-profit organization.  Our yearly
+I, [2007-11-20T01:43:07.500567 #5845]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- fundraiser will begin soon; if you'd like to donate early,
+I, [2007-11-20T01:43:07.500806 #5845]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- please see http://freenode.net/pdpc_donations.shtml for more
+I, [2007-11-20T01:43:07.501036 #5845]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- information.  Thank you for using freenode!
+I, [2007-11-20T01:43:07.501278 #5845]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- 
+I, [2007-11-20T01:43:07.501499 #5845]  INFO -- : [INPUT] :niven.freenode.net 376 embot :End of /MOTD command.
+I, [2007-11-20T01:43:07.501744 #5845]  INFO -- : [INPUT] :freenode-connect!freenode@freenode/bot/connect PRIVMSG embot :VERSION
+I, [2007-11-20T01:43:07.510358 #5845]  INFO -- : [COMMAND] version
+I, [2007-11-20T01:43:07.510742 #5845]  INFO -- : >>> methbot_freenode  (01:43:07 AM) freenode-connect: VERSION
+I, [2007-11-20T01:43:26.653665 #5846]  INFO -- : Connecting methbot_freenode to irc.freenode.org:
+I, [2007-11-20T01:43:26.658289 #5846]  INFO -- : Connected methbot_freenode to irc.freenode.org:6667
+I, [2007-11-20T01:43:26.658539 #5846]  INFO -- : [OUTPUT] USER 1000 forsaken irc.freenode.org :MethBot Beta
+
+I, [2007-11-20T01:43:26.658813 #5846]  INFO -- : [OUTPUT] NICK embot
+
+I, [2007-11-20T01:43:26.660333 #5846]  INFO -- : Bot (methbot_freenode) Loaded Plugin (resolve)
+I, [2007-11-20T01:43:26.661061 #5846]  INFO -- : Bot (methbot_freenode) Loaded Plugin (plugins)
+I, [2007-11-20T01:43:26.661758 #5846]  INFO -- : Bot (methbot_freenode) Loaded Plugin (mode)
+I, [2007-11-20T01:43:26.662456 #5846]  INFO -- : Bot (methbot_freenode) Loaded Plugin (help)
+I, [2007-11-20T01:43:26.663431 #5846]  INFO -- : Bot (methbot_freenode) Loaded Plugin (reload)
+I, [2007-11-20T01:43:26.664314 #5846]  INFO -- : Bot (methbot_freenode) Loaded Plugin (topic)
+W, [2007-11-20T01:43:26.665700 #5846]  WARN -- : [ALIAS] /home/daquino/local/var/checkouts/methbot/dist/bots/em_bot/db/aliases.yaml does not exist...
+I, [2007-11-20T01:43:26.665900 #5846]  INFO -- : Bot (methbot_freenode) Loaded Plugin (alias)
+I, [2007-11-20T01:43:26.666477 #5846]  INFO -- : Bot (methbot_freenode) Loaded Plugin (time_plugin)
+I, [2007-11-20T01:43:26.667073 #5846]  INFO -- : Bot (methbot_freenode) Loaded Plugin (ping)
+I, [2007-11-20T01:43:26.681702 #5846]  INFO -- : Bot (methbot_freenode) Loaded Plugin (fortune)
+I, [2007-11-20T01:43:26.683079 #5846]  INFO -- : Bot (methbot_freenode) Loaded Plugin (hangman)
+I, [2007-11-20T01:43:26.684169 #5846]  INFO -- : Bot (methbot_freenode) Loaded Plugin (ignore)
+I, [2007-11-20T01:43:26.909437 #5846]  INFO -- : [INPUT] NOTICE AUTH :*** Looking up your hostname...
+I, [2007-11-20T01:43:26.995373 #5846]  INFO -- : [INPUT] NOTICE AUTH :*** Found your hostname, welcome back
+I, [2007-11-20T01:43:26.995842 #5846]  INFO -- : [INPUT] NOTICE AUTH :*** Checking ident
+I, [2007-11-20T01:43:27.006098 #5846]  INFO -- : [INPUT] NOTICE AUTH :*** No identd (auth) response
+I, [2007-11-20T01:43:27.006477 #5846]  INFO -- : [INPUT] :niven.freenode.net 001 embot :Welcome to the freenode IRC Network embot
+I, [2007-11-20T01:43:27.006624 #5846]  INFO -- : [OUTPUT] JOIN #eventmachine
+
+I, [2007-11-20T01:43:27.006777 #5846]  INFO -- : [INPUT] :niven.freenode.net 002 embot :Your host is niven.freenode.net[niven.freenode.net/6667], running version hyperion-1.0.2b
+I, [2007-11-20T01:43:27.007011 #5846]  INFO -- : [INPUT] NOTICE embot :*** Your host is niven.freenode.net[niven.freenode.net/6667], running version hyperion-1.0.2b
+I, [2007-11-20T01:43:27.007270 #5846]  INFO -- : [INPUT] :niven.freenode.net 003 embot :This server was created Sat May 19 03:08:31 UTC 2007
+I, [2007-11-20T01:43:27.007505 #5846]  INFO -- : [INPUT] :niven.freenode.net 004 embot niven.freenode.net hyperion-1.0.2b aAbBcCdDeEfFGhHiIjkKlLmMnNopPQrRsStTuUvVwWxXyYzZ01234569*@ bcdefFhiIklmnoPqstv
+I, [2007-11-20T01:43:27.007734 #5846]  INFO -- : [INPUT] :niven.freenode.net 005 embot IRCD=dancer CAPAB CHANTYPES=# EXCEPTS INVEX CHANMODES=bdeIq,k,lfJD,cgijLmnPQrRstz CHANLIMIT=#:20 PREFIX=(ov)@+ MAXLIST=bdeI:50 MODES=4 STATUSMSG=@ KNOCK NICKLEN=16 :are supported by this server
+I, [2007-11-20T01:43:27.007971 #5846]  INFO -- : [INPUT] :niven.freenode.net 005 embot SAFELIST CASEMAPPING=ascii CHANNELLEN=30 TOPICLEN=450 KICKLEN=450 KEYLEN=23 USERLEN=10 HOSTLEN=63 SILENCE=50 :are supported by this server
+I, [2007-11-20T01:43:27.008212 #5846]  INFO -- : [INPUT] :niven.freenode.net 251 embot :There are 17641 listed and 16320 unlisted users on 27 servers
+I, [2007-11-20T01:43:27.008438 #5846]  INFO -- : [INPUT] :niven.freenode.net 252 embot 33 :flagged staff members
+I, [2007-11-20T01:43:27.008674 #5846]  INFO -- : [INPUT] :niven.freenode.net 254 embot 16741 :channels formed
+I, [2007-11-20T01:43:27.008898 #5846]  INFO -- : [INPUT] :niven.freenode.net 255 embot :I have 2080 clients and 0 servers
+I, [2007-11-20T01:43:27.009129 #5846]  INFO -- : [INPUT] :niven.freenode.net 265 embot :Current local  users: 2080  Max: 4025
+I, [2007-11-20T01:43:27.009356 #5846]  INFO -- : [INPUT] :niven.freenode.net 266 embot :Current global users: 33961  Max: 43148
+I, [2007-11-20T01:43:27.085869 #5846]  INFO -- : [INPUT] :niven.freenode.net 250 embot :Highest connection count: 4027 (4025 clients) (848361 since server was (re)started)
+I, [2007-11-20T01:43:27.086290 #5846]  INFO -- : [INPUT] :niven.freenode.net 375 embot :- niven.freenode.net Message of the Day - 
+I, [2007-11-20T01:43:27.086542 #5846]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- Welcome to niven.freenode.net in Corvallis, Oregon, US.  Our
+I, [2007-11-20T01:43:27.086822 #5846]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- thanks to Oregon State University for sponsoring this server!
+I, [2007-11-20T01:43:27.087075 #5846]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- 
+I, [2007-11-20T01:43:27.087320 #5846]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- NIVEN, LAWRENCE VAN COTT [1938-].  Architect of Known Space,
+I, [2007-11-20T01:43:27.087558 #5846]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- the setting of Protector, World of Ptaavs and the
+I, [2007-11-20T01:43:27.087789 #5846]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- Ringworld series.  Author of "Flash Crowd", a canonical
+I, [2007-11-20T01:43:27.088025 #5846]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- sociological hard science fiction short story dealing with
+I, [2007-11-20T01:43:27.088257 #5846]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- effects of near instantaneous transportation on a modern
+I, [2007-11-20T01:43:27.088488 #5846]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- technological society.  In addition, he is well known for his
+I, [2007-11-20T01:43:27.088731 #5846]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- collaborations with Jerry Pournelle, including The Mote in
+I, [2007-11-20T01:43:27.089018 #5846]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- God's Eye and Lucifer's Hammer.
+I, [2007-11-20T01:43:27.089257 #5846]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- 
+I, [2007-11-20T01:43:27.089493 #5846]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- You're using freenode, a service of Peer-Directed Projects
+I, [2007-11-20T01:43:27.089729 #5846]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- Center (http://freenode.net/pdpc.shtml).
+I, [2007-11-20T01:43:27.089966 #5846]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- 
+I, [2007-11-20T01:43:27.090191 #5846]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- freenode runs an open proxy scanner. Your use of the network
+I, [2007-11-20T01:43:27.090475 #5846]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- indicates your acceptance of this policy. For details on
+I, [2007-11-20T01:43:27.090733 #5846]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- freenode network policy, please take a look at our policy
+I, [2007-11-20T01:43:27.090963 #5846]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- page (http://freenode.net/policy.shtml). Thank you for using
+I, [2007-11-20T01:43:27.091410 #5846]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- the network!
+I, [2007-11-20T01:43:27.091690 #5846]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- 
+I, [2007-11-20T01:43:27.091930 #5846]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- freenode is a service of Peer-Directed Projects Center, an
+I, [2007-11-20T01:43:27.092166 #5846]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- IRS 501(c)(3) not-for-profit organization.  Our yearly
+I, [2007-11-20T01:43:27.092398 #5846]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- fundraiser will begin soon; if you'd like to donate early,
+I, [2007-11-20T01:43:27.092635 #5846]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- please see http://freenode.net/pdpc_donations.shtml for more
+I, [2007-11-20T01:43:27.092865 #5846]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- information.  Thank you for using freenode!
+I, [2007-11-20T01:43:27.093106 #5846]  INFO -- : [INPUT] :niven.freenode.net 372 embot :- 
+I, [2007-11-20T01:43:27.093331 #5846]  INFO -- : [INPUT] :niven.freenode.net 376 embot :End of /MOTD command.
+I, [2007-11-20T01:43:27.093570 #5846]  INFO -- : [INPUT] :freenode-connect!freenode@freenode/bot/connect PRIVMSG embot :VERSION
+I, [2007-11-20T01:43:27.094056 #5846]  INFO -- : [COMMAND] version
+I, [2007-11-20T01:43:27.094336 #5846]  INFO -- : >>> methbot_freenode  (01:43:27 AM) freenode-connect: VERSION
+I, [2007-11-20T01:43:28.299071 #5846]  INFO -- : [INPUT] :embot!n=1000@c-68-36-237-152.hsd1.nj.comcast.net JOIN :#eventmachine
+I, [2007-11-20T01:43:28.299460 #5846]  INFO -- : [OUTPUT] WHO #eventmachine
+
+I, [2007-11-20T01:43:28.299612 #5846]  INFO -- : [OUTPUT] MODE #eventmachine
+
+I, [2007-11-20T01:43:28.299935 #5846]  INFO -- : [INPUT] :niven.freenode.net 332 embot #eventmachine :EventMachine (0.5.3): http://rubyeventmachine.com | RubyForge: http://rubyforge.org/projects/eventmachine | Wiki: http://eventmachine.rubyforge.org/wiki/wiki.pl
+I, [2007-11-20T01:43:28.300206 #5846]  INFO -- : [INPUT] :niven.freenode.net 333 embot #eventmachine chino 1195448790
+I, [2007-11-20T01:43:28.300455 #5846]  INFO -- : [INPUT] :niven.freenode.net 353 embot = #eventmachine :embot +Aria @chino @wyhaines +tmm1 @ChanServ 
+I, [2007-11-20T01:43:28.300691 #5846]  INFO -- : [INPUT] :niven.freenode.net 366 embot #eventmachine :End of /NAMES list.
+I, [2007-11-20T01:43:28.389120 #5846]  INFO -- : [INPUT] :ChanServ!ChanServ@services. MODE #eventmachine +v embot 
+I, [2007-11-20T01:43:28.516151 #5846]  INFO -- : [INPUT] :niven.freenode.net 352 embot #eventmachine n=1000 c-68-36-237-152.hsd1.nj.comcast.net irc.freenode.net embot H+ :0 MethBot Beta
+I, [2007-11-20T01:43:28.516494 #5846]  INFO -- : [INPUT] :niven.freenode.net 352 embot #eventmachine n=aredride acrux.theinternetco.net irc.freenode.net Aria H+ :0 Aredridel
+I, [2007-11-20T01:43:28.516794 #5846]  INFO -- : [INPUT] :niven.freenode.net 352 embot #eventmachine n=daquino c-68-36-237-152.hsd1.nj.comcast.net irc.freenode.net chino H@ :0 purple
+I, [2007-11-20T01:43:28.517169 #5846]  INFO -- : [INPUT] :niven.freenode.net 352 embot #eventmachine n=wyhaines sbrouter.vistabeam.com irc.freenode.net wyhaines H@ :0 Kirk Haines
+I, [2007-11-20T01:43:28.517474 #5846]  INFO -- : [INPUT] :niven.freenode.net 352 embot #eventmachine n=aman c-71-62-100-113.hsd1.va.comcast.net irc.freenode.net tmm1 H+ :0 Aman Gupta
+I, [2007-11-20T01:43:28.517778 #5846]  INFO -- : [INPUT] :niven.freenode.net 352 embot #eventmachine ChanServ services. irc.freenode.net ChanServ H@ :0 Channel Services
+I, [2007-11-20T01:43:28.518078 #5846]  INFO -- : [INPUT] :niven.freenode.net 315 embot #eventmachine :End of /WHO list.
+I, [2007-11-20T01:43:28.518354 #5846]  INFO -- : [INPUT] :niven.freenode.net 324 embot #eventmachine +mtncgz 
+I, [2007-11-20T01:43:28.518521 #5846]  INFO -- : [INPUT] :niven.freenode.net 329 embot #eventmachine 1192309186

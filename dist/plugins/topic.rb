@@ -15,7 +15,7 @@ class Topic < Meth::Plugin
   def command m
     message = m.params.join(' ')
     if message.length < 1
-      m.reply help
+      m.reply "The current topic is: #{m.channel.topic}"
       return
     end
     handler = Proc.new{|m2|

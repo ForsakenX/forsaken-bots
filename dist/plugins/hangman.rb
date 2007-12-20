@@ -48,10 +48,10 @@ class Hangman < Meth::Plugin
     "hangman start [chances] => start a game.  "+
              "Optionally set the number of [chances].  "+
              "Must be a number, default is 10.  "+
-    "hangman stop => stop current game.  "+
     "hangman try <letter> => Try a letter.  "+
     "hangman guessed => List tried letters.  "+
     "hangman found => List found letters.  "
+#    "hangman stop => stop current game.  "+
   end
 
   def command m
@@ -74,9 +74,9 @@ class Hangman < Meth::Plugin
         #m.reply "The word is #{@game.word}"
       end
     #
-    when "stop"
-      m.reply "Game stopped, answer was: #{@game.word}"
-      @game = nil
+#    when "stop"
+#      m.reply "Game stopped, answer was: #{@game.word}"
+#      @game = nil
     #
     when "try"
       unless @game

@@ -19,6 +19,8 @@ class KeyboardHandler < EM::Connection
       _! params
     when "bots"
       bots
+    when "reload"
+      reload
     # help
     else #when "help"
       reply "Not a recognized command. "+
@@ -80,6 +82,11 @@ class KeyboardHandler < EM::Connection
       reply "ERROR - #{$!}\n#{$@.join('\n')}"
     end
   end
+  def reload
+    close_connection
+    load "#{DIST}/lib/keyboard_handler.rb"
+    EM.open_keyboard(KeyboardHandler)
+  end
   # help
   def help params=[]
     topic = params.shift
@@ -92,8 +99,10 @@ class KeyboardHandler < EM::Connection
       "! <code>"
     when "bots"
       "bots => returns bots"
+    when "reload"
+      "reload => reloads keybaord handler"
     else
-      "Commands: help, say, set, !"
+      "Commands: help, say, set, bots, reload, !"
     end
   end
   # reply
