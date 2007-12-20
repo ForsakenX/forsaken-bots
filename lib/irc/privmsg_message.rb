@@ -5,17 +5,23 @@ class Irc::PrivMessage < Irc::Message
 
   # :methods!1000@c-68-36-237-152.hsd1.nj.comcast.net PRIVMSG MethBot :,hi 1 2 3
   # :methods!1000@c-68-36-237-152.hsd1.nj.comcast.net PRIVMSG #tester :MethBot: hi 1 2 3
+  # :Deadly_Methods!*@* PRIVMSG #GSP!Forsaken :ip
   def initialize(client, line)
     super(client, line)
+
+    # working copy
+#    line = @line.dup
 
     # :
     # garbage
     line.slice!(/^:/)
 
     # methods!1000@c-68-36-237-152.hsd1.nj.comcast.net 
+    # Deadly_Methods!*@* PRIVMSG #GSP!Forsaken :ip
     # source
     @source = nil
     source = line.slice!(/[^ ]*/)
+    # PRIVMSG #GSP!Forsaken :ip
     if source =~ /([^!]*)!([^@]*)@([^\n]*)/
       user = $2
       host = $3
@@ -34,17 +40,17 @@ class Irc::PrivMessage < Irc::Message
     return if @client.ignored.include? @source.nick.downcase
 
     # " PRIVMSG "
+    # #GSP!Forsaken :ip
     # garbage
     line.slice!(/ PRIVMSG /)
 
     # "(MethBot|#tester)"
+    # #GSP!Forsaken :ip
     # where this line came from
-    @to = line.slice!(/^([^ ]*)/)
+    @to = line.slice!(/^[^ ]*/)
 
     # channel line ?
-    if @channel = (@to =~ /#/) ? @to : nil
-      @source.join @channel
-    end
+    @channel = (@to =~ /^#/) ? @to : nil
 
     # personal line ?
     @personal = @channel ? false : true
@@ -57,10 +63,13 @@ class Irc::PrivMessage < Irc::Message
       @replyto = @source.nil? ? nil : @source.nick
     end
 
+client.say "#GSP!Forsaken", client.channels.inspect
+
     # channel object
-    @channel = client.channels[@channel] if @channel
+    @channel = client.channels[@channel.downcase] if @channel
 
     # " :"
+    # ip
     # garbage
     line.slice!(/ :/)
 

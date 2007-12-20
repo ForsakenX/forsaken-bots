@@ -21,9 +21,9 @@ class Irc::KickMessage < Irc::Message
 
     unless @user = Irc::User.find(client.server,kicked)
       @client.logger.error "[KICK] Kicked was not found..."
+    else
+      @user.destroy
     end
-
-    @user.destroy
 
     @client.event.call('irc.message.kick',self)
 

@@ -22,8 +22,7 @@ class Irc::Channel
   # Instance
   #
   attr_reader   :server, :name
-  attr_writer   :topic
-  attr_accessor :mode
+  attr_accessor :mode, :topic
   def initialize(server,channel,mode=nil)
     @server = server
     @name   = channel
@@ -34,7 +33,7 @@ class Irc::Channel
     users = []
     Irc::User.users.each do |user|
       user.channels.each do |name,channel|
-        users << user if @name == name &&
+        users << user if @name.downcase == name.downcase &&
                          @server[:host] == channel.server[:host] &&
                          @server[:port] == channel.server[:port]
       end

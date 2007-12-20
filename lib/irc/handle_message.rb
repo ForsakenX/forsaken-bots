@@ -45,8 +45,16 @@ class Irc::HandleMessage
     #when /^:[^ ]* (375|372|376)/
 
     # channel topic
-    #when /^[^ ]* 332/
-      #client.channels[channel].topic = topic
+      # :heinlein.freenode.net 332 FsknBot #forsaken :
+      # Forsaken: 0 Games Running | http://forsakenplanet.tk | RIP Propain (age 36)
+    when /^[^ ]* 332 [^ ]* (#[^ ]+) :*([^\n]*)/
+
+      channel = $1
+      topic   = $2
+
+      if channel = client.channels[channel.downcase]
+        channel.topic = topic
+      end
 
     # 1st whois line (start)
     # WHO does this
@@ -125,7 +133,7 @@ class Irc::HandleMessage
       channel = $1
       mode    = $2
 
-      if channel = client.channels[channel]
+      if channel = client.channels[channel.downcase]
         channel.mode = mode
       else
         client.logger.warn "[324] unknown channel."

@@ -94,11 +94,12 @@ class Irc::Client < EM::Connection
       # scan up to extra 50 non space characters
       # biggest word in english language is 45 characters
       # this stops worsd from getting cut up
-      message.scan(/.{1,300}[^ ]{0,50}/m){|chunk|
+      message.scan(/.{1,350}[^ ]{0,50}/m){|chunk|
         next if chunk.length < 1
         send_data "PRIVMSG #{to} :#{chunk}\n"
       }
     end
+    send_data "\n"
     message
   end
 
@@ -155,6 +156,7 @@ class Irc::Client < EM::Connection
   # connect closed
   def unbind
     reconnect @server[:host], @server[:port]
+    post_init
   end
 
   # new line recieved

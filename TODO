@@ -30,4 +30,34 @@ move bots to seperate processes
 use drb for communication between bots
 allow single plugin system etc for each instance
 
+Rimes plugin
+
+Cheer plugin
+
+Seen  plugin
+Loger plugin
+
+argument ip to scan
+
+
+sms gateway
+keyboard plugin
+alias and plans bad stuff
+fix up event system
+sqlite
+time plugin with geoip_city
+console change log level
+
+launcher plus public xml list
+
+
+Fix bot protocol
+  each line can only be 512bytes (completely including the irc overhead)
+  so "PRIVMSG #channel :#{message}" would really end up as... ":#{hostmask} PRIVMSG #channel :#{message}".length
+  when being sent to a client and that must be 512bytes...
+  message cannot throttle over 1500bytes in 2 seconds
+  
+
+
+
 
