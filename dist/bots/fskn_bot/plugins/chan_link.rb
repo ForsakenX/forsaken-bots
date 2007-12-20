@@ -2,33 +2,31 @@ class ChanLink < Meth::Plugin
 
   def initialize *args
     super *args
-    if @bot.name != 'fskn_bot_games'
-      setup_events
-      register_events
+    setup_events
+    if @bot.name == 'fskn_bot'
+      $event.register('chan.link',@chanlink_event)
+    end
+    if @bot.name == 'krocked'
+      @bot.event.register('irc.message.privmsg',@privmsg_event)
+      @bot.event.register('irc.message.join',@join_event)
+      @bot.event.register('irc.message.part',@part_event)
+      @bot.event.register('irc.message.quit',@quit_event)
+      @bot.event.register('irc.message.kick',@kick_event)
     end
   end
 
   def cleanup *args
     super *args
-    unregister_events
-  end
-
-  def register_events
-    $event.register('chan.link',@chanlink_event)
-    @bot.event.register('irc.message.privmsg',@privmsg_event)
-    @bot.event.register('irc.message.join',@join_event)
-    @bot.event.register('irc.message.part',@part_event)
-    @bot.event.register('irc.message.quit',@quit_event)
-    @bot.event.register('irc.message.kick',@kick_event)
-  end
-
-  def unregister_events
-    $event.unregister('chan.link',@chanlink_event)
-    @bot.event.unregister('irc.message.privmsg',@privmsg_event)
-    @bot.event.unregister('irc.message.join',@join_event)
-    @bot.event.unregister('irc.message.part',@part_event)
-    @bot.event.unregister('irc.message.quit',@quit_event)
-    @bot.event.unregister('irc.message.kick',@kick_event)
+    if @bot.name == 'fskn_bot'
+      $event.unregister('chan.link',@chanlink_event)
+    end
+    if @bot.name == 'krocked'
+      @bot.event.unregister('irc.message.privmsg',@privmsg_event)
+      @bot.event.unregister('irc.message.join',@join_event)
+      @bot.event.unregister('irc.message.part',@part_event)
+      @bot.event.unregister('irc.message.quit',@quit_event)
+      @bot.event.unregister('irc.message.kick',@kick_event)
+    end
   end
 
   def setup_events
@@ -49,12 +47,7 @@ class ChanLink < Meth::Plugin
     
     # Copy message between channels
     @privmsg_event = Proc.new{|m|
-      next if m.personal
-      next unless @bot.command_manager.commands[m.command].nil?
       message = m.message
-      # sending to gamespy requires semi colon to send
-      next if @bot.nick    != 'krocked' &&
-              message.slice!(/^;/).nil?
       output = "#{m.source.nick}: #{message}"
       $event.call('chan.link',[self,output,m])
     }
@@ -88,21 +81,3 @@ class ChanLink < Meth::Plugin
   end
     
 end
-
- 
-=begin
-      next unless @bot.name == 'krocked'
-      nick = "gs-" + m.user.nick
-      Meth::Bot.new({
-        'name' => nick,
-        'host' => 'irc.freenode.org',
-        'channels' => ["#forsaken"],
-        'nick'   => nick,
-        'realname' => 'nobody',
-        'logger' => {
-          'severity' => 'DEBUG',
-          'rotate'   => 'daily',
-        }
-      })
-=end
-
