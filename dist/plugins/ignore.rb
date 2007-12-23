@@ -5,8 +5,7 @@ class Ignore < Meth::Plugin
     @bot.command_manager.register("unignore",self)
     @bot.command_manager.register("ignored",self)
     @db = File.expand_path("#{DIST}/bots/#{$bot}/db/ignored.yaml")
-    @ignored = []
-    @ignored = (YAML.load_file(@db)||[]) if File.exists?(@db) 
+    @ignored = File.exists?(@db) ? (YAML.load_file(@db)||[]) : []
     @ignored.each do |nick|
       @bot.ignored << nick unless @bot.ignored.include?(nick)
     end
