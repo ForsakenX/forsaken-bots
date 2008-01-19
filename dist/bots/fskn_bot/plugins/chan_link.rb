@@ -36,13 +36,8 @@ class ChanLink < Meth::Plugin
       next if (args.nil? || !args.is_a?(Array))
       # rename args
       (instance,message,m) = args
-      # dont send to same server
-      next if self == instance
-      # send to all channels
-      @bot.channels.keys.each do |channel|
-        # mirror messages to other channel
-        @bot.say(channel, message)
-      end
+      # mirror messages to other channel
+      @bot.say('#forsaken', message)
     }
     
     # Copy message between channels

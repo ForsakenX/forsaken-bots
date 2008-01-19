@@ -1,0 +1,4 @@
+USER blowme localhost irc.freenode.net :chocolatecock
+NICK chocolatecock
+JOIN #projectx
+WHO #projectx

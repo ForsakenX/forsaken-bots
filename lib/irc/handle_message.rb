@@ -44,17 +44,40 @@ class Irc::HandleMessage
     # motd
     #when /^:[^ ]* (375|372|376)/
 
+    ##
     # channel topic
-      # :heinlein.freenode.net 332 FsknBot #forsaken :
-      # Forsaken: 0 Games Running | http://forsakenplanet.tk | RIP Propain (age 36)
-    when /^[^ ]* 332 [^ ]* (#[^ ]+) :*([^\n]*)/
+    ##
 
-      channel = $1
-      topic   = $2
+      # :heinlein.freenode.net
+      # 332
+      # FsknBot #forsaken :
+      # Forsaken: 0 Games Running | http://forsakenplanet.tk | RIP Propain (age 36)
+
+      # :methods!n=daquino@c-68-36-237-152.hsd1.nj.comcast.net
+      # TOPIC
+      # #forsaken :test4
+
+#:methods!n=daquino@c-68-36-237-152.hsd1.nj.comcast.net TOPIC #forsaken :test6
+
+
+    when /^[^ ]* (332|TOPIC) ([^#] )*(#[^ ]+) :(.*)/im
+     
+      type    = $1 # 332 or TOPIC
+      sender  = $2 #
+      channel = $3 #
+      topic   = $4 #
+
+      puts "[TOPIC] #{$1} #{$2} #{$3} #{$4}"
 
       if channel = client.channels[channel.downcase]
         channel.topic = topic
+      else
+        puts "[HERE] #{channel.downcase} does not exist."
       end
+
+    ##
+    # 1st whois line (start)
+    ##
 
     # 1st whois line (start)
     # WHO does this

@@ -1,0 +1,11 @@
+# Example .gsirc file, edit this to match your info
+dumptraffic=0
+email=mr.danielaquino@gmail.com
+gamekey=Xn221z
+gamename=gslive
+gsirc=0
+# countrycode,?,?,?,birthday,month,year,?,?,?,?
+gs_pinfo=US,,0,1280,1,4,1980,0.000000,0.000000,0,
+localport=6668
+password=PASSWORD
+primarynickname=krocked

@@ -63,8 +63,6 @@ class Irc::PrivMessage < Irc::Message
       @replyto = @source.nil? ? nil : @source.nick
     end
 
-client.say "#GSP!Forsaken", client.channels.inspect
-
     # channel object
     @channel = client.channels[@channel.downcase] if @channel
 
@@ -77,11 +75,6 @@ client.say "#GSP!Forsaken", client.channels.inspect
     # "MethBot: hi 1 2 3"
     # the rest is the message
     @message = line
-
-    # ctcp VERSION request
-      # :nick!user@ip-address PRIVMSG your-nick :VERSION
-    if @personal && @message =~ /^VERSION$/i
-    end
 
     # send it to the user
     @client.event.call('irc.message.privmsg',self)

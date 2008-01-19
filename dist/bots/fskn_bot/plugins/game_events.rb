@@ -2,26 +2,20 @@ class GameEvents < Meth::Plugin
 
   def initialize *args
     super *args
-    if @bot.name == 'fskn_bot' || @bot.name == 'krocked'
-      setup_messages
-      GameModel.event.register("game.started",@game_started)
-      GameModel.event.register("game.finished",@game_stopped)
-      GameModel.event.register("game.time.out",@game_timeout)
-    end
-    if @bot.name == 'fskn_bot'
-      GameModel.event.register("game.started",@topic_change)
-      GameModel.event.register("game.finished",@topic_change)
-    end
+    setup_messages
+    GameModel.event.register("game.started",@game_started)
+    GameModel.event.register("game.finished",@game_stopped)
+    GameModel.event.register("game.time.out",@game_timeout)
+    GameModel.event.register("game.started",@topic_change)
+    GameModel.event.register("game.finished",@topic_change)
   end
 
   def cleanup
     GameModel.event.unregister("game.started",@game_started)
     GameModel.event.unregister("game.finished",@game_stopped)
     GameModel.event.unregister("game.time.out",@game_timeout)
-    if @bot.name == 'fskn_bot'
-      GameModel.event.unregister("game.started",@topic_change)
-      GameModel.event.unregister("game.finished",@topic_change)
-    end
+    GameModel.event.unregister("game.started",@topic_change)
+    GameModel.event.unregister("game.finished",@topic_change)
   end
 
   def setup_messages

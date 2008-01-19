@@ -38,14 +38,13 @@ class Ip < Meth::Plugin
     list = list.join(', ')
 
     # send the answer
-    if m.personal || targets.length>0
+
+
+    if m.personal || targets.length > 0
       m.reply list
     else
-      #m.reply "A full list of ip numbers from #{m.channel.name} has been messaged to you. "+
-      #        "To print the message here you have to specify a search pattern. "+
-      #        "For more info type 'ip help'"
-      #m.reply_directly list
-      m.reply list
+      m.reply "A full list of ip numbers from #{m.channel.name} has been messaged to you."
+      m.reply_directly list
     end
 
   end
