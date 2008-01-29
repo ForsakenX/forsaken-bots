@@ -1,47 +1,31 @@
 class Topic < Meth::Plugin
 
-  # initialize
   def initialize *args
     super *args
     @bot.command_manager.register("topic",self)
   end
 
-  # help
   def help(m=nil, topic=nil)
-    "topic [message] => Sets the topic to [message]."
+    "topic [message] => Resets the last section of topic to [message].  "+
+    "Topic should be relavant to the current conversations."
   end
 
-  # command called
   def command m
-    message = m.params.join(' ')
-    if message.length < 1
-      m.reply "The current topic is: #{m.channel.topic}"
-      return
+    # extract message
+    topic = m.params.join(' ')
+    # insert default message
+    if topic.nil? || (topic.length < 1)
+      m.reply help
+      return false
     end
-    handler = Proc.new{|m2|
-      next unless m2.source.nick.downcase == m.source.nick.downcase
-      # check response
-      case m2.command
-      when /yes/i
-        m.reply "Changing topic..."
-        topic(m.channel.name,message)
-      when /no/i
-        m.reply "Topic change canceled..."
-      else
-        m.reply "#{m.source.nick}: Please respond with yes or no..."
-        next
-      end
-      # not yes or topic set
-      @bot.event.unregister("meth.command",handler)
-    }
-    @bot.event.register("meth.command",handler)
-    m.reply "Do you really want to change the topic to, \"#{message}\" ?"
-  end
-
-  # set topic
-  private
-  def topic(channel, topic)
-    @bot.send_data "TOPIC #{channel} :#{topic}\n"
+    # remove special devider ||
+    topic.gsub!(/\|+/,'|')
+    # format the new topic
+    topic = "|| #{topic}"
+    # replace user topic section with new topic
+    topic = m.channel.topic.gsub(/\|\|.*$/m,topic)
+    # set the topic
+    @bot.send_data "TOPIC #{m.channel.name} :#{topic}\n"
   end
 
 end

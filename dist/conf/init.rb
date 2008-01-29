@@ -2,7 +2,7 @@ puts "Running init.rb"
 
 # load lib
 puts "Loading Global lib/models"
-Dir["#{DIST}/lib/*.rb","#{DIST}/models/*.rb"].each do |m|
+Dir["#{DIST}/lib/*.rb","#{DIST}/models/*.rb","#{DIST}/lib/*.so"].each do |m|
   if FileTest.executable?(m)
     require m
     puts "Loaded #{File.basename(m)}"

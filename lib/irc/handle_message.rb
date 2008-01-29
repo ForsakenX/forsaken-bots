@@ -60,14 +60,14 @@ class Irc::HandleMessage
 #:methods!n=daquino@c-68-36-237-152.hsd1.nj.comcast.net TOPIC #forsaken :test6
 
 
-    when /^[^ ]* (332|TOPIC) ([^#] )*(#[^ ]+) :(.*)/im
+    when /^[^ ]* (332|TOPIC) ([^#])* *(#[^ ]+) :(.*)/im
      
       type    = $1 # 332 or TOPIC
       sender  = $2 #
       channel = $3 #
       topic   = $4 #
 
-      puts "[TOPIC] #{$1} #{$2} #{$3} #{$4}"
+      #puts "[TOPIC] #{$1} #{$2} #{$3} #{$4}"
 
       if channel = client.channels[channel.downcase]
         channel.topic = topic
