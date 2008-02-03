@@ -1,21 +1,21 @@
-class Irc::HandleMessage
+module Irc::HandleMessage
 
-  def initialize(client,line)
+  def handle_message line
 
     case line
 
     # IRCD says fatal error
     when /^ERROR/i
-      client.logger.error "ERROR - Server disconnecting..."
+      @logger.error "ERROR - Server disconnecting..."
 
     # ping
     when /^PING ([^\n]*)$/i
-      client.send_data "PONG #{$1}\n"
+      send_data "PONG #{$1}\n"
 
     # login completed
-    when /^:[^ ]* 001 /
+    when /^:[^ ]* 001/
       # join default channels
-      client.send_join client.config['channels']
+      send_join @default_channels
 
     # set nick succeeded
       # :_0_fskn_games!1000@c-68-36-237-152.hsd1.nj.comcast.net NICK :_1_fskn_games
@@ -25,11 +25,11 @@ class Irc::HandleMessage
       new_nick = $2
 
       # i successfully changed my nick
-      if client.nick.downcase == old_nick.downcase
-        client.nick = new_nick
+      if nick.downcase == old_nick.downcase
+        nick = new_nick
       # someone else changed their nick
       else
-        if user = Irc::User.find(client.server,old_nick)
+        if user = Irc::User.find(old_nick)
           user.nick = new_nick
         # this is fine cause multiple bots can share a user list if on same server
         else
@@ -39,7 +39,7 @@ class Irc::HandleMessage
 
     # set nick failed
     when /^:[^ ]* 433 /i
-      client.send_nick "#{client.nick_sent}_"
+      send_nick "#{nick_sent}_"
 
     # motd
     #when /^:[^ ]* (375|372|376)/
@@ -69,7 +69,7 @@ class Irc::HandleMessage
 
       #puts "[TOPIC] #{$1} #{$2} #{$3} #{$4}"
 
-      if channel = client.channels[channel.downcase]
+      if channel = channels[channel.downcase]
         channel.topic = topic
       else
         puts "[HERE] #{channel.downcase} does not exist."
@@ -94,7 +94,7 @@ class Irc::HandleMessage
       # list of channels the user is in
       #channels = "#{$2}".gsub('@','').split(' ')
       # find user
-      #user = Irc::User.find(client.server,nick)
+      #user = Irc::User.find(nick)
       # join them to the channel
       #channels.each do |channel|
       #  user.join channel
@@ -131,19 +131,19 @@ class Irc::HandleMessage
       realname = $7 # MethBot
 
       # add or update user
-      if u = Irc::User.find(client.server,nick)
+      if u = Irc::User.find(nick)
         u.join channel
         u.flags = flags
       else
         u = Irc::User.create({
-              :server => client.server, :channels => [channel],
+              :channels => [channel],
               :user   => user,          :host     => host,
               :nick   => nick,          :flags    => flags,
               :realname => realname})
       end
 
       # get list of chats the user is in
-      #client.send_data "WHOIS #{u.nick}\n"
+      #send_data "WHOIS #{u.nick}\n"
 
     # end of who list
     #when /^:[^ ]* 315/
@@ -156,10 +156,10 @@ class Irc::HandleMessage
       channel = $1
       mode    = $2
 
-      if channel = client.channels[channel.downcase]
+      if channel = channels[channel.downcase]
         channel.mode = mode
       else
-        client.logger.warn "[324] unknown channel."
+        logger.warn "[324] unknown channel."
       end
 
     # mode changes
@@ -167,35 +167,35 @@ class Irc::HandleMessage
 
     # join
     when /^:[^ ]* JOIN/
-      m = Irc::JoinMessage.new(client,line)
+      m = Irc::JoinMessage.new(line)
 
     # part
     when /^:[^ ]* PART/i
-      m = Irc::PartMessage.new(client,line)
+      m = Irc::PartMessage.new(line)
 
     # quit
       # :methods!1000@c-68-36-237-152.hsd1.nj.comcast.net
       # QUIT :Quit: Leaving.
     when /^:[^ ]* QUIT/i
-      m = Irc::QuitMessage.new(client,line)
+      m = Irc::QuitMessage.new(line)
 
     # kick
       # :methods!n=daquino@c-68-36-237-152.hsd1.nj.comcast.net
       # KICK #forsaken DIII-The_Lion :methods
     when /^:[^ ]* KICK/i
-      m = Irc::KickMessage.new(client,line)
+      m = Irc::KickMessage.new(line)
 
     # privmsg
     when /^:[^ ]* PRIVMSG/i
-      m = Irc::PrivMessage.new(client,line)
+      m = Irc::PrivMessage.new(line)
     
     # notice
     when /^:[^ ]* NOTICE/i
-      m = Irc::NoticeMessage.new(client,line)
+      m = Irc::NoticeMessage.new(line)
 
     # unknown
     else
-      m = Irc::UnknownMessage.new(client,line)
+      m = Irc::UnknownMessage.new(line)
     end
 
   end

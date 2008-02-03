@@ -7,15 +7,13 @@ class Irc::User
   class << self
     def users; @@users; end
     def create user
-      unless u = find(user[:server],user[:nick])
-        u = new(user)
-        @@users << u
-      end
+      return u if u = find(user[:nick])
+      u = new(user)
+      @@users << u
       u
     end
-    def find(server,nick)
+    def find(nick)
       @@users.each do |user|
-        next unless user.server[:host] == server[:host]
         return user if user.nick.downcase == nick.downcase
       end
       nil
@@ -39,22 +37,21 @@ class Irc::User
       found
     end
   end
+
   #
   #  User Instance
   #
+
   # reader/writers
-  attr_reader :server, :realname, :user, :host, :channels
+  attr_reader :realname, :user, :host, :channels
   attr_accessor :nick, :flags
-  # 
-  # USE CONSTRUCTOR ONLY FOR TEMPORARY USER OBJECT
-  # using User#new directly does not add the user to the internal list
-  # user User::create to add a user to the internal db
+
   def initialize user
     @ip = nil
     @channels = {}
     update user
   end
-  #
+  
   def update user
     user.each do |key,val|
       next if key == :channels || key == :host
@@ -71,25 +68,29 @@ class Irc::User
       end
     end
   end
-  # join a channel
+
   def join channel
     return if @channels[channel.downcase]
-    @channels[channel.downcase] = Irc::Channel.join(@server,channel)
+    @channels[channel.downcase] = Irc::Channel.join(channel)
   end
-  #
+  
   def leave channel
     @channels.delete(channel.downcase)
     destroy if @channels.length < 1
   end
-  # 
+   
   def destroy
     @@users.delete self
   end
+
   #
   # Instance Helpers
   #
-  def username; "#{@user}@#{@host}"; end
-  # get user ip number
+
+  def username
+    "#{@user}@#{@host}"
+  end
+
   def ip
     return nil if host == nil
     return @ip if @ip
@@ -100,5 +101,6 @@ class Irc::User
     end
     nil
   end
+
 end
 

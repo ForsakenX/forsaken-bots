@@ -1,6 +1,8 @@
 module Irc
 end
 
+require 'irc/helpers'
+
 # event system
 require 'irc/event'
 require 'irc/timer'

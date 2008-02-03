@@ -9,7 +9,7 @@ class Welcome < Meth::Plugin
     setup_join_event
     @bot.command_manager.register('welcome',self)
     # turn off list
-    @db = File.expand_path("#{DIST}/bots/#{$bot}/db/welcomed.yaml")
+    @db = File.expand_path("#{BOT}/db/welcomed.yaml")
     @welcomed = File.exists?(@db) ? (YAML.load_file(@db)||[]) : []
   end
 
@@ -91,7 +91,7 @@ class Welcome < Meth::Plugin
   private
 
   def welcome_message
-    file_path = "#{DIST}/bots/#{$bot}/db/welcome_message.txt"
+    file_path = "#{BOT}/db/welcome_message.txt"
     next unless FileTest.exist? file_path
     File.read(file_path).gsub(/\n/,' ')
   end

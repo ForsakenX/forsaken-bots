@@ -17,7 +17,7 @@ class Irc::QuitMessage < Irc::Message
     @message = $2
 
     # add or update user
-    if @user = Irc::User.find(client.server,nick)
+    if @user = Irc::User.find(nick)
       @user.destroy
     else
       @client.logger.error "[QUIT] but user was not found..."

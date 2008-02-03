@@ -1,89 +1,62 @@
 #!/usr/bin/env ruby
 
+=begin
+Check Parameters
+=end
+
 if ARGV[0].nil?
   puts "Missing bot name argument."
   exit
 end
 
-##
-# Settings
-##
+=begin
+Globals
+=end
 
-# root directory
-ROOT = File.dirname(__FILE__)
-puts "ROOT: '#{ROOT}'"
+BOT        = ARGV[0]
+ROOT       = File.dirname(__FILE__)
+DIST       = "#{ROOT}/dist"
+BOT_PATH   = "#{DIST}/bots/#{BOT}"
 
-# set load path
+=begin
+Load Path
+=end
+
 $: << "#{ROOT}/lib/"
 
-# user distribution
-DIST = "#{ROOT}/dist"
-puts "DIST: '#{DIST}'"
+=begin
+Main Libs
+=end
 
-# load user configs
-require 'yaml'
-$bot = ARGV[0]
-$config = YAML.load(File.open("#{DIST}/bots/#{$bot}/conf/settings.yaml"))
-puts "Loaded config file."
-
-##
-# Main Libs
-##
-
-# load event machine
 require 'rubygems'
-require "eventmachine-0.9.0/lib/eventmachine"
-puts "EventMachine Loaded"
-
-# meth name space
-require "meth/meth.rb"
-puts "Meth Loaded"
-
-##
-# Global Logging
-#   CAN WE USE EM FILE WRITING FOR LOGGING?
-##
-
-# loggin facility
+require 'eventmachine'
 require 'logger'
-if $config['logger']['console']
-  $logger = Logger.new(STDOUT)
-else
-  $logger = Logger.new("#{DIST}/bots/#{$bot}/logs/#{$config['logger']['file']}",
-                       $config['logger']['rotate'])
-end
-$logger.level = Logger.const_get($config['logger']['severity'])
-puts "Setup Logger"
+require 'yaml'
 
-##
-#  Global Events
-##
+require "meth/meth.rb"
 
-$event = Irc::Event.new($logger)
+Dir[
+  "#{DIST}/lib/*.rb",
+  "#{DIST}/lib/*.so",
+  "#{DIST}/models/*.rb",
+  "#{BOT}/lib/*.rb",
+  "#{BOT}/models/*.rb"
+].each { |m| require m }
 
-##
-# Run
-##
+CONFIG = YAML.load(File.open("#{BOT}/conf/settings.yaml"))
 
-#EM.epoll
-EM.run {
-  # load up main init file
-  require "#{DIST}/conf/init"
-  # load up the bots
-  $config["bots"].each do |config|
-    begin
-      Meth::Bot.new(config)
-    rescue
-      puts "Error: #{$!}"
-      $@.each do |line| puts "#{line}" end
-    end
+
+=begin
+Run
+=end
+
+EM.epoll {
+  begin
+    EM::open_keyboard(KeyboardHandler)
+    EM::connection(CONFIG['host'],CONFIG['port'],Meth::Bot)
+  rescue
+    puts "#{$!}\n#{$@.join("\n")}"
+    exit 1
   end
 }
-
-##
-# Cleanup
-##
-
-# close file descriptors
-$logger.close
 

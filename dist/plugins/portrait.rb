@@ -3,7 +3,7 @@ class Portrait < Meth::Plugin
     super *args
     @bot.command_manager.register("portrait",self)
     @bot.command_manager.register("portraits",self)
-    @db = "#{DIST}/bots/#{$bot}/db/portraits.yaml"
+    @db = "#{BOT}/db/portraits.yaml"
     @portraits = File.exists?(@db) ? (YAML.load_file(@db)||{}) : {}
   end
   def help m=nil, topic=nil

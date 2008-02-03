@@ -15,11 +15,11 @@ class Irc::KickMessage < Irc::Message
     kicked   = $3
     @message = $4
     
-    unless @admin = Irc::User.find(client.server,kicker)
+    unless @admin = Irc::User.find(kicker)
       @client.logger.info "[KICK] Kicker was not found..."
     end
 
-    unless @user = Irc::User.find(client.server,kicked)
+    unless @user = Irc::User.find(kicked)
       @client.logger.error "[KICK] Kicked was not found..."
     else
       @user.destroy

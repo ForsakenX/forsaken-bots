@@ -24,11 +24,10 @@ class Irc::JoinMessage < Irc::Message
     client.send_data "MODE #{channel}\n"
 
     # add or update user
-    if @user = Irc::User.find(client.server,nick)
+    if @user = Irc::User.find(nick)
       @user.join(@channel)
     else
-      @user = Irc::User.create({:server   => client.server,
-                                :channels => [@channel], :user => user,
+      @user = Irc::User.create({:channels => [@channel], :user => user,
                                 :host     => host,      :nick => nick})
     end
 
