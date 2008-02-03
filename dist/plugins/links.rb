@@ -2,7 +2,7 @@ require 'yaml'
 class Links < Meth::Plugin
   def initialize *args
     super *args
-    @db = "#{DIST}/bots/#{$bot}/db/links.yaml"
+    @db = "#{BOT}/db/links.yaml"
     @bot.command_manager.register("links",self)
     @bot.command_manager.register("link",self)
   end

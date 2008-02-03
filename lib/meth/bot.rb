@@ -6,9 +6,9 @@ class Meth::Bot < Irc::Client
   def plugins; @plugin_manager.plugins; end
 
   def initialize
-    super(CONFIG['name'],     CONFIG['nick'],
-          CONFIG['realname'], CONFIG['host'],
-          CONFIG['port'],     CONFIG['channels'])
+    super(CONFIG['name'],     CONFIG['nick'], CONFIG['password'],
+          CONFIG['realname'], CONFIG['server'], CONFIG['port'],
+          CONFIG['channels'])
     @logger       = Logger.new("#{BOT}/logs/#{@name}",CONFIG['logger']['rotate'])
     @logger.level = Logger.const_get(CONFIG['logger']['severity'])
     @target       = CONFIG['target']||nil
@@ -32,7 +32,7 @@ class Meth::Bot < Irc::Client
 
   def post_init *args
     @event.call('irc.post_init',nil)
-    @logger.info "Connected #{@name} to #{@server[:host]}:#{@server[:port]}"
+    @logger.info "Connected #{@name} to #{@server}:#{@port}"
     super *args
   end
 

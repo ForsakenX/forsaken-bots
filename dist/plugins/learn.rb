@@ -5,7 +5,7 @@ class Learn < Meth::Plugin
     @bot.command_manager.register("learned",self)
     @bot.command_manager.register("unlearn",self)
     @bot.command_manager.register("what",self)
-    @db = File.expand_path("#{DIST}/bots/#{$bot}/db/associations.yaml")
+    @db = File.expand_path("#{BOT}/db/associations.yaml")
     @associations = File.exists?(@db) ? (YAML.load_file(@db)||{}) : {}
   end
   def help(m=nil, topic=nil)

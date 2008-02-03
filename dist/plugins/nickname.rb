@@ -3,7 +3,7 @@ class Nickname < Meth::Plugin
     super *args
     @bot.command_manager.register("nickname",self)
     @bot.command_manager.register("nicknames",self)
-    @db = "#{DIST}/bots/#{$bot}/db/nicks.yaml"
+    @db = "#{BOT}/db/nicks.yaml"
     @nicks = File.exists?(@db) ? (YAML.load_file(@db)||{}) : {}
   end
   def help m=nil, topic=nil

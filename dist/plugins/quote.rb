@@ -4,7 +4,7 @@ class Quote < Meth::Plugin
     super *args
     @bot.command_manager.register("quote",self)
     # storage
-    @db = File.expand_path("#{DIST}/bots/#{$bot}/db/quotes.yaml")
+    @db = File.expand_path("#{BOT}/db/quotes.yaml")
     @quotes = File.exists?(@db) ? (YAML.load_file(@db)||[]) : []
   end
 

@@ -4,7 +4,7 @@ class Insult < Meth::Plugin
     super *args
     @bot.command_manager.register("insult",self)
     # storage
-    @db = File.expand_path("#{DIST}/bots/#{$bot}/db/insults.yaml")
+    @db = File.expand_path("#{BOT}/db/insults.yaml")
     @insults = File.exists?(@db) ? (YAML.load_file(@db)||[]) : []
   end
 

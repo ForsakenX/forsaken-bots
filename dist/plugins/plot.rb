@@ -4,7 +4,7 @@ class Plot < Meth::Plugin
     super *args
     @bot.command_manager.register("plot",self)
     # storage
-    @db = File.expand_path("#{DIST}/bots/#{$bot}/db/plots.yaml")
+    @db = File.expand_path("#{BOT}/db/plots.yaml")
     @plots = File.exists?(@db) ? (YAML.load_file(@db)||[]) : []
   end
 

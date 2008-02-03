@@ -5,7 +5,7 @@ class Alias < Meth::Plugin
     @bot.command_manager.register("alias",self)
     @bot.command_manager.register("aliasrm",self)
     @bot.command_manager.register("aliases",self)
-    @db = File.expand_path("#{DIST}/bots/#{$bot}/db/aliases.yaml")
+    @db = File.expand_path("#{BOT}/db/aliases.yaml")
     if File.exists?(@db) 
       unless @aliases = YAML.load_file(@db)
         @bot.logger.warn "[ALIAS] could not load #{@db}... "

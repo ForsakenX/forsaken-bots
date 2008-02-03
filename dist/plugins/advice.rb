@@ -4,7 +4,7 @@ class Advice < Meth::Plugin
     super *args
     @bot.command_manager.register("advice",self)
     # storage
-    @db = File.expand_path("#{DIST}/bots/#{$bot}/db/advices.yaml")
+    @db = File.expand_path("#{BOT}/db/advices.yaml")
     @advices = File.exists?(@db) ? (YAML.load_file(@db)||[]) : []
   end
 

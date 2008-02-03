@@ -7,12 +7,12 @@ logger:
   rotate: daily
 
 name: fskn_bot
-host: irc.freenode.org
+server: irc.freenode.org
 port: 6667
 channels:
 - "#forsaken"
 nick: "FsknBot"
 password: mr.danielaquino@gmail.com
 target: ""
-realname: Forsaken Bot
+realname: FsknBot
 

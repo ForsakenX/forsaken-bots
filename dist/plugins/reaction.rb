@@ -6,7 +6,7 @@ class Reactions < Meth::Plugin
   def initialize *args
     super *args
     @bot.command_manager.register("reactions",self)
-    @db = File.expand_path("#{DIST}/bots/#{$bot}/db/reactions.yaml")
+    @db = File.expand_path("#{BOT}/db/reactions.yaml")
     if File.exists?(@db) 
       unless @reactions = YAML.load_file(@db)
         @reactions = {}

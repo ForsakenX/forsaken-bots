@@ -13,10 +13,9 @@ end
 Globals
 =end
 
-BOT        = ARGV[0]
-ROOT       = File.dirname(__FILE__)
-DIST       = "#{ROOT}/dist"
-BOT_PATH   = "#{DIST}/bots/#{BOT}"
+ROOT  = File.dirname(__FILE__)
+DIST  = "#{ROOT}/dist"
+BOT   = "#{DIST}/bots/#{ARGV[0]}"
 
 =begin
 Load Path
@@ -50,10 +49,9 @@ CONFIG = YAML.load(File.open("#{BOT}/conf/settings.yaml"))
 Run
 =end
 
-EM.epoll {
+EM::run {
   begin
-    EM::open_keyboard(KeyboardHandler)
-    EM::connection(CONFIG['host'],CONFIG['port'],Meth::Bot)
+    EM::connect(CONFIG['server'],CONFIG['port'],Meth::Bot)
   rescue
     puts "#{$!}\n#{$@.join("\n")}"
     exit 1

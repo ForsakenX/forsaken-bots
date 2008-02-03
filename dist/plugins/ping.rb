@@ -2,7 +2,7 @@ class Ping < Meth::Plugin
   def initialize *args
     super *args
     @bot.command_manager.register("ping",self)
-    @db = File.expand_path("#{DIST}/bots/#{$bot}/db/ping_blocked.yaml")
+    @db = File.expand_path("#{BOT}/db/ping_blocked.yaml")
     @blocked = (FileTest.exists?(@db) && YAML.load_file(@db)) || []
   end
   def help(m=nil, topic=nil)

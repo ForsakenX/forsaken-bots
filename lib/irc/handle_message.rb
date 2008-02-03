@@ -67,13 +67,7 @@ module Irc::HandleMessage
       channel = $3 #
       topic   = $4 #
 
-      #puts "[TOPIC] #{$1} #{$2} #{$3} #{$4}"
-
-      if channel = channels[channel.downcase]
-        channel.topic = topic
-      else
-        puts "[HERE] #{channel.downcase} does not exist."
-      end
+      channel.topic = topic if channel = channels[channel.downcase]
 
     ##
     # 1st whois line (start)
@@ -167,35 +161,35 @@ module Irc::HandleMessage
 
     # join
     when /^:[^ ]* JOIN/
-      m = Irc::JoinMessage.new(line)
+      m = Irc::JoinMessage.new(self,line)
 
     # part
     when /^:[^ ]* PART/i
-      m = Irc::PartMessage.new(line)
+      m = Irc::PartMessage.new(self,line)
 
     # quit
       # :methods!1000@c-68-36-237-152.hsd1.nj.comcast.net
       # QUIT :Quit: Leaving.
     when /^:[^ ]* QUIT/i
-      m = Irc::QuitMessage.new(line)
+      m = Irc::QuitMessage.new(self,line)
 
     # kick
       # :methods!n=daquino@c-68-36-237-152.hsd1.nj.comcast.net
       # KICK #forsaken DIII-The_Lion :methods
     when /^:[^ ]* KICK/i
-      m = Irc::KickMessage.new(line)
+      m = Irc::KickMessage.new(self,line)
 
     # privmsg
     when /^:[^ ]* PRIVMSG/i
-      m = Irc::PrivMessage.new(line)
+      m = Irc::PrivMessage.new(self,line)
     
     # notice
     when /^:[^ ]* NOTICE/i
-      m = Irc::NoticeMessage.new(line)
+      m = Irc::NoticeMessage.new(self,line)
 
     # unknown
     else
-      m = Irc::UnknownMessage.new(line)
+      m = Irc::UnknownMessage.new(self,line)
     end
 
   end

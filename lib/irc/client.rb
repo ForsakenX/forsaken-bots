@@ -5,35 +5,36 @@ class Irc::Client < EM::Connection
   include Irc::HandleMessage
   include Irc::Helpers
 
-  attr_reader :event, :name, :nick_sent, :realname, :server, :username, :hostname, :config
+  attr_reader :event, :name, :nick_sent, :realname, :server, :port, :username, :hostname, :config
   attr_accessor :nick, :ignored
 
-  def initialize(name,nick,realname,host,port,default_channels)
+  def initialize(name,nick,realname,password,server,port,default_channels)
     @name     = name     ||"RubyIrcClient"
     @nick     = nick     ||"RubyIrcClient"
+    @password = password || ""
     @realname = realname ||"RubyIrcClient"
-    @server   = { :host => (host||"irc.freenode.net"),
-                  :port => (port||6667) }
+    @server   = server   ||"irc.freenode.net"
+    @port     = port     ||6667
     @default_channels = default_channels
     @ignored  = []
     @logger   = Logger.new(STDOUT)
     @event    = Irc::Event.new(@logger)
     @timer    = Irc::Timer.new
     @username = Process.uid
-    @hostname = Socket.gethostname
+    @servername = Socket.gethostname
   end
 
   def post_init
     # send password
-    send_data "PASS #{@config['password']}\n" if @config['password']
+    send_data "PASS #{@password}\n" if @password
     # login
-    send_data "USER #{@username} #{@hostname} #{@server[:host]} :#{@realname}\n"
+    send_data "USER #{@username} #{@servername} #{@server} :#{@realname}\n"
     # send initial nick
     send_nick @nick
   end
 
   def unbind
-    reconnect @server[:host], @server[:port]
+    reconnect @server, @port
     post_init
   end
 
