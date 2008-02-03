@@ -1,4 +1,4 @@
-class GameModel
+class Game
 
   include DirectPlay
 
