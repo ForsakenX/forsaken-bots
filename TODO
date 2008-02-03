@@ -1,7 +1,5 @@
 Support for CTCP events
 Move more of system to events
-Proper data structure for multiple servers
-Curses client
 Better structure for modules (example: keyboard_handler)
 Throttling
 More message objects for wrapping irc commands
@@ -18,13 +16,11 @@ command mananger also greps text...
 allowing key words to show up as commands...
 and fire events ?
 
-
 Seperate manager for built in plugins?
 Or ability to add yoru own plugin directory on fly?
 
 Add statistics saving for users to hangman
 add allow interactivity to guests in chats of hosts game
-
 
 move bots to seperate processes
 use drb for communication between bots
@@ -38,7 +34,6 @@ Seen  plugin
 Loger plugin
 
 argument ip to scan
-
 
 sms gateway
 keyboard plugin
@@ -57,7 +52,4 @@ Fix bot protocol
   when being sent to a client and that must be 512bytes...
   message cannot throttle over 1500bytes in 2 seconds
   
-
-
-
 
