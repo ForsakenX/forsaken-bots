@@ -1,40 +1,18 @@
 ---
 
-# main logging facility
 logger: 
   console: false
   file: main
   severity: DEBUG
   rotate: daily
 
-# Keyboard Handler Class Name
-# Leave blank to not handle keyboard
-keyboard: KeyboardHandler
-
-# list of servers to connect to
-bots: 
-
-#- name: krocked
-#  host: GameSpy
-#  port: 6668
-#  channels: 
-#  - "#GSP!Forsaken"
-#  nick: "krocked"
-#  target: ""
-#  realname: krocked
-#  logger: 
-#    severity: DEBUG
-#    rotate: daily
-
-- name: fskn_bot
-  host: irc.freenode.org
-  channels:
-  - "#forsaken"
-  nick: "FsknBot"
-  password: mr.danielaquino@gmail.com
-  target: ""
-  realname: Forsaken Bot
-  logger: 
-   severity: DEBUG
-   rotate: daily
+name: fskn_bot
+host: irc.freenode.org
+port: 6667
+channels:
+- "#forsaken"
+nick: "FsknBot"
+password: mr.danielaquino@gmail.com
+target: ""
+realname: Forsaken Bot
 
