@@ -32,8 +32,8 @@ class Ping < Meth::Plugin
     m.reply "You have been unblocked."
   end
   def ping m
-    users = m.channel.users.map{ |user| user.nick }
-    @blocked.each { |user| users.delete(user.downcase) if users.index(user.downcase) }
+    users = m.channel.users.map{ |user| user.nick.downcase }
+    @blocked.each { |user| users.delete(user) }
     m.reply users.join(' ')
   end
   private
