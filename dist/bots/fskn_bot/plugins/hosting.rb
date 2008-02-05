@@ -26,11 +26,7 @@ class Hosting < Meth::Plugin
     users = m.channel.users.select{|u| u.ip}
 
     # remove bots from list
-    Irc::Client.clients.each do |name,client|
-      users.each do |user|
-        users.delete(user) if user.nick == client.nick
-      end
-    end
+    users.delete(@bot.name)
 
     # compact by unique ip addresses
     users.each do |user|

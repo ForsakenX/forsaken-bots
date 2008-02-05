@@ -1,7 +1,6 @@
 class Irc::Event
   attr_reader :topics
-  def initialize(logger=Logger.new(STDOUT))
-    @logger = logger
+  def initialize
     @topics = Hash.new {|h,k| h[k] = []}
   end
   # register to listen to a topic
@@ -18,7 +17,7 @@ class Irc::Event
       begin
         callback.call(data)
       rescue Exception
-        @logger.error "#{$!}\n#{$@.join("\n")}"
+        Irc::Client.logger.error "#{$!}\n#{$@.join("\n")}"
       end
     end
   end

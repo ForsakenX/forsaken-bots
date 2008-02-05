@@ -12,7 +12,7 @@ class Reload < Meth::Plugin
       ip = Resolv.getaddress('chino.homelinux.org')
     rescue Resolv::Error
       m.reply "Sorry, I had an error..."
-      @logger.error "#{$!}\n#{$@.join('\n')}"
+      Irc::Client.logger.error "#{$!}\n#{$@.join('\n')}"
       return
     end
     if ip.nil? || m.source.ip != ip
@@ -44,17 +44,19 @@ class Reload < Meth::Plugin
         return
       end
       unless @bot.plugin_manager.plugins[plugin]
-        if @bot.plugin_manager._load(plugin)
+        if (error = @bot.plugin_manager._load(plugin)) === true
           m.reply "Plugin '#{plugin}' loaded"
         else
-          m.reply "Plugin '#{plugin}' failed to load."
+          m.reply "Plugin '#{plugin}' failed to load.  " +
+                  error
         end
         return
       end
-      if @bot.plugin_manager.plugins[plugin].reload
+      if (error = @bot.plugin_manager.plugins[plugin].reload) === true
         m.reply "Plugin '#{plugin}' reloaded"
       else
-        m.reply "Plugin '#{plugin}' failed to reload."
+        m.reply "Plugin '#{plugin}' failed to reload:  "+
+                error
       end
     end
   end

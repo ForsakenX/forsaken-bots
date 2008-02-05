@@ -1,4 +1,4 @@
-class Game
+class GameModel
 
   include DirectPlay
 
@@ -7,7 +7,7 @@ class Game
   #
 
   @@games = []
-  @@event = Irc::Event.new($logger)
+  @@event = Irc::Event.new
 
   def self.games; @@games; end
   def self.event; @@event; end

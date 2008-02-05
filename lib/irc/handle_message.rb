@@ -6,7 +6,7 @@ module Irc::HandleMessage
 
     # IRCD says fatal error
     when /^ERROR/i
-      @logger.error "ERROR - Server disconnecting..."
+      logger.error "ERROR - Server disconnecting..."
 
     # ping
     when /^PING ([^\n]*)$/i
@@ -31,9 +31,6 @@ module Irc::HandleMessage
       else
         if user = Irc::User.find(old_nick)
           user.nick = new_nick
-        # this is fine cause multiple bots can share a user list if on same server
-        else
-          #$logger.error "[ERROR] Got nick change from '#{old_nick}' to '#{new_nick}' but user does not exist..."
         end
       end
 

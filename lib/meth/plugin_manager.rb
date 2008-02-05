@@ -70,33 +70,41 @@ class Meth::PluginManager
   end
 
   def unload plugin
-    if p = @plugins[plugin]
-      begin
-        p.cleanup
-      rescue Exception
-        @bot.logger.warn "[unload plugin error] #{$!}\n#{$@.join("\n")}"
-      end
-      @plugins.delete(p)
+    return unless p = @plugins[plugin]
+    begin
+      p.cleanup
+    rescue Exception
+      @bot.logger.warn "[unload plugin error] #{$!}\n#{$@.join("\n")}"
     end
+    @plugins.delete(p)
   end
 
   def reload plugin
     unload plugin
-    load path(plugin)
+    begin
+      load path(plugin)
+    rescue Exception => e
+      return e
+    end
+    true
   end
 
   # loads a plugin
   # expects snake case
   def _load plugin
-    reload plugin
+    unless (error = reload(plugin)) === true
+      return error
+    end
     begin
       constant = Object.const_get(plugin.camel_case)
       @plugins[plugin] = constant.new(@bot)
-    rescue Exception
+    rescue Exception => e
       @bot.logger.warn "[_load plugin error] #{$!}\n#{$@.join("\n")}"
+      return e
     end
     @bot.logger.info "Bot (#{bot.name}) Loaded Plugin (#{plugin.snake_case})"
     @bot.event.call('meth.plugin.loaded', plugin)
+    true
   end
 
   def reload_all

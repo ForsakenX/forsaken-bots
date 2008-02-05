@@ -109,6 +109,8 @@ class Hangman < Meth::Plugin
                   "Keep trying!  "+
                   "You have #{@game.mask.count('_')} characters to go!  "+
                   "And #{@game.chances} chances left!  "+
+                  "Guessed: #{@game.guessed.join(', ')}.  "+
+                  "Found: #{@game.found.join(', ')}.  "
                   "#{@game.mask}"
         end
       else

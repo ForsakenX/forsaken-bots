@@ -40,7 +40,7 @@ Dir[
   "#{DIST}/models/*.rb",
   "#{BOT}/lib/*.rb",
   "#{BOT}/models/*.rb"
-].each { |m| require m }
+].each { |m| require m if FileTest.executable?(m) }
 
 CONFIG = YAML.load(File.open("#{BOT}/conf/settings.yaml"))
 

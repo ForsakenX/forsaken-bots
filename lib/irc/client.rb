@@ -5,20 +5,25 @@ class Irc::Client < EM::Connection
   include Irc::HandleMessage
   include Irc::Helpers
 
+  @@logger = Logger.new(STDOUT)
+  def self.logger; @@logger; end
+  def self.logger=(logger); @@logger=logger; end
+  def logger; @@logger; end
+  def logger=(logger); @@logger=logger; end
+
   attr_reader :event, :name, :nick_sent, :realname, :server, :port, :username, :hostname, :config
   attr_accessor :nick, :ignored
 
-  def initialize(name,nick,realname,password,server,port,default_channels)
-    @name     = name     ||"RubyIrcClient"
-    @nick     = nick     ||"RubyIrcClient"
-    @password = password || ""
-    @realname = realname ||"RubyIrcClient"
-    @server   = server   ||"irc.freenode.net"
-    @port     = port     ||6667
-    @default_channels = default_channels
+  def initialize
+    @name     = "RubyIrcClient"
+    @nick     = "RubyIrcClient"
+    @password = ""
+    @realname = "RubyIrcClient"
+    @server   = "irc.freenode.net"
+    @port     = 6667
+    @default_channels = ['#forsaken']
     @ignored  = []
-    @logger   = Logger.new(STDOUT)
-    @event    = Irc::Event.new(@logger)
+    @event    = Irc::Event.new
     @timer    = Irc::Timer.new
     @username = Process.uid
     @servername = Socket.gethostname

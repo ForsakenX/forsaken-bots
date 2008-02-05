@@ -20,7 +20,7 @@ class Wtf < Meth::Plugin
     when /(unset|del)/i
       unset m
     when /is/i
-      next if m.params.length > 1
+      return if m.params.length > 1
       get m
     end
   end
@@ -30,19 +30,19 @@ class Wtf < Meth::Plugin
   def get m
     if m.params.length < 1
       m.reply "Bad usage... Try, 'help wtf'."
-      next
+      return
     end
     acronym  = m.params.shift
     unless translation = @acronyms[acronym]
       m.reply "I don't know what #{acronym} is."
-      next
+      return
     end
     m.reply "#{acronym}: #{translation}"
   end
   def unset m
     if m.params.length < 1
       m.reply "Bad usage... Try, 'help wtf'."
-      next
+      return
     end
     acro = m.params.shift
     @acronyms.delete acro
@@ -52,7 +52,7 @@ class Wtf < Meth::Plugin
   def set m
     if m.params.length < 2
       m.reply "Bad usage... Try, 'help wtf'."
-      next
+      return
     end
     acronym = m.params.shift.downcase
     translation = m.params.join(' ')
