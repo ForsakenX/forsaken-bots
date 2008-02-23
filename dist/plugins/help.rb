@@ -5,22 +5,42 @@ class Help < Meth::Plugin
   end
   def help(m=nil, topic=nil)
     "help [command] => return help on a command.  "+
-    "If [command] is ommited then help returns a list of help topics.  "
+    "If [command] is ommited then help returns a "+
+    "list of help topics.  [command] can be shortened "+
+    "as long it's not ambiguous."
   end
   def do_help m
+    commands = @bot.command_manager.commands
+    # help
     unless command = m.params.shift
-      m.reply "Commands: #{@bot.command_manager.commands.keys.sort.join(', ')}.  "+
-              "Type 'help help' if you don't know what to do next."
+      m.reply "Commands: #{commands.keys.sort.join(', ')}.  "+
+              "Type 'help help' for more information."
       return
     end
-    unless command = @bot.command_manager.commands[command]
-      m.reply "Command does not exist."
-      return
+    # help <command>
+    unless _command = commands[command]
+      found = []
+      commands.keys.each do |cmd|
+        found << cmd if cmd =~ /^#{Regexp.escape(command)}/
+      end
+      if found.empty?
+        m.reply "Command does not exist."
+        return
+      end
+      if found.length > 1
+        m.reply "Too ambiguous, `#{command}' matches:  "+
+                "#{found.join(', ')}"
+        return
+      end
+      _command = commands[found[0]]
     end
-    if a = @bot.plugin_manager.plugins['alias'].aliases[command]
+    # is it an alias?
+    _alias = @bot.plugin_manager.plugins['alias']
+    if a = _alias.aliases[_command]
       m.reply "#{command} is an alias for #{a}"
     end
-    command[:obj].help(m,a)
+    # call help on command
+    _command[:obj].help(m,m.params[0])
   end
   def command m
     m.reply do_help(m)

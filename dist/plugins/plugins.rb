@@ -15,12 +15,12 @@ class Plugins < Meth::Plugin
       if plugin = m.params.shift
         m.reply @bot.plugin_manager.enabled?(plugin)
       else
-        m.reply @bot.plugin_manager.enabled.join(', ')
+        m.reply @bot.plugin_manager.enabled.sort.join(', ')
       end
     when "loaded"
-      m.reply @bot.plugin_manager.loaded.join(', ')
+      m.reply @bot.plugin_manager.loaded.sort.join(', ')
     when "",nil
-      m.reply @bot.plugin_manager.list.join(', ')
+      m.reply @bot.plugin_manager.list.sort.join(', ')
     end
   end
 end

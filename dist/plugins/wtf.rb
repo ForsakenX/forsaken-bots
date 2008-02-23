@@ -32,12 +32,12 @@ class Wtf < Meth::Plugin
       m.reply "Bad usage... Try, 'help wtf'."
       return
     end
-    acronym  = m.params.shift
+    acronym  = m.params.shift.downcase
     unless translation = @acronyms[acronym]
       m.reply "I don't know what #{acronym} is."
       return
     end
-    m.reply "#{acronym}: #{translation}"
+    m.reply "#{acronym.upcase}: #{translation}"
   end
   def unset m
     if m.params.length < 1

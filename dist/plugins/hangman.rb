@@ -20,6 +20,9 @@ class Hangman < Meth::Plugin
       @found << letter
       true
     end
+    def tried? letter
+      @guessed.include?(letter) || @found.include?(letter)
+    end
     # mask representing results
     def mask
       mask = @word.dup
@@ -45,115 +48,156 @@ class Hangman < Meth::Plugin
   end
 
   def help(m=nil, topic=nil)
-    "hangman start [chances] => start a game.  "+
-             "Optionally set the number of [chances].  "+
-             "Must be a number, default is 10.  "+
-    "hangman try <letter> => Try a letter.  "+
-    "hangman guessed => List tried letters.  "+
-    "hangman found => List found letters.  "
-#    "hangman stop => stop current game.  "+
+    h = {
+      :start => "hangman start [chances] => Start a new game.  "+
+                "Optionally set the # of [chances] (default is 10).",
+      :try   => "hangman try <letter> => Try a letter.",
+      :complete => "hangman complete <word> => Try to guess the entire word.",
+      :info  => "hangman [info|status] => Print current game status.",
+      :short => "Valid options are start|try|info|status."+
+                "help hangman <option> for specific help."
+    }
+    _alias = {
+      :status => :info
+    }
+    return [:start,:try,:info].map{|n|h[n]}.join(',  ') if topic.nil?
+    return h[topic.to_sym] if h.has_key?(topic.to_sym)
+    return h[_alias[topic.to_sym]] if _alias.has_key?(topic.to_sym)
   end
 
   def command m
-    case m.params.shift
-    #
-    when "start","",nil # default
-      if @game
-        m.reply "A game is already started..."
-      else
-        if arg = m.params.shift
-          chances = arg.to_i
-          if chances == 0
-            m.reply "Sorry '#{arg}' isn't a valid option.  "+
-                    "Usage: "+help
-            return
-          end
-        end
-        @game = Game.new(chances||10) # default 10
-        m.reply "Game started!  Start guessing letters, example usage: hangman try a.  #{@game.mask}"
-        #m.reply "The word is #{@game.word}"
-      end
-    #
-#    when "stop"
-#      m.reply "Game stopped, answer was: #{@game.word}"
-#      @game = nil
-    #
-    when "try"
-      unless @game
-        m.reply "You havn't started a game!  "+
-                "Usage: "+help
-        return
-      end
-      unless letter = m.params.shift
-        m.reply "Give me a letter please...  "+
-                "Usage:  "+help
-        return
-      end
-      unless letter.length < 2
-        m.reply "One letter at a time please..."
-        return
-      end
-      if @game.guessed.include?(letter) ||
-         @game.found.include?(letter)
-        m.reply "You already tried that letter!  "+
-                "Guessed: #{@game.guessed.join(', ')}.  "+
-                "Found: #{@game.found.join(', ')}.  "
-        return
-      end
-      if @game.try(letter)
-        if @game.won
-          m.reply "You won!  #{@game.mask}"
-          @game = nil
-        else
-          m.reply "Good job!  "+
-                  "Keep trying!  "+
-                  "You have #{@game.mask.count('_')} characters to go!  "+
-                  "And #{@game.chances} chances left!  "+
-                  "Guessed: #{@game.guessed.join(', ')}.  "+
-                  "Found: #{@game.found.join(', ')}.  "
-                  "#{@game.mask}"
-        end
-      else
-        if @game.lost
-          m.reply "You lost!  "+
-                  "The word was: #{@game.word}"
-          @game = nil
-        else
-          m.reply "Bad choice!  "+
-                  "You have #{@game.mask.count('_')} characters to go!  "+
-                  "And #{@game.chances} chances left!  "+
-                  "#{@game.mask}"
-        end
-      end
-    #
-    when "guessed"
-      unless @game
-        m.reply "You havn't started a game yet!  "+
-                "Usage: "+help
-        return
-      end
-      if @game.guessed.length < 1
-        m.reply "You haven't tried any letters yet!"
-      else
-        m.reply @game.guessed.join(', ')
-      end
-    #
-    when "found"
-      unless @game
-        m.reply "You havn't started a game yet!  "+
-                "Usage: "+help
-        return
-      end
-      if @game.found.length < 1
-        m.reply "You haven't found any letters yet!"
-      else
-        m.reply @game.found.join(', ')
-      end
-    #
-    else # unkonwn option
-      m.reply "I don't recognize that option!  "+
-              "Usage: "+ help
+    params = m.params.dup
+    option = params.shift
+    # there is no game in process
+    if @game.nil?
+      process_option_no_game(m, option, params)
+    # there is a game in process
+    else
+      process_option_in_game(m, option, params)
     end
+  end
+
+  def process_option_no_game m, option, params
+    case option
+
+    # start a game
+    when "start","",nil # default
+      start m, params
+
+    # try a letter
+    when "try"
+      m.reply "You havn't started a game!  "+
+              "Usage: "+help(m,:start)
+
+    # print info|status on game
+    when "status","info"
+        m.reply "you are not playing..."
+
+    # unkonwn option
+    else 
+      m.reply "I don't recognize that option!  "+
+              "Usage: "+ help(m,:short)
+    end
+  end
+
+  def process_option_in_game m, option, params
+    case option
+
+    # start a game
+    when "start"
+      m.reply "A game is already started..."
+
+    # print info|status on game
+    when "status","info","",nil # default
+      m.reply info
+
+    # try a letter 
+    when "try"
+      try m, params
+
+    # unkonwn option
+    else 
+      m.reply "I don't recognize that option!  "+
+              "Usage: "+ help(m,:short)
+    end
+  end
+
+  def start m, params
+
+    # check if [chances] passed
+    if chances = params.shift
+      unless chances =~ /^[0-9]+$/
+        m.reply "Sorry '#{chances}' isn't a valid option.  "+
+                "Usage: "+help(m,:start)
+        return
+      else
+        chances = chances.to_i
+      end
+      responses = \
+      ["Whats the point of playing?",
+       "Thats just no fun now is it?",
+       "Your selfish....",
+       "I'm telling momy",
+       "Play nice or hit the dice",
+       "Give me a number like that again, "+
+         "and I'm knocking your teath out...",
+       "Do I look like I have hairy tits?",
+       "You call that a game?"]
+      if chances < 1 || chances > 45
+        m.reply responses[rand(responses.length-1)]
+        return
+      end
+    end
+
+    # start game
+    @game = Game.new(chances||10) # default 10
+
+    #
+    m.reply "Game started!  "+
+            "Start guessing letters, example usage: "+
+            "hangman try a.  #{@game.mask}"
+
+  end
+
+  def try m, params
+    unless letter = params.shift
+      m.reply "Give me a letter please...  "+
+              "Usage:  #{help(m,:try)}  "+
+              info
+      return
+    end
+    unless letter.length < 2
+      m.reply "One letter at a time please...  "+info
+      return
+    end
+    if @game.tried?(letter)
+      m.reply "You already tried that letter!  "+info
+      return
+    end
+    if @game.try(letter)
+      if @game.won
+        m.reply "You won!  #{@game.mask}"
+        @game = nil
+      else
+        m.reply "Good job! Keep trying! "+info
+      end
+    else
+      if @game.lost
+        m.reply "You lost!  "+
+                "The word was: #{@game.word}"
+        @game = nil
+      else
+        m.reply "Bad choice!  " + info
+      end
+    end
+  end
+
+  def info
+    "You have #{@game.mask.count('_')} characters to go!  "+
+    "And #{@game.chances} chances left!  "+
+    "Guessed: #{@game.guessed.join(', ')}.  "+
+    "Found: #{@game.found.join(', ')}.  "+
+    "#{@game.mask}"
   end
 
 end

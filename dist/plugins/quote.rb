@@ -9,34 +9,69 @@ class Quote < Meth::Plugin
   end
 
   def help m=nil, topic=nil
-    "quote => Display random quote.  "+
-    "quote add [narative] => Add a quote to the list."
+    "quote add <narative> => Add a quote to the list.  "+
+    "quote show <id> => Show quote by <id>. "+
+    "quote search <needle> => Search quotes for <needle>.  "+
+    "quote random [needle] => Display random quote, "+
+           "optionally within range of [needle]."
   end
 
   def command m
-    case m.params.shift
-    when "",nil
+    @params = m.params.dup
+    case @params.shift
+    when "random"
       random m
     when "add"
       add m
-    else
-      m.reply help
+    when "search"
+      search m
+    when "show"
+      show m
     end
+  end
+
+  def show m
+    if (index = @params.shift).nil? || (index =~ /^[^0-9]+$/)
+      m.reply "Bad value given for index.  "+help(m,:show)
+      return
+    end
+    m.reply @quotes[index.to_i]
+  end
+
+  def search m
+    needle = @params.shift
+    found  = []
+    @quotes.each_with_index {|quote,i|
+      return unless quote.include?(needle)
+      found << i
+    }
+    m.reply "Found #{found.length} that matched: #{found.join(', ')}"
   end
 
   def random m
     # none
     if @quotes.length < 1
-      m.reply "There are no quotes..."
+      m.reply "There are no quotes yet..."
+      return
+    end
+    # default all quotes
+    quotes = @quotes
+    # search string given
+    unless (needle = @params.shift).nil?
+      quotes = @quotes.find_all{|quote| quote.include?(needle)}
+    end
+    # none
+    if quotes.length < 1
+      m.reply "There are no quotes that match your search..."
       return
     end
     # random
-    m.reply @quotes[rand(@quotes.length)]
+    m.reply quotes[rand(quotes.length)]
   end
 
   def add m
     # narative
-    message = m.params.join(' ')
+    message = @params.join(' ')
     # checks
     if message == ""
       m.reply "Missing [narative].  "+

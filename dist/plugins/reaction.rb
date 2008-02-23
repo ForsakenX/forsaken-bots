@@ -9,8 +9,16 @@ class Reaction < Meth::Plugin
   end
 
   def help(m=nil, topic=nil)
+    short_help = "react has the following commands { to },  "+
+                 "reaction has the following commands "+
+                 "{ ls|list, rm|remove, ms|message, ch|chance, tg|target }  "+
+                 "For detailed help on each command type:  "+
+                 "`help reaction <command>'  "+
+                 "EXAMPLES:  "+
+                 "`help reaction to`  "+
+                 "`help reaction list`"
     h = {
-      :react    =>  "react to <target> with <message> [at <chance>% chance] => "+
+      :to       =>  "react to <target> with <message> [at <chance>% chance] => "+
                     "Display <message> when <target> is detected at <chance>.",
       :list     =>  "reaction ls|list [target] => "+
                     "List all targets or list replys for [target].",
@@ -18,7 +26,7 @@ class Reaction < Meth::Plugin
                     "Remove all replies in range from reply list of <target>.",
       :message  =>  "reaction ms|message <target> <index> <message> =>  "+
                     "Changes <message> for <index>.",
-      :change   =>  "reaction ch|chance <target> <index> <chance>[%] =>  "+
+      :chance   =>  "reaction ch|chance <target> <index> <chance>[%] =>  "+
                     "Changes <chance> for <index>.",
       :target   =>  "reaction tg|target <target> <index> <target> =>  "+
                     "Changes <target> for <index>.",
@@ -29,22 +37,30 @@ class Reaction < Meth::Plugin
       :example  =>  "EXAMPLE: "+
                     "react to game with Lets rock and roll! at 10% chance"
     }
-    topic = m.params[1] if topic.nil?
+    h_aliases = {
+      :ls => :list,
+      :rm => :remove,
+      :ms => :message,
+      :ch => :chance,
+      :tg => :target,
+    }
     topic = topic.to_sym unless topic.nil?
     if topic.nil?
-      topics.keys = [:react,:list,:remove,:message,:change,:target,:notes,:example].map
-      return topics.map{|topic|h[topic]}.join('  ')
+      #topics_order = [:to,:list,:remove,:message,:change,:target,:notes,:example].map
+      #return topics_order.map{|topic|h[topic]}.join('  ')
+      return short_help
     end
-    unless h[topic]
-      message = "Unknown topic requested: #{topic}"
-      if m.nil?
-        throw message
-      else
-        m.reply message
-        return false
+    unless t = h[topic]
+      unless t = h[h_aliases[topic]]
+        message = "Unknown topic requested: #{topic}"
+        if m.nil?
+          throw message
+        else
+          return message
+        end
       end
     end
-    h[topic]
+    t
   end
 
   def command m
@@ -106,7 +122,7 @@ class Reaction < Meth::Plugin
     if index == "all"
       start,stop = 0,(reactions.length-1)
     else
-      unless index =~ /([0-9]+)(-([0-9]+)*){1}/
+      unless index =~ /([0-9]+)(-([0-9]+)*){0,1}/
         m.reply "Error: Improper format for <index>.  "+help(m,:remove)
         return false
       end
@@ -137,7 +153,7 @@ class Reaction < Meth::Plugin
       m.reply "Error: Missing <target>.  "+help(m,:chance)
       return
     end
-    if (reaction = find_all(target)).empty?
+    if (reactions = find_all(target)).empty?
       m.reply "No reactions for `#{target}'"
       return
     end
@@ -154,8 +170,14 @@ class Reaction < Meth::Plugin
       m.reply "Error: Missing <chance>. "+help(m,:chance)
       return false
     end
-    chance.slice!(/%$/)
-    unless reaction = @reactions[index]
+    unless chance.nil?
+      chance.slice!(/%$/)
+      unless chance =~ /^[0-9]+$/
+        m.reply "Errpr: Bad format for <chance>. "+help(m,:chance)
+        return false
+      end
+    end
+    unless reaction = reactions[index]
       m.reply "Reaction at index (#{index}) does not exist."
       return false
     end
@@ -169,7 +191,7 @@ class Reaction < Meth::Plugin
       m.reply "Error: Missing <target>.  "+help(m,:message)
       return
     end
-    if (reaction = find_all(target)).empty?
+    if (reactions = find_all(target)).empty?
       m.reply "No reactions for `#{target}'"
       return
     end
@@ -182,11 +204,11 @@ class Reaction < Meth::Plugin
       return false
     end
     index = index.to_i
-    unless message = m.params.shift
+    if (message = m.params.join(' ')).empty?
       m.reply "Error: Missing <message>. "+help(m,:message)
       return false
     end
-    unless reaction = @reactions[index]
+    unless reaction = reactions[index]
       m.reply "Reaction at index (#{index}) does not exist."
       return false
     end
@@ -200,7 +222,7 @@ class Reaction < Meth::Plugin
       m.reply "Error: Missing <target>.  "+help(m,:target)
       return
     end
-    if (reaction = find_all(target)).empty?
+    if (reactions = find_all(target)).empty?
       m.reply "No reactions for `#{target}'"
       return
     end
@@ -217,7 +239,7 @@ class Reaction < Meth::Plugin
       m.reply "Error: Missing <target>. "+help(m,:target)
       return false
     end
-    unless reaction = @reactions[index]
+    unless reaction = reactions[index]
       m.reply "No reaction found."
       return false
     end
@@ -229,23 +251,23 @@ class Reaction < Meth::Plugin
   def react m
     # extract values
     unless m.params.shift == "to"
-      m.reply "Missing keyword `to': "+help(m,:react)
+      m.reply "Missing keyword `to': "+help(m,:to)
       return
     end
     unless target = m.params.shift
-      m.reply "Missing <word>: "+help(m,:react)
+      m.reply "Missing <word>: "+help(m,:to)
       return
     end
     unless m.params.shift == "with"
-      m.reply "Missing keyword `from': "+help(m,:react)
+      m.reply "Missing keyword `from': "+help(m,:to)
       return
     end
     message = m.params.join(' ')
     message.slice!(/ at ([0-9]+)% chance/)
     chance = ($1.nil?) ? 100 : $1.to_i
     # prepare regex
-    if regex = parse_regex(target)
-      unless (error = test_regex(regex))===true
+    if regex = target.parse_regex
+      unless (error = regex.test_regex)===true
         m.reply "Error: Regex not formated properly: #{error}"
         return false
       end
@@ -266,7 +288,7 @@ class Reaction < Meth::Plugin
     random = rand(100)
     @reactions.each do |reaction|
       next unless chance_play(reaction[:chance],random)
-      if regex = parse_regex(reaction[:target])
+      if regex = reaction[:target].parse_regex
         search = regex
       else
         search = Regexp::escape(reaction[:target])
@@ -330,20 +352,6 @@ class Reaction < Meth::Plugin
     return false if chance == 0
     return true  if random < chance
     false
-  end
-
-  def parse_regex string
-    string =~ (/^\/(.*)\/$/m)
-    $1
-  end
-
-  def test_regex regex
-    begin
-      Regexp.new(regex)
-      return true
-    rescue Exception => e
-      return e
-    end
   end
 
 end
