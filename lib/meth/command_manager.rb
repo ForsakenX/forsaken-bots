@@ -8,7 +8,8 @@ class Meth::CommandManager
     @bot.event.register('irc.message.privmsg',Proc.new{|m| privmsg m })
   end
 
-  def register(cmd,obj,callback=Proc.new{|m| obj.command(m) })
+  def register(cmd,obj,callback=nil)
+    callback = Proc.new{|m| obj.command(m) } if callback.nil?
     @commands[cmd] = { 
       :obj => obj,
       :callback => callback
@@ -27,6 +28,8 @@ class Meth::CommandManager
 
   def privmsg m
 
+    message = m.message
+
     # m.message with a command is one of the following
     # ",hi 1 2 3"
     # "MethBot: hi 1 2 3"
@@ -38,10 +41,10 @@ class Meth::CommandManager
     # look for our nick or target as first word
     # then extract them from the message
     # "(<nick>: |<target>)"
-    unless is_command = !m.message.slice!(/^#{Regexp.escape(@bot.nick)}: /).nil?
+    unless is_command = !message.slice!(/^#{Regexp.escape(@bot.nick)}: /).nil?
       # addressed to target
       unless @bot.target.nil?
-        is_command = !m.message.slice!(/^#{Regexp.escape(@bot.target)}/).nil?
+        is_command = !message.slice!(/^#{Regexp.escape(@bot.target)}/).nil?
       end
     else
       named = true
@@ -57,7 +60,7 @@ class Meth::CommandManager
 
     # %w{hi 1 2 3}
     # split words in line
-    params = m.line.split(' ')
+    params = message.split(' ')
     m.instance_variable_set(:@params,params)
     class <<m; attr_accessor :params; end
 
@@ -78,7 +81,7 @@ class Meth::CommandManager
 
     # call easy to use command event
     if m.command
-      @bot.logger.info "[COMMAND] #{m.command.downcase}"
+      @bot.logger.info("Calling Command `#{m.command.downcase}'")
       @bot.event.call("meth.command.#{m.command.downcase}",m)
       @bot.event.call("meth.command",m)
     end

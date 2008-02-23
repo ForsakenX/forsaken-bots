@@ -1,5 +1,9 @@
 class String
 
+=begin
+Case Helpers
+=end
+
   # "FooBar".snake_case #=> "foo_bar"
   def snake_case
     gsub(/\B[A-Z]/, '_\&').downcase
@@ -16,6 +20,36 @@ class String
 
   def camel_case!
     replace camel_case
+  end
+
+=begin
+Regex Helpers
+=end
+
+  def parse_regex
+    self =~ (/^\/(.+)\/$/m)
+    $1
+  end
+
+  def test_regex
+    begin
+      Regexp.new(parse_regex)
+      return true
+    rescue Exception => e
+      return e
+    end
+  end
+
+=begin
+Cleaners
+=end
+
+  def clean_ends
+    self.gsub(/^ +/,'').gsub(/ +$/,'')
+  end
+
+  def clean_ends!
+    replace clean_ends
   end
 
 end

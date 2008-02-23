@@ -9,6 +9,9 @@ end
 #
 require 'meth/command_manager'
 
+# extend Numberic
+require 'meth/numeric'
+
 # extend string
 require 'meth/string'
 
