@@ -27,7 +27,7 @@ class Status < Meth::Plugin
       minutes = seconds / 60; seconds = seconds % 60
       hours   = minutes / 60; minutes = minutes % 60
       host = []
-      host << game.hostmask + " has been playing for " 
+      host << game.hostmask + " has been hosting for " 
       host << "#{hours} hours " if hours
       host << "#{minutes} minutes " if minutes
       host << "#{seconds} seconds " if seconds
