@@ -11,7 +11,8 @@ class Reaction < Meth::Plugin
   def help(m=nil, topic=nil)
     short_help = "react has the following commands { to },  "+
                  "reaction has the following commands "+
-                 "{ ls|list, rm|remove, ms|message, ch|chance, tg|target }  "+
+                 "{ ls|list, rm|remove|dl|delete, ms|message, "+
+                    "ch|chance, tg|target }  "+
                  "For detailed help on each command type:  "+
                  "`help reaction <command>'  "+
                  "EXAMPLES:  "+
@@ -19,10 +20,11 @@ class Reaction < Meth::Plugin
                  "`help reaction list`"
     h = {
       :to       =>  "react to <target> with <message> [at <chance>% chance] => "+
-                    "Display <message> when <target> is detected at <chance>.",
+                    "Display <message> when <target> is detected at <chance>. "+
+                    "Example: react to game with Killing Time! at 5% chance",
       :list     =>  "reaction ls|list [target] => "+
                     "List all targets or list replys for [target].",
-      :remove   =>  "reaction rm|remove <target> (all|<index>|<start>-<stop>) => "+
+      :remove   =>  "reaction rm|remove|dl|delete <target> (all|<index>|<start>-<stop>) => "+
                     "Remove all replies in range from reply list of <target>.",
       :message  =>  "reaction ms|message <target> <index> <message> =>  "+
                     "Changes <message> for <index>.",
@@ -76,7 +78,7 @@ class Reaction < Meth::Plugin
     case m.params.shift
     when "ls","list"
       list m
-    when "rm","remove"
+    when "rm","remove","dl","delete"
       remove m
     when "ms","message"
       edit_message m
@@ -84,6 +86,8 @@ class Reaction < Meth::Plugin
       edit_chance m
     when "tg","target"
       edit_target m
+    else
+      m.reply "react: Unknown Option"
     end
   end
 
@@ -104,23 +108,31 @@ class Reaction < Meth::Plugin
     end
     replys = []
     reactions.each_with_index{ |reaction,index|
-      replys << "#{index.to_s}: #{reaction[:target]} => #{reaction[:message]} at #{reaction[:chance]}% chance"
+      replys << "{#{index.to_s} => "+
+                "\"#{reaction[:message]}\" "+
+                "at #{reaction[:chance]}% chance}"
     }
-    m.reply replys.join(', ')
+    m.reply "react to #{target} with #{replys.join(', ')}"
   end
 
   def remove m
+    # parse target
     unless target = m.params.shift
       m.reply "Error: Missing <target>.  "+help(m,:remove)
       return
     end
+    # get reactions for target
     if (reactions = find_all(target)).empty?
       m.reply "No reactions for `#{target}'"
       return
     end
+    # parse delete values 
     index = m.params.shift
+    start,stop = 0,0
     if index == "all"
       start,stop = 0,(reactions.length-1)
+    elsif index =~ /^[0-9]+$/
+      start = stop = index.to_i
     else
       unless index =~ /([0-9]+)(-([0-9]+)*){0,1}/
         m.reply "Error: Improper format for <index>.  "+help(m,:remove)
@@ -128,21 +140,17 @@ class Reaction < Meth::Plugin
       end
       start,stop = $1.to_i,$3.to_i
     end
-    # remove it
+    # check delete values
+    unless start <= stop
+      m.reply "Error: #{start} is not less than or equal to #{stop}."
+      return false
+    end
+    # remove the reactions
+    @m = m
     removed = []
-    if stop.nil?
-      reaction = reactions[index]
-      delete(reaction)
-      removed << index
-    else
-      if start > stop
-        m.reply "Error: #{start} is not lower than #{stop}."
-        return false
-      end
-      reactions[start..stop].each_with_index do |reaction,index|
-        delete(reaction)
-        removed << index
-      end
+    reactions[start..stop].each_with_index do |reaction,i|
+      delete_by_object_id(reaction.object_id)
+      removed << i
     end
     save
     m.reply "Done."
@@ -259,16 +267,17 @@ class Reaction < Meth::Plugin
       return
     end
     unless m.params.shift == "with"
-      m.reply "Missing keyword `from': "+help(m,:to)
+      m.reply "Missing keyword `with': "+help(m,:to)
       return
     end
     message = m.params.join(' ')
     message.slice!(/ at ([0-9]+)% chance/)
     chance = ($1.nil?) ? 100 : $1.to_i
-    # prepare regex
-    if regex = target.parse_regex
-      unless (error = regex.test_regex)===true
-        m.reply "Error: Regex not formated properly: #{error}"
+    # if we have a regex string
+    if target.parse_regex
+      # test the regex
+      unless (error = target.test_regex)===true
+        m.reply "Error while testing regex `#{target}': `#{error.to_s}'"
         return false
       end
     end
@@ -286,6 +295,7 @@ class Reaction < Meth::Plugin
   def privmsg m
     return if @bot.command_manager.commands[m.command]
     random = rand(100)
+    # need a way to shuffle reactions
     @reactions.each do |reaction|
       next unless chance_play(reaction[:chance],random)
       if regex = reaction[:target].parse_regex
@@ -295,6 +305,7 @@ class Reaction < Meth::Plugin
       end
       if m.message =~ /#{search}/i
         m.reply reaction[:message] 
+        break # only say one message
       end
     end
   end
@@ -316,16 +327,27 @@ class Reaction < Meth::Plugin
   end
 
   def delete target
-    # by index
+    # number are indexs
     if target.class == Fixnum || target =~ /^[0-9]+$/
       delete_by_index target.to_i
+    # reaction are a hash
     elsif target.class == Hash
       delete_by_reference target
+    # targets are a string
     elsif target.class == String
       delete_by_target target
     else
       throw "Passed unsupported type to Reaction#delete:  "+target.inspect
     end
+  end
+
+  def delete_by_object_id id
+    @reactions.dup.each_with_index{|reaction,i|
+      next unless reaction.object_id == id
+      @reactions.delete_at(i)
+      return true
+    }
+    false
   end
 
   def delete_by_target target
@@ -338,7 +360,7 @@ class Reaction < Meth::Plugin
   end
 
   def delete_by_index index
-    delete_by_reference @reactions[index.to_i]
+    @reactions.delete_at(index.to_i)
   end
 
   def targets

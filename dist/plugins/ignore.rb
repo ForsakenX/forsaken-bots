@@ -1,26 +1,17 @@
 class Ignore < Meth::Plugin
-  def initialize *args
-    super *args
-    @bot.command_manager.register("ignore",self)
-    @bot.command_manager.register("unignore",self)
-    @bot.command_manager.register("ignored",self)
+  def pre_init
+    @commands = [ :ignore, :unignore, :ignored ]
+    @help = {
+      :ignore    => "ignore [nick] => Set ignore `[nick]' on.",
+      :unignore  => "unignore [nick] => Remove ignore for `[nick]'.",
+      :ignored   => "ignored => Returns a list of ignored nicks."
+    }
+  end
+  def post_init
     @db = File.expand_path("#{BOT}/db/ignored.yaml")
-    @ignored = File.exists?(@db) ? (YAML.load_file(@db)||[]) : []
+    @ignored = (File.exists?(@db) && YAML.load_file(@db)) || []
     @ignored.each do |nick|
       @bot.ignored << nick unless @bot.ignored.include?(nick)
-    end
-  end
-  def help(m=nil, topic=nil)
-    "ignore [nick] => Add [nick] to my ignore list..."
-  end
-  def command m
-    case m.command
-    when "ignored"
-      ignored m
-    when "ignore"
-      ignore m
-    when "unignore"
-      unignore m
     end
   end
   def unignore m
