@@ -8,6 +8,7 @@ class Google < Meth::Plugin
   @@wap_link   = /<a accesskey="(\d)" href=".*?u=(.*?)">(.*?)<\/a>/im
   def initialize *args
     super *args
+    @bot.command_manager.register("!google",self)
     @bot.command_manager.register("google",self)
     @bot.command_manager.register("search",self)
     @bot.command_manager.register("wp",self)
@@ -19,6 +20,10 @@ class Google < Meth::Plugin
     "Examples: (google toyota), (google site:cars.com toyota), (wp computer)."
   end
   def command m
+    if m.command == "google"
+      m.reply "Start using !google because google gets in the way of talking about google..."
+      return false
+    end
     query = m.params.join(' ')
     query = "site:wikipedia.org #{query}" if m.command == "wp"
     begin
