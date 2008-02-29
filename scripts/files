@@ -1,0 +1,7 @@
+./dist/bots/fskn_bot/models/*.rb
+./dist/bots/fskn_bot/plugins/*.rb
+./dist/lib/*.rb
+./dist/plugins/*.rb
+./lib/irc/*.rb
+./lib/meth/*.rb
+./methbot

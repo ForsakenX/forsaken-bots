@@ -1,0 +1,2 @@
+root="`dirname $0`"
+wc -l `cat $root/files` | sort -k 2
