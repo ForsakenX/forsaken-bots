@@ -2,6 +2,8 @@ module Irc::HandleMessage
 
   def handle_message line
 
+    @event.call('irc.message.listen',line)
+
     case line
 
     # IRCD says fatal error

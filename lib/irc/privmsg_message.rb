@@ -10,17 +10,17 @@ class Irc::PrivMessage < Irc::Message
     super(client, line)
 
     # working copy
-#    line = @line.dup
+    _line = line.dup
 
     # :
     # garbage
-    line.slice!(/^:/)
+    _line.slice!(/^:/)
 
     # methods!1000@c-68-36-237-152.hsd1.nj.comcast.net 
     # Deadly_Methods!*@* PRIVMSG #GSP!Forsaken :ip
     # source
     @source = nil
-    source = line.slice!(/[^ ]*/)
+    source = _line.slice!(/[^ ]*/)
     # PRIVMSG #GSP!Forsaken :ip
     if source =~ /([^!]*)!([^@]*)@([^\n]*)/
       user = $2
@@ -35,23 +35,20 @@ class Irc::PrivMessage < Irc::Message
       end
     end
 
-    # check ignore list
-    return if @client.ignored.include? @source.nick.downcase
-
     # " PRIVMSG "
     # #GSP!Forsaken :ip
     # garbage
-    line.slice!(/ PRIVMSG /)
+    _line.slice!(/ PRIVMSG /)
 
     # "(MethBot|#tester)"
     # #GSP!Forsaken :ip
-    # where this line came from
-    @to = line.slice!(/^[^ ]*/)
+    # where this _line came from
+    @to = _line.slice!(/^[^ ]*/)
 
-    # channel line ?
+    # channel _line ?
     @channel = (@to =~ /^#/) ? @to : nil
 
-    # personal line ?
+    # personal _line ?
     @personal = @channel ? false : true
 
     # replyto
@@ -68,24 +65,16 @@ class Irc::PrivMessage < Irc::Message
     # " :"
     # ip
     # garbage
-    line.slice!(/ :/)
+    _line.slice!(/ :/)
 
     # ",hi 1 2 3"
     # "MethBot: hi 1 2 3"
     # the rest is the message
-    @message = line
+    @message = _line
 
     # send it to the user
     @client.event.call('irc.message.privmsg',self)
 
-  end
-
-  def reply message
-    @client.say @replyto, message
-  end
-
-  def reply_directly message
-    @client.say @source.nick, message
   end
 
 end

@@ -1,13 +1,13 @@
-# get status of running games
-class Status < Meth::Plugin
+# get games of running games
+class Games < Meth::Plugin
 
   def initialize *args
     super *args
-    @bot.command_manager.register("status",self)
+    @bot.command_manager.register("games",self)
   end
 
   def help m=nil, topic=nil
-    "status => Displays status on running games..."
+    "games => Displays games on running games..."
   end
 
   def command m
@@ -26,12 +26,12 @@ class Status < Meth::Plugin
       seconds = (Time.now - game.start_time).to_i
       minutes = seconds / 60; seconds = seconds % 60
       hours   = minutes / 60; minutes = minutes % 60
-      host = []
-      host << game.hostmask + " has been hosting for " 
-      host << "#{hours} hours " if hours
-      host << "#{minutes} minutes " if minutes
-      host << "#{seconds} seconds " if seconds
-      hosts << "( #{host} )"
+      time = "#{hours}:#{minutes}:#{seconds}"
+      hosts << "( "+
+               "#{game.hostmask} "+
+               "since #{game.start_time.strftime('%I:%m:%S')} "+
+               "runtime #{time}"+
+               " )"
     }
     m.reply "There are #{hosts.length} games up: #{hosts.join(', ')}"
     m.reply "Still waiting for the following games to start: #{waiting.join(', ')}" if waiting.length > 0

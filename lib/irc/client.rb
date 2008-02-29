@@ -30,6 +30,8 @@ class Irc::Client < EM::Connection
   end
 
   def post_init
+    @event.call('irc.post_init',nil)
+    @@logger.info "Connected #{@name} to #{@server}:#{@port}"
     # send password
     send_data "PASS #{@password}\n" if @password
     # login
@@ -39,12 +41,21 @@ class Irc::Client < EM::Connection
   end
 
   def unbind
+    @event.call('irc.unbind',nil)
     reconnect @server, @port
     post_init
   end
 
   def receive_line line
+    @event.call('irc.receive_line',line)
+    @@logger.info "<<< #{line}"
     handle_message line
+  end
+
+  def send_data line
+    @@logger.info ">>> #{line}"
+    @event.call('irc.send_data',line)
+    super line
   end
 
 end

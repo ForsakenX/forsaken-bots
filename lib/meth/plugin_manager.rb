@@ -109,7 +109,10 @@ class Meth::PluginManager
 
   def reload_all
     enabled.each do |plugin|
-      @plugins[plugin].reload
+      plugin = @plugins[plugin]
+      if plugin.respond_to?(:reload)
+        plugin.reload
+      end
     end
   end
 

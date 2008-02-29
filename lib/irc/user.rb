@@ -60,7 +60,9 @@ class Irc::User
     end
     #
     @host = nil
-    @host = user[:host] if ! (user[:host] =~ /^unaffiliated\/#{@nick.downcase}$/)
+    # blocked hostname?
+    unafilliated = "unaffiliated\/#{Regexp.escape(@user.downcase)}"
+    @host = user[:host] unless (user[:host] =~ /^#{unafilliated}$/)
     #
     if user[:channels]
       user[:channels].each do |channel|
@@ -92,12 +94,16 @@ class Irc::User
   end
 
   def ip
+    start = Time.now
     return nil if host == nil
     return @ip if @ip
     begin
       return (@ip = Resolv.getaddress host)
     rescue Exception #Resolv::Error
-      Irc::Client.logger.error "DEBUG Resolv::Error #{$!}"
+      Irc::Client.logger.error "Resolving: "+
+                               self.inspect+
+                               "seconds => #{Time.now-start}, "+
+                               "error => #{$!}"
     end
     nil
   end

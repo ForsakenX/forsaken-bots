@@ -28,7 +28,11 @@ class Meth::CommandManager
 
   def privmsg m
 
-    message = m.message
+    # check ignore list
+    return if @bot.ignored.include? m.source.nick.downcase
+
+    # the message
+    message = m.message.dup
 
     # m.message with a command is one of the following
     # ",hi 1 2 3"

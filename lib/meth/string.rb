@@ -28,12 +28,15 @@ Regex Helpers
 
   def parse_regex
     self =~ (/^\/(.+)\/$/m)
-    $1
+    $1.nil? ? false : $1
   end
 
   def test_regex
     begin
-      Regexp.new(parse_regex)
+      if (regex = parse_regex)===false
+        raise "String `#{self}' does not look like Regex"
+      end
+      Regexp.new(regex)
       return true
     rescue Exception => e
       return e

@@ -15,7 +15,7 @@ class Irc::Event
   def call topic, data
     @topics[topic].dup.each do |callback|
       begin
-        callback.call(data)
+        callback.call(data) unless callback.nil?
       rescue Exception
         Irc::Client.logger.error "#{$!}\n#{$@.join("\n")}"
       end

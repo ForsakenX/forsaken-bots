@@ -3,7 +3,8 @@ require 'htmlentities'
 require 'timeout'
 class Url < Meth::Plugin
   def pre_init
-    @commands = [:urls,:links]
+    @bot.command_manager.register("urls",self)
+    @bot.command_manager.register("links",self)
     @db = File.expand_path("#{BOT}/db/urls.yaml")
     @urls = (File.exists?(@db) && YAML.load_file(@db)) || []
   end
@@ -15,8 +16,7 @@ class Url < Meth::Plugin
     if m.command == "links"
       m.reply "`links' is deprecated please use `urls' instead."
     end
-    case m.params[0]
-    when "",nil
+    if m.params[0].nil?
       urls m
     else
       search m
@@ -58,7 +58,6 @@ class Url < Meth::Plugin
     words = m.message.split(' ')
     urls = words.find_all{|p| p =~ /^((http:\/\/|www\.).+)/m; $1 }
     urls.each do |url|
-      url.downcase!
       url = "http://#{url}" unless url =~ /^http/
       next if (info = get_info(m, url)).nil?
       m.reply "[Link Info]: #{info}"
@@ -91,22 +90,30 @@ class Url < Meth::Plugin
           response.read_body do |segment|
             if (buffer += segment) =~ /<title>([^<]*)<\/title>/i
               if $1.nil? || $1.empty?
-                title = "Title Missing"
+                m.reply "The title was empty."
               else
                 title = HTMLEntities.decode_entities($1)
                 title.gsub!(/\s+/,' ')
                 title = title.strip
+                return "title: #{title}"
               end
-              return "title: #{title}"
             end
           end
+          # if we make it here there was an issue reading the title
+          m.reply "Title could not be extracted."
         end
 
-        # adhoc title
+        # adhoc
+        # for when no title's
         url.request_uri =~ /\/([^\/\?]+)$/
         filename = $1
-        length = format_size(response.content_length)
-        return "filename: #{filename}, size: (#{length})"
+        length = response.content_length.nil? ?
+                 nil :
+                 format_size(response.content_length)
+        info = "filename: #{filename}"
+        into += ", size: (#{length})" unless length.nil?
+
+        return info
 
       }
 

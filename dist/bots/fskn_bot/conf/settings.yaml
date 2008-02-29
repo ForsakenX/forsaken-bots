@@ -11,6 +11,7 @@ server: irc.freenode.org
 port: 6667
 channels:
 - "#forsaken"
+- "#forsaken-dev"
 nick: "FsknBot"
 password: mr.danielaquino@gmail.com
 target: ""

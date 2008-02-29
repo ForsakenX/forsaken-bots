@@ -1,15 +1,15 @@
 # scan channel users for hosting
-class Hosting < Meth::Plugin
+class Scan < Meth::Plugin
 
   include DirectPlay
 
   def initialize *args
     super *args
-    @bot.command_manager.register("hosting",self)
+    @bot.command_manager.register("scan",self)
   end
 
   def help m=nil, topic=nil
-    "hosting => Scan channel users to see if anyone is hosting..."
+    "scan => Scan channel users to see if anyone is hosting..."
   end
 
   def command m

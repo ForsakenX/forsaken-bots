@@ -11,6 +11,14 @@ class Admin < Meth::Plugin
       help m
     when "msg"
       msg m
+    when "raw"
+      @bot.send_data "#{@params.join(' ')}\n"
+    when "!"
+      begin
+        eval(@params.join(' '))
+      rescue Exception
+        m.reply "#{$!} : #{$@.join(' : ')}"
+      end
     end
   end
   def help m

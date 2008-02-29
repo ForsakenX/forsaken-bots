@@ -8,7 +8,7 @@ class Meth::Plugin
   def initialize(bot)
     @bot = bot
     # list of commands
-    @commands = {}
+    @commands = []
     # list of help messages
     @help = {}
     # helper for users
@@ -47,6 +47,7 @@ class Meth::Plugin
 
   # automated help method
   def help m=nil, topic=nil
+    return @help if @help.is_a?(String)
     # extract values
     params = m.params.dup
     command = params.shift
