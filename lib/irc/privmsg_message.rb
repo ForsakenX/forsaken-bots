@@ -3,7 +3,7 @@ class Irc::PrivMessage < Irc::Message
 
   def type; "PRIVMSG"; end
 
-  attr_accessor :replyto, :channel, :source, :message, :to, :personal
+  attr_reader :replyto, :channel, :source, :message, :to, :personal, :ctcp, :ctcp_message
 
   # :methods!1000@c-68-36-237-152.hsd1.nj.comcast.net PRIVMSG MethBot :,hi 1 2 3
   # :methods!1000@c-68-36-237-152.hsd1.nj.comcast.net PRIVMSG #tester :MethBot: hi 1 2 3
@@ -38,12 +38,9 @@ class Irc::PrivMessage < Irc::Message
     end
 
     # " PRIVMSG "
-    # #GSP!Forsaken :ip
-    # garbage
     _line.slice!(/ #{type} /)
 
     # "(MethBot|#tester)"
-    # #GSP!Forsaken :ip
     # where this _line came from
     @to = _line.slice!(/^[^ ]*/)
 
@@ -72,7 +69,14 @@ class Irc::PrivMessage < Irc::Message
     # ",hi 1 2 3"
     # "MethBot: hi 1 2 3"
     # the rest is the message
-    @message = _line
+    @message = _line.dup
+
+=begin
+    # ctcp detection
+    if @ctcp = !_line.slice!(/\001(\001)*\001/).nil?
+      @ctcp_message = $1
+    end
+=end
 
   end
 

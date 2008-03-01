@@ -1,10 +1,14 @@
 class Admin < Meth::Plugin
-  def privmsg m
-    return unless m.personal
-    return unless m.source.nick.downcase == "methods"
-    admin(m) if m.command == "admin"
+  def pre_init
+    @admin_callback = Proc.new{|m|admin(m)}
+    @bot.event.register('meth.command.admin',@admin_callback)
+  end
+  def cleanup *args
+    super *args
+    @bot.event.unregister('meth.command.admin',@admin_callback)
   end
   def admin m
+    return unless m.source.nick.downcase == "methods"
     @params = m.params
     case @params.shift
     when "help"

@@ -107,27 +107,51 @@ class Reaction < Meth::Plugin
       return
     end
     replys = []
+    cumulitive = 0
     reactions.each_with_index{ |reaction,index|
+      cumulitive += reaction[:chance]
       replys << "{#{index.to_s} => "+
                 "\"#{reaction[:message]}\" "+
                 "at #{reaction[:chance]}% chance}"
     }
-    m.reply "react to #{target} with #{replys.join(', ')}"
+    m.reply "react to #{target} at cumulitive chance #{cumulitive}% with #{replys.join(', ')}"
   end
 
   def remove m
-    # parse target
-    unless target = m.params.shift
-      m.reply "Error: Missing <target>.  "+help(m,:remove)
+
+    params = m.params.dup
+
+    params = params.join(' ')
+
+    # double quote
+    if !params.slice!(/"((?:\\.|[^"])*)"/).nil?
+      target = $1
+    # single quote
+    elsif !params.slice!(/'((?:\\.|[^'])*)'/).nil?
+      target = $1
+    # regex
+    elsif !params.slice!(/(\/(?:\\.|[^\/])*\/)/).nil?
+      target = $1
+    # unquoted word
+    else
+      target = params.slice!(/^([^ ]+)/)
+    end
+
+    params = params.split(' ')
+
+    if target.nil?
+      m.reply "Missing <target>: "+help(m,:remove)
       return
     end
+
     # get reactions for target
     if (reactions = find_all(target)).empty?
       m.reply "No reactions for `#{target}'"
       return
     end
+
     # parse delete values 
-    index = m.params.shift
+    index = params.shift
     start,stop = 0,0
     if index == "all"
       start,stop = 0,(reactions.length-1)
@@ -140,11 +164,13 @@ class Reaction < Meth::Plugin
       end
       start,stop = $1.to_i,$3.to_i
     end
+
     # check delete values
     unless start <= stop
       m.reply "Error: #{start} is not less than or equal to #{stop}."
       return false
     end
+
     # remove the reactions
     @m = m
     removed = []
@@ -152,8 +178,11 @@ class Reaction < Meth::Plugin
       delete_by_object_id(reaction.object_id)
       removed << i
     end
+
     save
+
     m.reply "Done."
+
   end
 
   def edit_chance m
@@ -238,41 +267,71 @@ class Reaction < Meth::Plugin
       m.reply "Error: Missing <index>.  "+help(m,:target)
       return
     end
-    unless index =~ /^[0-9]*$/
-      m.reply "Error: <index> must be a number."
+    case index
+    when "all"
+      index = (0..reactions.length)
+    when /^[0-9]*$/
+      index = index.to_i
+      index = (index..index)
+    else
+      m.reply "Error: <index> must be a number or keyword `all'."
       return false
     end
-    index = index.to_i
-    unless target = m.params.shift
+    unless target = m.params.join (' ')
       m.reply "Error: Missing <target>. "+help(m,:target)
       return false
     end
-    unless reaction = reactions[index]
-      m.reply "No reaction found."
-      return false
+    reactions[index].each do |reaction|
+      reaction[:target] = target
     end
-    reaction[:target] = target
     save
     m.reply "Done."
   end
 
   def react m
-    # extract values
-    unless m.params.shift == "to"
+
+    params = m.params.dup
+
+    unless params.shift == "to"
       m.reply "Missing keyword `to': "+help(m,:to)
       return
     end
-    unless target = m.params.shift
+
+    params = params.join(' ')
+
+    # double quote
+    if !params.slice!(/"((?:\\.|[^"])*)"/).nil?
+      target = $1
+    # single quote
+    elsif !params.slice!(/'((?:\\.|[^'])*)'/).nil?
+      target = $1
+    # regex
+    elsif !params.slice!(/(\/(?:\\.|[^\/])*\/)/).nil?
+      target = $1
+    # unquoted word
+    else
+      target = params.slice!(/^([^ ]+)/)
+    end
+
+    if target.nil?
       m.reply "Missing <word>: "+help(m,:to)
       return
     end
-    unless m.params.shift == "with"
+
+    target.gsub(/\\([^\\])/,"\1")   # remove backslash of char
+    target.gsub(/\\\\/,"\\")        # remove double backslash
+
+    params = params.split(' ')
+
+    unless params.shift == "with"
       m.reply "Missing keyword `with': "+help(m,:to)
       return
     end
-    message = m.params.join(' ')
+
+    message = params.join(' ')
     message.slice!(/ at ([0-9]+)% chance/)
     chance = ($1.nil?) ? 100 : $1.to_i
+
     # if we have a regex string
     if target.parse_regex
       # test the regex
@@ -281,6 +340,7 @@ class Reaction < Meth::Plugin
         return false
       end
     end
+
     # create reaction
     reaction = {
       :target  => target,
@@ -293,19 +353,28 @@ class Reaction < Meth::Plugin
   end
 
   def privmsg m
-    return if @bot.command_manager.commands[m.command]
+# no way to do this since privmsg does not have command anymore
+#    return if @bot.command_manager.commands[m.command]
     random = rand(100)
     # need a way to shuffle reactions
     @reactions.each do |reaction|
+      # randomly try this reaction
       next unless chance_play(reaction[:chance],random)
+      # is this target regex or string?
       if regex = reaction[:target].parse_regex
+        # extract gut of regex between //
         search = regex
+      # just a string
       else
+        # escape strings
         search = Regexp::escape(reaction[:target])
       end
+      # test message formated to search
       if m.message =~ /#{search}/i
+        # react with reaction
         m.reply reaction[:message] 
-        break # only say one message
+        # only say one message
+        break
       end
     end
   end
