@@ -1,6 +1,4 @@
-class Irc::NoticeMessage < Irc::Message
-  def initialize(client, line)
-    super(client, line)
-    @client.event.call('irc.message.notice',self)
-  end
+# nothing differen't from privmsg
+class Irc::NoticeMessage < Irc::PrivMessage
+  def type; "NOTICE"; end
 end

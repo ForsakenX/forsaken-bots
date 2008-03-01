@@ -27,69 +27,7 @@ class Meth::CommandManager
   end
 
   def privmsg m
-
-    # check ignore list
-    return if @bot.ignored.include? m.source.nick.downcase
-
-    # the message
-    message = m.message.dup
-
-    # m.message with a command is one of the following
-    # ",hi 1 2 3"
-    # "MethBot: hi 1 2 3"
-
-    # must become...
-    # m.command => hi
-    # m.message => 1 2 3
-
-    # look for our nick or target as first word
-    # then extract them from the message
-    # "(<nick>: |<target>)"
-    unless is_command = !message.slice!(/^#{Regexp.escape(@bot.nick)}: /).nil?
-      # addressed to target
-      unless @bot.target.nil?
-        is_command = !message.slice!(/^#{Regexp.escape(@bot.target)}/).nil?
-      end
-    else
-      named = true
-    end
-
-    # "hi 1 2 3"
-    # now that nick/target is extracted
-    # thats how the message looks
-    # includes the command and params
-
-    # if its a pm then its allways a command
-    is_command = m.personal if !is_command
-
-    # %w{hi 1 2 3}
-    # split words in line
-    params = message.split(' ')
-    m.instance_variable_set(:@params,params)
-    class <<m; attr_accessor :params; end
-
-    # "hi"
-    # the command
-    # so do we have a command?
-    command = is_command ? m.params.shift : nil
-    m.instance_variable_set(:@command,command)
-    class <<m; attr_accessor :command; end
-
-    # was our name addressed?
-    m.instance_variable_set(:@named,named)
-    class <<m; attr_accessor :named; end
-
-    # m.message is now the command params
-    # m.command is now the command
-    # m.params is now an array of words after the command
-
-    # call easy to use command event
-    if m.command
-      @bot.logger.info("Calling Command `#{m.command.downcase}'")
-      @bot.event.call("meth.command.#{m.command.downcase}",m)
-      @bot.event.call("meth.command",m)
-    end
-
+    c = Meth::Command.new(m.line)
   end
 
 end

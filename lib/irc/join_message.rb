@@ -15,7 +15,7 @@ class Irc::JoinMessage < Irc::Message
     nick      = $1
     user      = $2
     host      = $3
-    @channel  = $4
+    channel   = $4
 
     # get a list of users details for channel
     client.send_data "WHO #{channel}\n"
@@ -25,14 +25,14 @@ class Irc::JoinMessage < Irc::Message
 
     # add or update user
     if @user = Irc::User.find(nick)
-      @user.join(@channel)
+      @user.join(channel)
     else
-      @user = Irc::User.create({:channels => [@channel], :user => user,
+      @user = Irc::User.create({:channels => [channel], :user => user,
                                 :host     => host,      :nick => nick})
     end
 
-    # call user space
-    @client.event.call('irc.message.join',self)
+    # channel object created on join by user code above
+    @channel = @client.channels[channel.downcase]
 
   end
 

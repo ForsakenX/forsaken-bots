@@ -1,6 +1,8 @@
 # handles a priv message
 class Irc::PrivMessage < Irc::Message
 
+  def type; "PRIVMSG"; end
+
   attr_accessor :replyto, :channel, :source, :message, :to, :personal
 
   # :methods!1000@c-68-36-237-152.hsd1.nj.comcast.net PRIVMSG MethBot :,hi 1 2 3
@@ -38,7 +40,7 @@ class Irc::PrivMessage < Irc::Message
     # " PRIVMSG "
     # #GSP!Forsaken :ip
     # garbage
-    _line.slice!(/ PRIVMSG /)
+    _line.slice!(/ #{type} /)
 
     # "(MethBot|#tester)"
     # #GSP!Forsaken :ip
@@ -71,9 +73,6 @@ class Irc::PrivMessage < Irc::Message
     # "MethBot: hi 1 2 3"
     # the rest is the message
     @message = _line
-
-    # send it to the user
-    @client.event.call('irc.message.privmsg',self)
 
   end
 

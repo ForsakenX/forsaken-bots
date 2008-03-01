@@ -14,14 +14,14 @@ class Irc::PartMessage < Irc::Message
 
     #
     nick     = $1
-    @channel = $2
+    channel = $2
     @message = $3
 
+    # channel object
+    @channel = client.channels[channel.downcase]
+    
     # remove user from channel
-    @user.leave(@channel) if @user = Irc::User.find(nick)
+    @user.leave(@channel.name) if @user = Irc::User.find(nick)
       
-    # notify client
-    @client.event.call('irc.message.part',self)
-
   end
 end

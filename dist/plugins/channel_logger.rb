@@ -1,5 +1,6 @@
 require 'cgi'
 class ChannelLogger < Meth::Plugin
+
   # setup shit
   def pre_init
     @commands = [:logs]
@@ -8,9 +9,10 @@ class ChannelLogger < Meth::Plugin
     mkdir @log_dir
     @channels = {}
     # catch messages we send
-    @sent_proc = Proc.new{|line|sent line}
+    @sent_proc = Proc.new{|line|sentmsg line}
     @bot.event.register('irc.send_data',@sent_proc)
   end
+
   # before reload
   def cleanup *args
     super *args
@@ -19,11 +21,13 @@ class ChannelLogger < Meth::Plugin
     end
     @bot.event.unregister('irc.send_data',@sent_proc)
   end
+
   # help
   def help m=nil, topic=nil
     "logs => Path to logs for this channel.  "+
     "logs today => Path to log file for today."
   end
+
   # command to return url for logs
   def logs m
     pound = CGI.escape("#")
@@ -37,41 +41,121 @@ class ChannelLogger < Meth::Plugin
       m.reply channel_path.gsub('#',pound)
     end
   end
-  # detect joins and setup directory
+
+
+  #########
+  # Events
+  #########
+
+
+  # catch topic change
+  def topic m
+    message = "(#{m.time.strftime("%H:%M:%S")}) "+
+              "TOPIC: "+
+              m.channel.topic +
+              "\n"
+    log_message(m.channel.name.downcase, m.time, message)
+  end
+
+  # catch quit message
+  def quit m
+    message = "(#{m.time.strftime("%H:%M:%S")}) "+
+              "QUIT: "+
+              "#{m.user.nick} "+
+              m.message +
+              "\n"
+    # quit message does not say which channel it came from
+    # so we log it to every channel the user is in !
+    m.user.channels.each do |name,channel|
+      log_message(channel.name.downcase, m.time, message)
+    end
+  end
+
+  # catch join message
   def join m
-    m.reply "I joined!!!" \
-      if m.user.nick.downcase == @bot.nick.downcase
+    message = "(#{m.time.strftime("%H:%M:%S")}) "+
+              "JOIN: "+
+              m.user.nick +
+              "\n"
+    log_message(m.channel.name.downcase, m.time, message)
     return unless m.user.nick.downcase == @bot.nick.downcase
-    m.reply "Someone Joined!"
     mkdir "#{@log_dir}/#{m.channel.name.downcase}"
   end
+
+  # catch join message
+  def part m
+    message = "(#{m.time.strftime("%H:%M:%S")}) "+
+              "PART: "+
+              "#{m.user.nick} "+
+              m.message +
+              "\n"
+    log_message(m.channel.name.downcase, m.time, message)
+  end
+
+  # catch join message
+  def kick m
+    message = "(#{m.time.strftime("%H:%M:%S")}) "+
+              "KICK: "+
+              "#{m.user.nick} "+
+              "BY: "+
+              "#{m.admin.nick} "+
+              "REASON: "+
+              m.message +
+              "\n"
+    log_message(m.channel.name.downcase, m.time, message)
+  end
+
+  # catch and format privmsg
+  def notice m
+    return if m.personal
+    message = "(#{m.time.strftime("%H:%M:%S")}) "+
+              "(notice) "+
+              "#{m.source.nick}: "+
+              "#{m.message}" +
+              "\n"
+    log_message(m.channel.name.downcase, m.time, message)
+  end
+
   # catch and format privmsg
   def privmsg m
     return if m.personal
     message = "(#{m.time.strftime("%H:%M:%S")}) "+
               "#{m.source.nick}: "+
-              "#{m.message}\n"
+              "#{m.message}" +
+              "\n"
     log_message(m.channel.name.downcase, m.time, message)
   end
+
   # catch and format message we send
-  def sent line
+  def sentmsg line
     return if line.nil?
     line = line.dup
-    return if line.slice!(/^PRIVMSG /i).nil?
+    return if line.slice!(/^(PRIVMSG|NOTICE) /i).nil?
+    notice = (($1 == "NOTICE") ? "(notice) " : "")
     return unless line =~ /^#([^ ]+) :([^\n]+)/
     channel,message = "##{$1}",$2
     time = Time.now
     message = "(#{time.strftime("%H:%M:%S")}) "+
               "#{@bot.nick}: "+
+              notice +
               "#{message}\n"
     log_message(channel, time, message)
   end
+
+
+  ################
+  # Private Shit
+  ################
+
+  private
+
   # log the message
   def log_message channel, time, message
     f = file(channel,time)
     f.write(message)
     f.flush
   end
+
   # return or open new file handler
   def file channel, time
     channel = channel.downcase
@@ -91,6 +175,7 @@ class ChannelLogger < Meth::Plugin
     end
     file
   end
+
   # create directory heiarchy
   def mkdir path
     parts = path.split('/')
@@ -100,7 +185,6 @@ class ChannelLogger < Meth::Plugin
       Dir.mkdir p
     end
   end
+
 end
-
-
 

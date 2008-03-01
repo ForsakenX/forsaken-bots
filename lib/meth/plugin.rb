@@ -20,7 +20,7 @@ class Meth::Plugin
     end
     # register message call backs
     @message_callbacks = {}
-    %w{unknown quit part listen privmsg notice join}.each do |type|
+    %w{topic quit part listen privmsg notice join}.each do |type|
       if respond_to?(type.to_sym)
         message  = "irc.message.#{type}"
         callback = Proc.new{|message| send(type.to_sym, message) }

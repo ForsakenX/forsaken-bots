@@ -1,5 +1,5 @@
 class Irc::QuitMessage < Irc::Message
-  attr_accessor :user, :message
+  attr_reader :user, :message
   def initialize(client,line)
     super(client,line)
 
@@ -22,9 +22,6 @@ class Irc::QuitMessage < Irc::Message
     else
       @client.logger.error "[QUIT] but user was not found..."
     end
-
-    # call client
-    @client.event.call('irc.message.quit',self)
 
   end
 end

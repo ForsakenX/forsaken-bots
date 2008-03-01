@@ -22,7 +22,7 @@ require 'irc/part_message'
 require 'irc/quit_message'
 require 'irc/kick_message'
 require 'irc/notice_message'
-require 'irc/unknown_message'
+require 'irc/topic_message'
 
 # the actual client
 require 'irc/client'

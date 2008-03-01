@@ -11,10 +11,12 @@ class Irc::KickMessage < Irc::Message
     end
 
     kicker   = $1
-    @channel = $2
+    channel = $2
     kicked   = $3
     @message = $4
-    
+ 
+    @channel = @client.channels[channel.downcase]
+
     unless @admin = Irc::User.find(kicker)
       @client.logger.info "[KICK] Kicker was not found..."
     end
@@ -24,8 +26,6 @@ class Irc::KickMessage < Irc::Message
     else
       @user.destroy
     end
-
-    @client.event.call('irc.message.kick',self)
 
   end
 end

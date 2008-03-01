@@ -20,8 +20,7 @@ module Irc::HandleMessage
       send_join @default_channels
 
     # set nick succeeded
-      # :_0_fskn_games!1000@c-68-36-237-152.hsd1.nj.comcast.net NICK :_1_fskn_games
-      #:tes1!i=1000@c-68-36-237-152.hsd1.nj.comcast.net NICK :methods
+      # :hostname NICK :methods
     when /^:([^ ]+)![^@]*@[^ ]* NICK [:]*([^ ]*)/i
       old_nick = $1
       new_nick = $2
@@ -42,31 +41,6 @@ module Irc::HandleMessage
 
     # motd
     #when /^:[^ ]* (375|372|376)/
-
-    ##
-    # channel topic
-    ##
-
-      # :heinlein.freenode.net
-      # 332
-      # FsknBot #forsaken :
-      # Forsaken: 0 Games Running | http://forsakenplanet.tk | RIP Propain (age 36)
-
-      # :methods!n=daquino@c-68-36-237-152.hsd1.nj.comcast.net
-      # TOPIC
-      # #forsaken :test4
-
-#:methods!n=daquino@c-68-36-237-152.hsd1.nj.comcast.net TOPIC #forsaken :test6
-
-
-    when /^[^ ]* (332|TOPIC) ([^#])* *(#[^ ]+) :(.*)/im
-     
-      type    = $1 # 332 or TOPIC
-      sender  = $2 #
-      channel = $3 #
-      topic   = $4 #
-
-      channel.topic = topic if channel = channels[channel.downcase]
 
     ##
     # 1st whois line (start)
@@ -142,9 +116,9 @@ module Irc::HandleMessage
     #when /^:[^ ]* 315/
 
     # mode responses
-      # me > MODE #forsaken
-      # me < :kornbluth.freenode.net 324 FsknBot #forsaken +tncz
-      # me < :kornbluth.freenode.net 329 FsknBot #forsaken 1192567839
+      # :ChanServ!ChanServ@services. MODE #projectx +o methods
+      # :kornbluth.freenode.net 324 FsknBot #forsaken +tncz
+      # :kornbluth.freenode.net 329 FsknBot #forsaken 1192567839
     when /^:[^ ]* 324 [^ ]* (#[^ ]*) ([^ ]*)/
       channel = $1
       mode    = $2
@@ -155,42 +129,35 @@ module Irc::HandleMessage
         logger.warn "[324] unknown channel."
       end
 
-    # mode changes
-      # :ChanServ!ChanServ@services. MODE #projectx +o methods
+    # topic
+    when /^:[^ ]* (332|TOPIC)/i
+      m = Irc::TopicMessage.new(self,line)
+      @event.call('irc.message.topic',m)
 
-    # join
     when /^:[^ ]* JOIN/
       m = Irc::JoinMessage.new(self,line)
+      @event.call('irc.message.join',m)
 
-    # part
     when /^:[^ ]* PART/i
       m = Irc::PartMessage.new(self,line)
+      @event.call('irc.message.part',m)
 
-    # quit
-      # :methods!1000@c-68-36-237-152.hsd1.nj.comcast.net
-      # QUIT :Quit: Leaving.
     when /^:[^ ]* QUIT/i
       m = Irc::QuitMessage.new(self,line)
+      @event.call('irc.message.quit',m)
 
-    # kick
-      # :methods!n=daquino@c-68-36-237-152.hsd1.nj.comcast.net
-      # KICK #forsaken DIII-The_Lion :methods
     when /^:[^ ]* KICK/i
       m = Irc::KickMessage.new(self,line)
+      @event.call('irc.message.kick',m)
 
-    # privmsg
     when /^:[^ ]* PRIVMSG/i
       m = Irc::PrivMessage.new(self,line)
+      @event.call('irc.message.privmsg',m)
     
-    # notice
     when /^:[^ ]* NOTICE/i
       m = Irc::NoticeMessage.new(self,line)
+      @event.call('irc.message.notice',m)
 
-    # unknown
-    else
-      m = Irc::UnknownMessage.new(self,line)
     end
-
   end
-
 end

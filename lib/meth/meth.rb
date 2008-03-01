@@ -7,6 +7,7 @@ module Meth
 end
 
 #
+require 'meth/command'
 require 'meth/command_manager'
 
 # extend Numberic
