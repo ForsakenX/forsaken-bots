@@ -10,18 +10,49 @@ class Suggestion < Meth::Plugin
 
   def help m=nil, topic=nil
     "suggestion => Display random suggestion.  "+
-    "suggestion add [narative] => Add suggestion to the list."
+    "suggestion add [narative] => Add suggestion to the list.  "+
+    "suggestion count => Display number of suggestions.  "+
+    "suggestion show <index> => Show the n'th suggestion. "+
+    "suggestion delete <index> => Delete n'th suggestion. "
   end
 
   def command m
-    case m.params.shift
+    @params = m.params
+    case @params.shift
     when "",nil
       random m
     when "add"
       add m
+    when "show"
+      show m
+    when "count"
+      count m
+    when "delete"
+      delete m
     else
       m.reply help
     end
+  end
+
+  def show m
+    index = @params.shift.to_i
+    m.reply "#{index}) #{@suggestions[index]}"
+  end
+
+  def delete m
+    if m.source.nick.downcase != "methods"
+      m.reply "You are not authorized to remove suggestions."
+      return
+    end
+    index = @params.shift.to_i
+    suggestion = @suggestions.delete_at(index)
+    save
+    m.reply "removed) #{suggestion}"
+    m.reply "new #{index}) #{@suggestions[index]}"
+  end
+
+  def count m
+    m.reply "There are #{@suggestions.length} suggestions."
   end
 
   def random m
@@ -36,9 +67,9 @@ class Suggestion < Meth::Plugin
 
   def add m
     # narative
-    message = m.params.join(' ')
+    message = @params.join(' ')
     # checks
-    if message == ""
+    if message.empty?
       m.reply "Missing [narative].  "+
               "Type help suggestion for more info."
       return
@@ -49,7 +80,6 @@ class Suggestion < Meth::Plugin
     m.reply "Suggestion created..."
   end
 
-  private
   def save
     file = File.open(@db,'w+')
     YAML.dump(@suggestions,file)

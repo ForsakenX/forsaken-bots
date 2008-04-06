@@ -5,19 +5,23 @@ require 'rubygems'
 require 'htmlentities'
 class Google < Meth::Plugin
   @@wap_search = "http://www.google.com/wml/search?hl=en&q="
+  @@wap_news_search = "http://news.google.com/wml/search?hl=en&q="
   @@wap_link   = /<a accesskey="(\d)" href=".*?u=(.*?)">(.*?)<\/a>/im
+  @@results = 3
   def initialize *args
     super *args
     @bot.command_manager.register("!google",self)
     @bot.command_manager.register("google",self)
     @bot.command_manager.register("search",self)
+    @bot.command_manager.register("news",self)
     @bot.command_manager.register("wp",self)
   end
   def help(m=nil, topic=nil)
-    "google|search [site:<domain>] <data> => Return top 5 results from google.  "+
-    "wp <data> => Return 5 results from WikiPedia.  "+
-    "[site:<domain>] limits the domain to search (.com, cars.com).  "+
-    "Examples: (google toyota), (google site:cars.com toyota), (wp computer)."
+    "google|search <search> => Return top #{@@results} results from google.com.  "+
+    "news <search> => Return top #{@@results} results from news.google.com.  "+
+    "wp <search> => Return #{@@results} results from WikiPedia.  "+
+    "Examples: google toyota  " +
+    "NOTE: <search> is passed unmodified to google"
   end
   def command m
     if m.command == "google"
@@ -27,7 +31,8 @@ class Google < Meth::Plugin
     query = m.params.join(' ')
     query = "site:wikipedia.org #{query}" if m.command == "wp"
     begin
-      url      = URI.parse(@@wap_search+CGI.escape(query))
+      search   = (m.command == "news") ? @@wap_news_search : @@wap_search
+      url      = URI.parse(search+CGI.escape(query))
       http     = Net::HTTP.new(url.host, url.port)
       response = http.request(Net::HTTP::Get.new(url.request_uri))
       raise "Sorry, Google is acting up..." unless Net::HTTPOK === response ||
@@ -38,7 +43,7 @@ class Google < Meth::Plugin
         m.reply "No results found for: #{query}"
         return false
       end
-      formated = results[0...5].map {|result|
+      formated = results[0...@@results].map {|result|
         number = result[0]
         url    = URI.unescape(result[1])
         title  = HTMLEntities.decode_entities(result[2].strip)

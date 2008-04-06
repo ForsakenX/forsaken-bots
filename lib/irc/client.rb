@@ -47,9 +47,17 @@ class Irc::Client < EM::Connection
   end
 
   def receive_line line
+    time = Time.now
     @event.call('irc.receive_line',line)
     @@logger.info "<<< #{line}"
+    # profiling
     handle_message line
+    seconds = Time.now-time
+    if seconds > 60
+      minutes = seconds / 60
+      seconds = seconds % 60
+    end
+    @@logger.info "Time Taken => #{minutes}:#{seconds}"
   end
 
   def send_data line

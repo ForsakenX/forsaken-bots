@@ -49,6 +49,12 @@ class Irc::User
   def initialize user
     @ip = nil
     @channels = {}
+    @blocked = false
+    @host =  nil
+    @user =  nil
+    @realname = nil
+    @nick = nil
+    @flags = nil
     update user
   end
   
@@ -59,10 +65,7 @@ class Irc::User
       instance_variable_set(i,val)
     end
     #
-    @host = nil
-    # blocked hostname?
-    unafilliated = "unaffiliated\/#{Regexp.escape(@user.downcase)}"
-    @host = user[:host] unless (user[:host] =~ /^#{unafilliated}$/)
+    @host = user[:host] unless ip_blocked?
     #
     if user[:channels]
       user[:channels].each do |channel|
@@ -95,7 +98,7 @@ class Irc::User
 
   def ip
     start = Time.now
-    return nil if host == nil
+    return nil if host == nil || ip_blocked?
     return @ip if @ip
     begin
       return (@ip = Resolv.getaddress host)
@@ -106,6 +109,17 @@ class Irc::User
                                "error => #{$!}"
     end
     nil
+  end
+
+  def ip_blocked?
+    return @blocked unless @blocked.nil?
+    unafilliated = "unaffiliated\/#{Regexp.escape(@user.downcase)}"
+    if user[:host] =~ /^#{unafilliated}$/
+      @blocked = true
+    else
+      @blocked = false
+    end
+    @blocked
   end
 
 end

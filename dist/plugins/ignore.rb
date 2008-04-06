@@ -36,6 +36,7 @@ class Ignore < Meth::Plugin
     end
   end
   def ignore m
+    return if m.params.length > 1
     unless nick = m.params.shift
       m.reply help(m)
       return

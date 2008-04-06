@@ -1,10 +1,10 @@
 class Irc::Event
   attr_reader :topics
   def initialize
-    @topics = Hash.new {|h,k| h[k] = {0=>[]}}
+    @topics = Hash.new {|h,k| h[k] = []}
   end
   # register to listen to a topic
-  def register topic, callback, place=0
+  def register topic, callback
     @topics[topic] << callback
   end
   # unregister to listen to a topic

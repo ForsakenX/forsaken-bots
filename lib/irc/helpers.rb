@@ -31,7 +31,6 @@ module Irc::Helpers
         send_data "#{types[type]} #{to} :#{chunk}\n"
       }
     end
-    send_data "\n"
     message
   end
 

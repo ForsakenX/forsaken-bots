@@ -11,10 +11,11 @@ class GameEvents < Meth::Plugin
     GameModel.event.register("game.started",@topic_change)
     GameModel.event.register("game.finished",@topic_change)
     @every_30 = EM::PeriodicTimer.new(30.seconds) {
-      @topic_checker.call(nil)
+      @game_checker.call(nil)
     }
     @every_60 = EM::PeriodicTimer.new(60.seconds) {
-      @game_checker.call(nil)
+      # just in case clean up the topic
+      @topic_checker.call(nil)
     }
   end
 
@@ -64,6 +65,9 @@ class GameEvents < Meth::Plugin
           game = GameModel.create({:user => user})
         end
   
+        # fix up the topic
+        @topic_checker.call(nil)
+
       }
     }
 
@@ -80,22 +84,16 @@ class GameEvents < Meth::Plugin
     }
   
     @game_started = Proc.new{|game|
-      @bot.channels.each do |name,channel|
-        @bot.say name, "#{game.hostmask} has started a game!"
-      end
+      @bot.msg "#forsaken", "#{game.hostmask} has started a game!"
     }
   
     @game_stopped = Proc.new{|game|
-      @bot.channels.each do |name,channel|
-        @bot.say name, "#{game.hostmask} has stopped hosting..."
-      end
+      @bot.msg "#forsaken", "#{game.hostmask} has stopped hosting..."
     }
   
     @game_timeout = Proc.new{|game|
-      @bot.channels.each do |name,channel|
-        @bot.say name, "#{game.hostmask} has been removed...  "+
-                  "This is because it never started within timely fashion."
-      end
+      @bot.msg "#forsaken", "#{game.hostmask} has been removed...  "+
+                            "This is because it never started within timely fashion."
     }
   
   end

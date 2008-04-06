@@ -12,14 +12,14 @@ class Quote < Meth::Plugin
     "quote add <narative> => Add a quote to the list.  "+
     "quote show <id> => Show quote by <id>. "+
     "quote search <needle> => Search quotes for <needle>.  "+
-    "quote random [needle] => Display random quote, "+
+    "quote [random] [needle] => Display random quote, "+
            "optionally within range of [needle]."
   end
 
   def command m
     @params = m.params.dup
     case @params.shift
-    when "random"
+    when "random","",nil
       random m
     when "add"
       add m

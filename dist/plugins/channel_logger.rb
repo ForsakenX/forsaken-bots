@@ -25,7 +25,8 @@ class ChannelLogger < Meth::Plugin
   # help
   def help m=nil, topic=nil
     "logs => Path to logs for this channel.  "+
-    "logs today => Path to log file for today."
+    "logs today => Path to log file for today.  "+
+    "logs yesterday=> Path to log file for yesterday."
   end
 
   # command to return url for logs
@@ -33,13 +34,20 @@ class ChannelLogger < Meth::Plugin
     pound = CGI.escape("#")
     channel = m.channel.name.downcase
     channel_path = "#{@url}/#{channel}"
-    case m.params[0]
-    when "today"
-      path = Time.now.strftime("%Y/%m-%Y/#{channel}-%m-%d-%Y")
-      m.reply "#{channel_path}/#{path}".gsub('#',pound)
-    else
+    switch = m.params[0]
+    # no params
+    # show logs for this chat
+    unless switch
       m.reply channel_path.gsub('#',pound)
+      return
     end
+    # default logs for today
+    time = Time.now
+    # get logs for yesterday
+    time = time - 24.hours if switch == "yesterday"
+    # return the logs
+    path = time.strftime("%Y/%m-%Y/#{channel}-%m-%d-%Y")
+    m.reply "#{channel_path}/#{path}".gsub('#',pound)
   end
 
 
@@ -119,10 +127,12 @@ class ChannelLogger < Meth::Plugin
   # catch and format privmsg
   def privmsg m
     return if m.personal
-    message = "(#{m.time.strftime("%H:%M:%S")}) "+
-              "#{m.source.nick}: "+
-              "#{m.message}" +
-              "\n"
+    message  = "(#{m.time.strftime("%H:%M:%S")}) "
+    if m.message =~ (/^\001ACTION ([^\001]+)\001$/)
+      message += "***#{m.source.nick} #{$1}\n"
+    else
+      message += "#{m.source.nick}: #{m.message}\n"
+    end
     log_message(m.channel.name.downcase, m.time, message)
   end
 

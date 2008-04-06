@@ -12,6 +12,9 @@ class Unhost < Meth::Plugin
 
   # remove a game
   def command m
+    unless m.params.empty?
+      return
+    end
     if m.source.ip == nil
       m.reply "You don't have an ip number..."
       return

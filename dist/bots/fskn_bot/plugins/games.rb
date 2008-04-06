@@ -11,6 +11,9 @@ class Games < Meth::Plugin
   end
 
   def command m
+    unless m.params.empty?
+      return
+    end
     games = GameModel.games
     unless games.length > 0
       m.reply "There are currently no games..."
@@ -29,7 +32,7 @@ class Games < Meth::Plugin
       time = "#{hours}:#{minutes}:#{seconds}"
       hosts << "( "+
                "#{game.hostmask} "+
-               "since #{game.start_time.strftime('%I:%m:%S')} "+
+               "since #{game.start_time.strftime('%I:%M:%S')} "+
                "runtime #{time}"+
                " )"
     }

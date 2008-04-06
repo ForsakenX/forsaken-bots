@@ -10,10 +10,9 @@ end
 require 'meth/command'
 require 'meth/command_manager'
 
-# extend Numberic
+# extends
+require 'meth/array'
 require 'meth/numeric'
-
-# extend string
 require 'meth/string'
 
 # meth parts

@@ -109,7 +109,7 @@ class Reaction < Meth::Plugin
     replys = []
     cumulitive = 0
     reactions.each_with_index{ |reaction,index|
-      cumulitive += reaction[:chance]
+      cumulitive += reaction[:chance].to_i
       replys << "{#{index.to_s} => "+
                 "\"#{reaction[:message]}\" "+
                 "at #{reaction[:chance]}% chance}"
@@ -194,15 +194,10 @@ class Reaction < Meth::Plugin
       m.reply "No reactions for `#{target}'"
       return
     end
-    unless index = m.params.shift
-      m.reply "Error: Missing <index>.  "+help(m,:chance)
-      return
-    end
-    unless index =~ /^[0-9]*$/
-      m.reply "Error: <index> must be a number."
-      return false
-    end
-    index = index.to_i
+    # parse index
+    index = parse_index(m.params.shift,reactions.length,m)
+    return false if index === false
+    # parse chance
     unless chance = m.params.shift
       m.reply "Error: Missing <chance>. "+help(m,:chance)
       return false
@@ -218,7 +213,9 @@ class Reaction < Meth::Plugin
       m.reply "Reaction at index (#{index}) does not exist."
       return false
     end
-    reaction[:chance] = chance
+    reactions[index].each do |reaction|
+      reaction[:chance] = chance
+    end
     save
     m.reply "Set chance to #{chance}%"
   end
@@ -263,21 +260,11 @@ class Reaction < Meth::Plugin
       m.reply "No reactions for `#{target}'"
       return
     end
-    unless index = m.params.shift
-      m.reply "Error: Missing <index>.  "+help(m,:target)
-      return
-    end
-    case index
-    when "all"
-      index = (0..reactions.length)
-    when /^[0-9]*$/
-      index = index.to_i
-      index = (index..index)
-    else
-      m.reply "Error: <index> must be a number or keyword `all'."
-      return false
-    end
-    unless target = m.params.join (' ')
+    # parse index
+    index = parse_index(m.params.shift,reactions.length,m)
+    return false if index === false
+    #
+    unless target = m.params.join(' ')
       m.reply "Error: Missing <target>. "+help(m,:target)
       return false
     end
@@ -286,6 +273,24 @@ class Reaction < Meth::Plugin
     end
     save
     m.reply "Done."
+  end
+
+  def parse_index index, length, m
+    if index.nil?
+      m.reply("Error: Missing <index>.  "+help(m,:target))
+      return false
+    end
+    case index
+    when "all"
+      return (0..length)
+    when /^[0-9]*$/
+      index = index.to_i
+      index = (index..index)
+    else
+      m.reply "Error: <index> must be a number or keyword `all'."
+      return false
+    end
+    index
   end
 
   def react m
@@ -353,28 +358,28 @@ class Reaction < Meth::Plugin
   end
 
   def privmsg m
+    # this will eventually get called before commands
+    # so the reaction shuffle will alter the list
+    # before the remove command is able to work on the list
+    return if ['react','reaction'].include? m.message.split(' ')[0]
 # no way to do this since privmsg does not have command anymore
 #    return if @bot.command_manager.commands[m.command]
-    random = rand(100)
-    # need a way to shuffle reactions
-    @reactions.each do |reaction|
+    @reactions.shuffle!.each do |reaction|
+      random = rand(100)
       # randomly try this reaction
       next unless chance_play(reaction[:chance],random)
       # is this target regex or string?
       if regex = reaction[:target].parse_regex
-        # extract gut of regex between //
-        search = regex
-      # just a string
+        if m.message =~ /#{regex}/i
+          m.reply reaction[:message] 
+          break
+        end
+      # word test
       else
-        # escape strings
-        search = Regexp::escape(reaction[:target])
-      end
-      # test message formated to search
-      if m.message =~ /#{search}/i
-        # react with reaction
-        m.reply reaction[:message] 
-        # only say one message
-        break
+        if m.message.split(' ').include?(reaction[:target])
+          m.reply reaction[:message] 
+          break
+        end
       end
     end
   end

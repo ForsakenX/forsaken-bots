@@ -1,5 +1,5 @@
 class MathPlugin < Meth::Plugin
-  @@supported = %w{ 1-9 % * + - \ ( ) . }
+  @@supported = %w{ | & ^ 0-9 % * + - \ ( ) . }
   def initialize *args
     super *args
     @bot.command_manager.register('math',self)
@@ -30,6 +30,6 @@ class MathPlugin < Meth::Plugin
     not clean(str)
   end
   def clean str
-    str =~ /[1-9%\*\+\-\/\(\)\. ]+/
+    str =~ /[&\|\^0-9%\*\+\-\/\(\)\. ]+/
   end
 end

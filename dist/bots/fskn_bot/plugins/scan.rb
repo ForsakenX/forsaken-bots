@@ -14,6 +14,10 @@ class Scan < Meth::Plugin
 
   def command m
 
+    unless m.params.empty?
+      return
+    end
+
     if m.personal
       m.reply "This command only works in a channel..."
       return

@@ -3,7 +3,7 @@ class Irc::PrivMessage < Irc::Message
 
   def type; "PRIVMSG"; end
 
-  attr_reader :replyto, :channel, :source, :message, :to, :personal, :ctcp, :ctcp_message
+  attr_reader :replyto, :channel, :source, :message, :to, :personal
 
   # :methods!1000@c-68-36-237-152.hsd1.nj.comcast.net PRIVMSG MethBot :,hi 1 2 3
   # :methods!1000@c-68-36-237-152.hsd1.nj.comcast.net PRIVMSG #tester :MethBot: hi 1 2 3
@@ -70,13 +70,6 @@ class Irc::PrivMessage < Irc::Message
     # "MethBot: hi 1 2 3"
     # the rest is the message
     @message = _line.dup
-
-=begin
-    # ctcp detection
-    if @ctcp = !_line.slice!(/\001(\001)*\001/).nil?
-      @ctcp_message = $1
-    end
-=end
 
   end
 
