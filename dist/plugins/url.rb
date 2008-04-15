@@ -1,7 +1,6 @@
 require 'net/http'
 require 'htmlentities'
 require 'timeout'
-require 'tinyurl'
 class Url < Meth::Plugin
   def pre_init
     @bot.command_manager.register("urls",self)
@@ -47,24 +46,6 @@ class Url < Meth::Plugin
     last = @urls.first
     m.reply "#{last[2]}: #{last[1]} => #{last[0]}"
   end
-  def check_for_forsaken_download m, urls
-    sender = m.source.nick.downcase 
-    return unless ["silence","methods"].include?(sender)
-    urls.each do |url|
-      next unless url =~ /ProjectX_([0-9\.]+)(_Executable)?\.zip/
-      set_version $1, url
-      break
-    end
-  end
-  def set_version version, url
-    t = Tinyurl.new(url)
-    official,user = Irc::Channel.channels['#forsaken'].topic.split('||')
-    official.gsub!(/\| Version: [^|]+/,
-                  "| Version: #{version} #{t.tiny} ")
-    topic = "#{official}||#{user}"
-    cmd = "TOPIC #forsaken :#{topic}\n"
-    @bot.send_data(cmd)
-  end
   def search m
     m.params.join(' ') =~ /(search ){0,1}([^ ]*)/
     needle = $2
@@ -107,7 +88,6 @@ class Url < Meth::Plugin
       @urls.unshift [url,info,m.source.nick,channel,Time.now]
     end
     save
-    check_for_forsaken_download m, urls
   end
   def get_info m, url, recursion = -1
     info = ""

@@ -3,9 +3,12 @@
 require 'net/http'
 
 url = ARGV.shift
-url = "http://#{url}" unless url =~ /^http:\/\//
+url = "http://#{url}" unless url =~ /^https?:\/\//
 
 url      = URI.parse(url)
+puts "host = " + url.host
+puts "port = " + url.port.to_s
+
 http     = Net::HTTP.new(url.host,url.port)
 response = http.request_get(url.request_uri,{"User-Agent"=>"FsknBot"})
 

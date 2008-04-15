@@ -13,7 +13,8 @@ class Help < Meth::Plugin
     commands = @bot.command_manager.commands
     # help
     unless command = m.params.shift
-      m.reply "Commands: #{commands.keys.sort.join(', ')}.  "+
+      m.reply "A full list of commands has been messaged to you."
+      m.reply_directly "Commands: #{commands.keys.sort.join(', ')}.  "+
               "Type 'help help' for more information."
       return
     end

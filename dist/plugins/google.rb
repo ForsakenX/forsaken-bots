@@ -15,6 +15,7 @@ class Google < Meth::Plugin
     @bot.command_manager.register("search",self)
     @bot.command_manager.register("news",self)
     @bot.command_manager.register("wp",self)
+    @bot.command_manager.register("youtube",self)
   end
   def help(m=nil, topic=nil)
     "google|search <search> => Return top #{@@results} results from google.com.  "+
@@ -28,8 +29,11 @@ class Google < Meth::Plugin
       m.reply "Start using !google because google gets in the way of talking about google..."
       return false
     end
-    query = m.params.join(' ')
-    query = "site:wikipedia.org #{query}" if m.command == "wp"
+    if (query = m.params.join(' ')).empty?
+      return false
+    end
+    query = "#{query} site:wikipedia.org" if m.command == "wp"
+    query = "#{query} site:youtube.com" if m.command == "youtube"
     begin
       search   = (m.command == "news") ? @@wap_news_search : @@wap_search
       url      = URI.parse(search+CGI.escape(query))

@@ -40,7 +40,8 @@ class Faq < Meth::Plugin
       m.reply "There are no faq's yet."
       return
     end
-    m.reply @faq.keys.sort.join(', ')
+    m.reply "A list of faq's has been messaged to you."
+    m.reply_directly @faq.keys.sort.join(', ')
   end
   def get m, name
     if name.nil?
