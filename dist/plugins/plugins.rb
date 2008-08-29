@@ -22,12 +22,12 @@ class Plugins < Meth::Plugin
     when "loaded"
       m.reply @bot.plugin_manager.loaded.sort.join(', ')
     when "reload"
-      reload m
+      do_reload m
     when "",nil
       m.reply @bot.plugin_manager.list.sort.join(', ')
     end
   end
-  def reload m
+  def do_reload m
 
     command = @params.shift
 

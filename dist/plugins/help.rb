@@ -11,8 +11,9 @@ class Help < Meth::Plugin
   end
   def do_help m
     commands = @bot.command_manager.commands
+    params = m.params.dup
     # help
-    unless command = m.params.shift
+    unless command = params.shift
       m.reply "A full list of commands has been messaged to you."
       m.reply_directly "Commands: #{commands.keys.sort.join(', ')}.  "+
               "Type 'help help' for more information."
@@ -36,12 +37,13 @@ class Help < Meth::Plugin
       _command = commands[found[0]]
     end
     # is it an alias?
-    _alias = @bot.plugin_manager.plugins['alias']
-    if a = _alias.aliases[_command]
-      m.reply "#{command} is an alias for #{a}"
+    if _alias = @bot.plugin_manager.plugins['alias']
+      if a = _alias.aliases[_command]
+        m.reply "#{command} is an alias for #{a}"
+      end
     end
     # call help on command
-    _command[:obj].help(m,m.params[0])
+    _command[:obj].help(m,params.shift)
   end
   def command m
     m.reply do_help(m)

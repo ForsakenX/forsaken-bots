@@ -24,17 +24,31 @@ class ChannelLogger < Meth::Plugin
 
   # help
   def help m=nil, topic=nil
-    "logs => Path to logs for this channel.  "+
-    "logs today => Path to log file for today.  "+
-    "logs yesterday=> Path to log file for yesterday."
+    "logs [channel] => Path to logs for channel.  "+
+    "logs [channel] today => Path to log file for today.  "+
+    "logs [channel] yesterday=> Path to log file for yesterday.  "+
+    "NOTE: if [channel] is ommited then result is relative to current channel."
   end
 
   # command to return url for logs
   def logs m
+    params = m.params.dup
+    # parse channel
+    if params[0] =~ /^#/
+      channel = params.shift
+    else
+      if m.personal
+        m.reply "Error: You must specify [channel] in personal message."
+        return false
+      else
+        channel = m.channel.name.downcase
+      end
+    end
+    # parse switch
+    switch = params.shift
+    #
     pound = CGI.escape("#")
-    channel = m.channel.name.downcase
     channel_path = "#{@url}/#{channel}"
-    switch = m.params[0]
     # no params
     # show logs for this chat
     unless switch

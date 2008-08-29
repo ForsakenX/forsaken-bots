@@ -80,4 +80,8 @@ class Meth::Plugin
     end
   end
 
+  def plugins
+    @bot.plugins
+  end
+
 end

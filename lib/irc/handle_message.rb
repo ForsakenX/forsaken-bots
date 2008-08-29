@@ -1,6 +1,6 @@
 module Irc::HandleMessage
 
-  def handle_message line
+  def handle_message line, time
 
     @event.call('irc.message.listen',line)
 
@@ -129,33 +129,32 @@ module Irc::HandleMessage
         logger.warn "[324] unknown channel."
       end
 
-    # topic
     when /^:[^ ]* (332|TOPIC)/i
-      m = Irc::TopicMessage.new(self,line)
+      m = Irc::TopicMessage.new(self,line,time)
       @event.call('irc.message.topic',m)
 
     when /^:[^ ]* JOIN/
-      m = Irc::JoinMessage.new(self,line)
+      m = Irc::JoinMessage.new(self,line,time)
       @event.call('irc.message.join',m)
 
     when /^:[^ ]* PART/i
-      m = Irc::PartMessage.new(self,line)
+      m = Irc::PartMessage.new(self,line,time)
       @event.call('irc.message.part',m)
 
     when /^:[^ ]* QUIT/i
-      m = Irc::QuitMessage.new(self,line)
+      m = Irc::QuitMessage.new(self,line,time)
       @event.call('irc.message.quit',m)
 
     when /^:[^ ]* KICK/i
-      m = Irc::KickMessage.new(self,line)
+      m = Irc::KickMessage.new(self,line,time)
       @event.call('irc.message.kick',m)
 
     when /^:[^ ]* PRIVMSG/i
-      m = Irc::PrivMessage.new(self,line)
+      m = Irc::PrivMessage.new(self,line,time)
       @event.call('irc.message.privmsg',m)
     
     when /^:[^ ]* NOTICE/i
-      m = Irc::NoticeMessage.new(self,line)
+      m = Irc::NoticeMessage.new(self,line,time)
       @event.call('irc.message.notice',m)
 
     end

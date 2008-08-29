@@ -2,8 +2,8 @@ class Irc::JoinMessage < Irc::Message
 
   attr_reader :user, :channel
 
-  def initialize(client, line)
-    super(client, line)
+  def initialize(client, line,time)
+    super(client, line,time)
 
     # joined
     # :methods!1000@c-68-36-237-152.hsd1.nj.comcast.net JOIN :#kahn
@@ -17,11 +17,18 @@ class Irc::JoinMessage < Irc::Message
     host      = $3
     channel   = $4
 
-    # get a list of users details for channel
-    client.send_data "WHO #{channel}\n"
-
-    # get channel mode
-    client.send_data "MODE #{channel}\n"
+    # we joined a channel
+    if nick == client.nick
+      # get list of users in channel details
+      client.send_data "WHO #{channel}\n"
+      # get channel mode
+      client.send_data "MODE #{channel}\n"
+      
+    # someone else joined a channel
+    else
+      # get list of details on user
+      client.send_data "WHO #{nick}\n"
+    end
 
     # add or update user
     if @user = Irc::User.find(nick)

@@ -39,4 +39,7 @@ class Irc::Channel
     end
     users
   end
+  def to_s
+    @name
+  end
 end

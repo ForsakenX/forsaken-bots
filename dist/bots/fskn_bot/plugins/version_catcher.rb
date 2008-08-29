@@ -4,16 +4,46 @@ class VersionCatcher < Meth::Plugin
   # @version = { :url => '', :tinyurl => '', :number => '', :time => '' }
 
   def pre_init
-    @commands = [:version]
-    @db = File.expand_path("#{BOT}/db/version.yaml")
-    @version = File.exists?(@db) ? (YAML.load_file(@db)||{}) : {}
+    @commands = [:versions,:version,:version_format]
+    @db = File.expand_path("#{BOT}/db/versions.yaml")
+    @versions = File.exists?(@db) ? (YAML.load_file(@db)||{}) : {}
+    @format = "(ProjectX_([0-9\.]+)-([^.]+)\.zip)"
+  end
+
+  def version_format m
+    m.reply @format
   end
 
   def version m
-    time = @version[:time].strftime("%m/%d/%y %H:%M:%S")
-    m.reply "Current Version #{@version[:number]} "+
-            "#{@version[:tinyurl]} "+
-            "updated on #{time} "
+    m.reply "Fuck you"
+=begin
+    release = @versions['release']
+    unless release
+      m.reply "No official releases yet..."
+      return
+    end
+    time = release[:time].strftime("%m/%d/%y %H:%M:%S")
+    m.reply   "Stable Release: "+
+              "#{release[:number]} @ "+
+              "#{release[:tinyurl]} from "+
+              "#{time} "
+=end
+  end
+
+  def versions m
+    if @versions.empty?
+      m.reply "No versions stored yet..."
+      return
+    end
+    output = []
+    @versions.each do |build,version|
+      time = version[:time].strftime("%m/%d/%y %H:%M:%S")
+      output << "{ #{version[:build]} - "+
+                  "#{version[:number]} @ "+
+                  "#{version[:tinyurl]} from "+
+                  "#{time} }"
+    end
+    m.reply(output.join(', '))
   end
 
   def privmsg m
@@ -21,36 +51,26 @@ class VersionCatcher < Meth::Plugin
     words = m.message.split(' ')
     urls = words.find_all{|p| p =~ /^((https?:\/\/|www\.).+)/im; $1 }
     urls.each do |url|
-      next unless url =~ /ProjectX_([0-9\.]+)(_Executable)?\.zip/
-      unless valid_version($1)
-        m.reply "Bad version number: (#{$1})"
-        break
-      end
-      update $1, url
+      next unless url =~ /#{@format}/
+      update $1, $2, $3, url
+      m.reply "Saved: { version => #{$2}, build => #{$3} } "+
+              "Type, 'versions' for a list of known versions..."
       break
     end
   end
 
-  private
-
-  def update version, url
-    update_db version, url
-    set_topic version
-  end
-
-  def update_db version, url
+  def update filename, version, build, url
     t = Tinyurl.new(url)
-    @version = {
+    @versions[ build ] = {
       :url      => t.original,
       :tinyurl  => t.tiny,
       :number   => version,
-      :time     => Time.now
+      :time     => Time.now,
+      :filename => filename,
+      :build    => build
     }
     save
-  end
-
-  def valid_version version=""
-    !version.empty?
+    set_topic(version) if build == 'release'
   end
 
   def authorized? user
@@ -66,8 +86,30 @@ class VersionCatcher < Meth::Plugin
   end
 
   def save
+    update_xml
     file = File.open(@db,'w+')
-    YAML.dump(@version,file)
+    YAML.dump(@versions,file)
+    file.close
+  end
+
+  def update_xml
+    doc = REXML::Document.new
+    versions = doc.add_element("versions")
+    @versions.each do |build,version|
+      versions.add_element("version",{
+        "name" => version[:filename],
+        "url"  => version[:url],
+        "tinyurl" => version[:tinyurl],
+        "number"  => version[:number],
+        "time"    => version[:time],
+        "filename" => version[:filename],
+        "build"    => version[:build]
+      })
+    end
+    # dump to file...
+    path = File.expand_path("#{BOT}/db/versions.xml")
+    file = File.open( path, 'w+' )
+    file.write doc
     file.close
   end
 

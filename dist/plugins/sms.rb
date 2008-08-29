@@ -25,7 +25,7 @@ class Sms < Meth::Plugin
       :domain => "localhost",
       :starttls => true,
       :auth => {
-        :type => "plain",
+        :type => :plain,
         :username => "mr.daneilaquino@gmail.com",
         :password => "PASSWORD",
       },

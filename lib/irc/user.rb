@@ -122,5 +122,9 @@ class Irc::User
     @blocked
   end
 
+  def to_s
+    @nick
+  end
+
 end
 

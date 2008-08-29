@@ -32,7 +32,7 @@ class Ip < Meth::Plugin
         list << "#{user.nick} => http://www.lemonparty.org"
         next
       end
-      list << "#{user.nick} => #{user.ip}"
+      list << "{ #{user.nick} => #{user.ip} }"
     end
 
     list = list.join(', ')

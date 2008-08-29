@@ -4,8 +4,8 @@ class Irc::TopicMessage < Irc::Message
               :channel, # channel the topic is for
               :topic    # the actual topic
 
-  def initialize(client,line)
-    super(client,line)
+  def initialize(client,line,time)
+    super(client,line,time)
 
     # :hostname 332 FsknBot #forsaken :message goes here
     # :hostname TOPIC #forsaken :test4

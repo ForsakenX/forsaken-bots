@@ -49,5 +49,9 @@ module Irc::Helpers
     end
   end
 
+  def kick channel, user
+    send_data "KICK #{channel.to_s} #{user.to_s}\n"
+  end
+
 end
 

@@ -33,6 +33,12 @@ class Topic < Meth::Plugin
       return
     end
 
+    # catch jack offs
+    if @topic == "change me"
+      m.reply "change your self numb nutz..."
+      return
+    end
+
     # parse switch
     @topic.slice!(/^(r|\+|>|<) /)
     switch = $1

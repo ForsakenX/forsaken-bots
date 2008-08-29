@@ -50,21 +50,56 @@ class Irc::Client < EM::Connection
     time = Time.now
     @event.call('irc.receive_line',line)
     @@logger.info "<<< #{line}"
-    # profiling
-    handle_message line
-    seconds = Time.now-time
-    if seconds > 60
-      minutes = seconds / 60
-      seconds = seconds % 60
-    end
-    @@logger.info "Time Taken => #{minutes}:#{seconds}"
+    handle_message line, time
+    @@logger.info "Time Taken (seconds) => #{Time.now-time}"
   end
 
   def send_data line
+#@timer.add_ounce( get_next_send_delay ){
     @@logger.info ">>> #{line}"
     @event.call('irc.send_data',line)
     super line
+#}
   end
+
+=begin
+  def get_next_send_delay
+    # settings
+    @last_time_step = 0.15
+    @last_time_max = 0.9
+    @last_time_reset = -2
+    # initial value
+    # step .15 and max .9 good from silence
+    @last_time = Time.now.to_f if @last_time.nil?
+    @last_time_delay = 0.0 if @last_time_delay.nil?
+    # increment delay step
+    # and add delay to the timer
+    # cap off at about max delay
+    if (@last_time - Time.now.to_f) < @last_time_max
+      @last_time_delay += @last_time_step
+      @last_time += @last_time_delay
+    end
+    # difference to wait from now
+    delay = @last_time - Time.now.to_f
+    # make sure delay is in future
+    if delay <= 0
+      # if it's over a second old reset timers
+      if delay <= @last_time_reset
+        @last_time_delay = @last_time_step 
+        @last_time = Time.now.to_f + @last_time_delay
+        delay = @last_time - Time.now.to_f
+      # other wise start decrementing the step
+      else
+        @last_time_delay -= @last_time_step*2 # since 1 step was added above
+        @last_time = Time.now.to_f + @last_time_delay
+        delay = @last_time - Time.now.to_f
+      end
+    end
+    # return the delay
+    logger.info "delay: #{delay}, step: #{@last_time_delay.to_s}"
+    delay
+  end
+=end
 
 end
 

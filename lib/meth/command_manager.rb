@@ -27,7 +27,7 @@ class Meth::CommandManager
   end
 
   def privmsg m
-    c = Meth::Command.new(@bot,m.line)
+    c = Meth::Command.new(@bot,m.line,m.time)
   end
 
 end

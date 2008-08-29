@@ -8,8 +8,8 @@ class Irc::PrivMessage < Irc::Message
   # :methods!1000@c-68-36-237-152.hsd1.nj.comcast.net PRIVMSG MethBot :,hi 1 2 3
   # :methods!1000@c-68-36-237-152.hsd1.nj.comcast.net PRIVMSG #tester :MethBot: hi 1 2 3
   # :Deadly_Methods!*@* PRIVMSG #GSP!Forsaken :ip
-  def initialize(client, line)
-    super(client, line)
+  def initialize(client,line,time)
+    super(client,line,time)
 
     # working copy
     _line = line.dup

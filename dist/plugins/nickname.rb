@@ -1,44 +1,53 @@
 class Nickname < Meth::Plugin
-  def initialize *args
-    super *args
-    @bot.command_manager.register("nickname",self)
-    @bot.command_manager.register("nicknames",self)
+  def pre_init
+    @commands = [:nickname]
     @db = "#{BOT}/db/nicks.yaml"
     @nicks = File.exists?(@db) ? (YAML.load_file(@db)||{}) : {}
   end
   def help m=nil, topic=nil
-    case m.command
-    when "nickname"
-      "nickname <name> [nickname] => Sets [nickname] for <name>.  "+
-      "If [nickname] is omitted then prints a random nickname of <name>."
-    when "nicknames"
-      "nicknames => Display full list."
+    "nickname add <name> [nickname] => Sets [nickname] for <name>.  "+
+    "nickname show <name> => Show nicknames for <name>.  "+
+    "nickname => Show random nick names...  "+
+    "nicknames => Display full list."
+  end
+  def nickname m
+    @params = m.params.dup
+    case @params.shift.downcase
+    when "add"
+      add m
+    when "show"
+      show m
+    when "list"
+      list m
+    else
+      random m
     end
   end
-  def command m
-    case m.command
-    when 'nicknames'
-      list m
-    when 'nickname'
-      case m.params[0]
-      when "",nil
-        random m
-      else
-        add m
-      end
+  def show m
+    unless name = @params.shift.downcase
+      m.reply "Missing name!"
+      return false
     end
+    unless nicks = @nicks[name]
+      m.reply "No nicknames for #{name}"
+      return false
+    end
+    m.reply "#{name} => " + nicks.join('; ')
   end
   def add m
-    if (nick = m.params.join(' ').chomp) != ""
-      @nicks[name.downcase] ?
-        @nicks[name.downcase] << nick :
-        @nicks[name.downcase] = [nick]
-      save
-      m.reply "Added #{nick} to #{name}"
-    else
-      m.reply("#{name} has no nicknames.") unless nicks = @nicks[name.downcase]
-      m.reply nicks[rand(nicks.length)]
+    unless name = @params.shift.downcase
+      m.reply "Missing name!"
+      return false
     end
+    if (nick = @params.join(' ').chomp).empty?
+      m.reply "Missing nick name !"
+      return false
+    end
+    @nicks[name] ?
+      @nicks[name] << nick :
+      @nicks[name] = [nick]
+    save
+    m.reply "Added #{nick} to #{name}"
   end
   def random m
     names = @nicks.keys
@@ -46,10 +55,13 @@ class Nickname < Meth::Plugin
     m.reply "#{name} => #{@nicks[name]}"
   end
   def list m
-    m.reply "No nicknames set!" if @nicks.length < 1
-    m.reply @nicks.map{|n,a| "#{n} => #{a.join(', ')}"}.join("; ")
+    if @nicks.length < 1
+      m.reply "No nicknames set!"
+      return false
+    end
+    m.reply "A list of nicknames has been messaged to you!"
+    m.reply_directly @nicks.map{|n,a| "#{n} => #{a.join(', ')}"}.join("; ")
   end
-  private
   def save
     file = File.open(@db,'w+')
     YAML.dump(@nicks,file)

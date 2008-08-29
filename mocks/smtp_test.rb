@@ -1,12 +1,14 @@
 #!/usr/bin/env ruby
 require 'rubygems'
 require 'eventmachine'
+EM::run{
+
 EM::Protocols::SmtpClient.send({
   :host => "smtp.gmail.com",
   :domain => "localhost",
   :starttls => true,
   :auth => {
-    :type => "plain",
+    :type => :plain,
     :username => "mr.daneilaquino@gmail.com",
     :password => "PASSWORD",
   },
@@ -18,3 +20,5 @@ EM::Protocols::SmtpClient.send({
   :body => "testing...",
   :verbose => true
 })
+
+}

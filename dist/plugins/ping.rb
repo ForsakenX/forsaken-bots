@@ -1,7 +1,8 @@
 class Ping < Meth::Plugin
   def initialize *args
     super *args
-    @bot.command_manager.register("ping",self)
+    @bot.command_manager.register("ping",self)  # ping room
+    @bot.command_manager.register("!ping",self) # test bots
     @db = File.expand_path("#{BOT}/db/ping_blocked.yaml")
     @blocked = (FileTest.exists?(@db) && YAML.load_file(@db)) || []
   end
@@ -12,6 +13,9 @@ class Ping < Meth::Plugin
     "ping unblock => Removes your name from the block list."
   end
   def command m
+    if m.command == '!ping'
+      return m.reply("pong...")
+    end
     case m.params.shift
     when "block"
       block m

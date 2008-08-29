@@ -1,4 +1,3 @@
-#advice, faq, insult, learn,  nickname, plot, portrait, quote,  reaction,  suggestion,   wtf
 class Broadcast < Meth::Plugin
   def pre_init
     @commands = [:broadcast]

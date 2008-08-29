@@ -1,7 +1,7 @@
 class Irc::PartMessage < Irc::Message
   attr_reader :user, :channel, :message
-  def initialize(client,line)
-    super(client,line)
+  def initialize(client,line,time)
+    super(client,line,time)
 
     # :methods!1000@c-68-36-237-152.hsd1.nj.comcast.net PART #kahn
     # :methods!1000@c-68-36-237-152.hsd1.nj.comcast.net PART #tester

@@ -11,7 +11,9 @@ class Url < Meth::Plugin
   end
   def help(m=nil, topic=nil)
     "urls => Prints last 3 urls pasted in channel.  "+
-    "urls [search] <needle> => Return last 5 links that match <needle>."
+    "urls [search] <needle> => Return last 5 links that match <needle>.  "+
+    "url last => Return the last url detected.  "+
+    "url count => Return the count of saved urls.  "
   end
   def command m
     case m.command
@@ -100,6 +102,8 @@ class Url < Meth::Plugin
       # handle a http response
       handle_response = Proc.new{|response|
 
+#        @bot.msg('methods',response.class.name);
+
         # check http response type
         case response.class.name
         when "Net::HTTPOK"
@@ -168,6 +172,8 @@ class Url < Meth::Plugin
         return info
 
       }
+
+#      @bot.msg('methods',url);
 
       # prepare net/http
       url      = URI.parse(url)

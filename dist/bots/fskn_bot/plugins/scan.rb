@@ -6,6 +6,7 @@ class Scan < Meth::Plugin
   def initialize *args
     super *args
     @bot.command_manager.register("scan",self)
+    @bot.command_manager.register("!scan",self)
   end
 
   def help m=nil, topic=nil
@@ -14,8 +15,8 @@ class Scan < Meth::Plugin
 
   def command m
 
-    unless m.params.empty?
-      return
+    if m.command == "scan"
+      return m.reply("Please use !scan")
     end
 
     if m.personal

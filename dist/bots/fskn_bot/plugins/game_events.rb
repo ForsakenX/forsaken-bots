@@ -10,10 +10,10 @@ class GameEvents < Meth::Plugin
     GameModel.event.register("game.time.out",@game_timeout)
     GameModel.event.register("game.started",@topic_change)
     GameModel.event.register("game.finished",@topic_change)
-    @every_30 = EM::PeriodicTimer.new(30.seconds) {
+    @every_30 = EM::PeriodicTimer.new(31.seconds) {
       @game_checker.call(nil)
     }
-    @every_60 = EM::PeriodicTimer.new(60.seconds) {
+    @every_60 = EM::PeriodicTimer.new(61.seconds) {
       # just in case clean up the topic
       @topic_checker.call(nil)
     }
@@ -53,7 +53,7 @@ class GameEvents < Meth::Plugin
         end
       end
   
-      # have resulsts ?
+      # have results ?
       next unless users.length > 0
   
       # check the users
@@ -63,10 +63,9 @@ class GameEvents < Meth::Plugin
         results[:hosts].each do |user|
           next if GameModel.find(user.ip)
           game = GameModel.create({:user => user})
+          # fix up the topic
+          @topic_checker.call(nil)
         end
-  
-        # fix up the topic
-        @topic_checker.call(nil)
 
       }
     }
@@ -75,7 +74,7 @@ class GameEvents < Meth::Plugin
       channels = Irc::Channel.channels
       next unless channels.has_key?("#forsaken") 
       channel = channels["#forsaken"]
-      games = GameModel.games.length
+      games = GameModel.games.select{|game|game.hosting}.length
       current = channel.topic.split(' ')[0]
       if current != games.to_s
         topic = channel.topic.gsub(/^[0-9]+/,games.to_s)
@@ -92,8 +91,7 @@ class GameEvents < Meth::Plugin
     }
   
     @game_timeout = Proc.new{|game|
-      @bot.msg "#forsaken", "#{game.hostmask} has been removed...  "+
-                            "This is because it never started within timely fashion."
+      @bot.msg "#forsaken", "Expired: #{game.hostmask}"
     }
   
   end

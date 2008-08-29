@@ -111,6 +111,7 @@ class Meth::PluginManager
     enabled.each do |plugin|
       plugin = @plugins[plugin]
       if plugin.respond_to?(:reload)
+        @bot.logger.info "Reloading #{plugin.class.name}"
         plugin.reload
       end
     end

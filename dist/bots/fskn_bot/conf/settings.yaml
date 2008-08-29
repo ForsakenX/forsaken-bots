@@ -7,7 +7,7 @@ logger:
   rotate: daily
 
 name: fskn_bot
-server: irc.freenode.org
+server: localhost
 port: 6667
 channels:
 - "#forsaken"

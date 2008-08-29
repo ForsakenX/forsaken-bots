@@ -4,6 +4,7 @@ class Unhost < Meth::Plugin
   def initialize *args
     super *args
     @bot.command_manager.register("unhost",self)
+    @bot.command_manager.register("!unhost",self)
   end
 
   def help m=nil, topic=nil
@@ -12,8 +13,8 @@ class Unhost < Meth::Plugin
 
   # remove a game
   def command m
-    unless m.params.empty?
-      return
+    if m.command == "unhost"
+      return m.reply("Please use !unhost")
     end
     if m.source.ip == nil
       m.reply "You don't have an ip number..."

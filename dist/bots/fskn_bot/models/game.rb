@@ -1,3 +1,4 @@
+require "rexml/document"
 class GameModel
 
   include DirectPlay
@@ -8,12 +9,16 @@ class GameModel
 
   @@games = []
   @@event = Irc::Event.new
+  @@wait_timeout = 5*60
 
+  def self.wait_timeout; @@wait_timeout; end
   def self.games; @@games; end
   def self.event; @@event; end
 
   def self.create game
-    unless g = find(game[:ip])
+    if g = find(game[:ip])
+      g.version = version
+    else
       g = new(game)
       @@games << g
     end
@@ -24,14 +29,31 @@ class GameModel
     @@games.detect{|game|game.ip==ip}
   end
 
+  def self.update_xml
+    doc = REXML::Document.new
+    games = doc.add_element("games")
+    @@games.each do |game|
+      time = game.start_time.strftime("%a, %d %b %Y %H:%M:%S GMT-0400") if game.start_time
+      games.add_element("game",{ "nick" => game.name,
+                                 "ip"   => game.ip,
+                                 "version" => game.version,
+                                 "started_at" => time})
+    end
+    path = File.expand_path("#{BOT}/db/games.xml")
+    file = File.open( path, 'w+' )
+    file.write doc
+    file.close
+  end
+
   #
   # Instance
   #
 
   # reader/writers
-  attr_reader :replyto, :user, :bot, :hosting, :timer, :start_time
+  attr_reader :replyto, :user, :bot, :hosting, :timer, :start_time, :version, :created_at
 
   def initialize game
+    @version     = game[:version]
     @canceled    = false
     @user        = game[:user]
     @hosting     = false
@@ -71,6 +93,7 @@ class GameModel
           @start_time  = Time.now
           @timer.interval = 30
           @@event.call("game.started",self)
+          GameModel.update_xml
           @running = false
           #puts "GameTimer (#{hostmask}): Status: Finished Running"
         },
@@ -97,7 +120,7 @@ class GameModel
           else
             #puts "GameTimer (#{hostmask}): Status: Not started yet"
             seconds = (Time.now - @created_at).to_i
-            if seconds > (60*10) # 10 minutes not started yet
+            if seconds > (GameModel.wait_timeout)
               #puts "GameTimer (#{hostmask}): Status: Closed: To long to start"
               destroy
               @@event.call('game.time.out',self)
@@ -136,6 +159,7 @@ class GameModel
     if @hosting
       @hosting = false
       @@event.call("game.finished",self)
+      GameModel.update_xml
     end
   end
 

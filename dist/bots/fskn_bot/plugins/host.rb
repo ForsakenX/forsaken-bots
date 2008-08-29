@@ -3,32 +3,32 @@ class Host < Meth::Plugin
   def initialize *args
     super *args
     @bot.command_manager.register("host",self)
+    @bot.command_manager.register("!host",self)
   end
 
   def command m
-    unless m.params.empty?
-      return
+    if m.command == "host"
+      return m.reply("Please use !host")
+    end
+    if m.params.length < 1
+      return m.reply(help)
     end
     if m.source.ip == nil
       m.reply "You don't have an ip number..."
       return
     end
-    if game = GameModel.find(m.source.ip)
-      m.reply "You already have a game listed..."
-      return
-    end
-    if game = GameModel.create({:user => m.source})
-      m.reply "Game created: #{game.hostmask}"
+    if game = GameModel.create({:user => m.source,
+                                :version => m.params.join(' ')})
+      m.reply "Waiting for game to start:  "+
+              "#{game.hostmask} "+
+              "version: (#{game.version})"
     end
   end
 
   def help m=nil, topic=nil
-    "host => "+
-      "Creates a game.  "+
-      "I will test your host port continously until you have a game up.  "+
-      "At which time everyone will be notified.  "+
-      "Every 30 seconds I'll make sure your still hosting.  "+
-      "When you are no longer hosting, I'll remove your game and notify everyone."
+    "!host <version> => "+
+      "Starts a game in waiting mode.  "+
+      "Notifies everyone when the game starts and ends."
   end
 
 end

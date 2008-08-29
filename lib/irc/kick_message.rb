@@ -1,7 +1,7 @@
 class Irc::KickMessage < Irc::Message
   attr_accessor :admin, :user, :channel, :message
-  def initialize(client,line)
-    super(client,line)
+  def initialize(client,line,time)
+    super(client,line,time)
 
     # :methods!n=daquino@c-68-36-237-152.hsd1.nj.comcast.net
     # KICK #forsaken DIII-The_Lion :methods

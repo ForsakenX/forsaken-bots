@@ -49,11 +49,20 @@ class Alias < Meth::Plugin
     case m.command
     when "alias"
       cmd_alias m
+    when "aliascmd"
+      cmd_aliascmd m
     when "aliasrm"
       cmd_aliasrm m
     when "aliases"
       cmd_aliases m
     end
+  end
+  def cmd_aliascmd m
+    params = m.params.dup
+    new = params.shift
+    cmd = params.join(' ')
+    m = Irc::PrivMessage.new(@bot,cmd,m.time)
+    @bot.event.call('irc.message.privmsg',m)
   end
   def cmd_aliases m
     if @aliases.length < 1
