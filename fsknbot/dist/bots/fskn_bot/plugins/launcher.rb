@@ -7,7 +7,7 @@ class Launcher < Meth::Plugin
   def url
     File.read(@db).gsub("\n","")
   end
-  def launcher m
+  def command m
     if m.command == "launcher"
       m.reply "Please use !launcher"
     end

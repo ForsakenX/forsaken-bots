@@ -15,19 +15,16 @@ class VersionCatcher < Meth::Plugin
   end
 
   def version m
-    m.reply "Fuck you"
-=begin
     release = @versions['release']
     unless release
       m.reply "No official releases yet..."
       return
     end
     time = release[:time].strftime("%m/%d/%y %H:%M:%S")
-    m.reply   "Stable Release: "+
+    m.reply   "New Release: "+
               "#{release[:number]} @ "+
               "#{release[:tinyurl]} from "+
               "#{time} "
-=end
   end
 
   def versions m
