@@ -22,13 +22,13 @@ class GameStats < Meth::Plugin
     # commands
     @bot.command_manager.register('stats',self)
     @games_listener = Proc.new{|m| games(m) }
-    @bot.event.register('meth.command.games',@games_listener)
+    @bot.event.register('meth.command.!games',@games_listener)
   end
 
   def cleanup *args
     super *args
     GameModel.event.unregister("game.finished",@game_stopped)
-    @bot.event.unregister('meth.command.games',@games_listener)
+    @bot.event.unregister('meth.command.!games',@games_listener)
   end
 
   def help m=nil, topic=nil

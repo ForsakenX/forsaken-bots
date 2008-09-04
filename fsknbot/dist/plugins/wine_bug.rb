@@ -6,7 +6,7 @@ class WineBug < Meth::Plugin
     # storage
     @db = File.expand_path("#{BOT}/db/wine_bugs.yaml")
     @wine_bugs = File.exists?(@db) ? (YAML.load_file(@db)||[]) : []
-    @url = "http://chino.homelinux.org/~daquino/forsaken/wine_bugs.yaml"
+    @url = "http://fly.thruhere.net/wine/bugs.txt"
   end
 
   def help m=nil, topic=nil

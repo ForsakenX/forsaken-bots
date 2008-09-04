@@ -160,6 +160,6 @@ end
 
 EM::run {
   EM::connect 'irc.freenode.net', 6667, IrcClient
-  EM::start_server "0.0.0.0", 6667, IrcProxy
+  EM::start_server "127.0.0.1", 6667, IrcProxy
 }
 
