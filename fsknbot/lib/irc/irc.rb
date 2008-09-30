@@ -6,7 +6,6 @@ require 'irc/message_helpers'
 require 'irc/helpers'
 
 # event system
-require 'irc/event'
 require 'irc/timer'
 
 # 

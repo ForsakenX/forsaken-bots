@@ -23,7 +23,6 @@ require 'yaml'
 
 Dir[
   "#{ROOT}/lib/*.rb",
-  "#{ROOT}/lib/*.so",
   "#{ROOT}/models/*.rb",
 ].each { |m| require m if FileTest.executable?(m) }
 
