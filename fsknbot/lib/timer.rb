@@ -1,4 +1,4 @@
-class Irc::Timer
+class Timer
   def initialize
     @timers = []
   end
