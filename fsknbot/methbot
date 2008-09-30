@@ -1,5 +1,15 @@
 #!/usr/bin/env ruby
 
+
+=begin
+Main Libs
+=end
+
+require 'rubygems'
+require 'eventmachine'
+require 'logger'
+require 'yaml'
+
 =begin
 Globals
 =end
@@ -11,21 +21,11 @@ CONFIG = YAML.load(File.open("#{ROOT}/conf/settings.yaml"))
 LOGGER = Logger.new("#{ROOT}/logs/#{CONFIG['name']}")
 LOGGER.level = Logger.const_get(CONFIG['logger']['severity'])
 
-
 =begin
-Load Path
+Application Libs
 =end
 
 $: << "#{ROOT}/lib/"
-
-=begin
-Main Libs
-=end
-
-require 'rubygems'
-require 'eventmachine'
-require 'logger'
-require 'yaml'
 
 Dir[
   "#{ROOT}/lib/*.rb",
@@ -33,9 +33,6 @@ Dir[
 ].each { |m| require m if FileTest.executable?(m) }
 
 require "meth/meth.rb"
-
-
-
 
 =begin
 Run

@@ -2,13 +2,7 @@ module Irc
 end
 
 require 'irc/message_helpers'
-
 require 'irc/helpers'
-
-# event system
-require 'irc/timer'
-
-# 
 require 'irc/user'
 require 'irc/channel'
 
