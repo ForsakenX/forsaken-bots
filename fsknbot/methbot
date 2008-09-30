@@ -5,7 +5,11 @@ Globals
 =end
 
 ROOT  = File.dirname(__FILE__)
-LOGGER = Logger.new(STDOUT)
+
+CONFIG = YAML.load(File.open("#{ROOT}/conf/settings.yaml"))
+
+LOGGER = Logger.new("#{ROOT}/logs/#{CONFIG['name']}")
+LOGGER.level = Logger.const_get(CONFIG['logger']['severity'])
 
 
 =begin
@@ -30,7 +34,6 @@ Dir[
 
 require "meth/meth.rb"
 
-CONFIG = YAML.load(File.open("#{ROOT}/conf/settings.yaml"))
 
 
 

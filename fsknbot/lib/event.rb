@@ -17,7 +17,7 @@ class Event
       begin
         callback.call(data) unless callback.nil?
       rescue Exception
-        Irc::Client.logger.error "#{$!}\n#{$@.join("\n")}"
+        LOGGER.error "#{$!}\n#{$@.join("\n")}"
       end
     end
   end
