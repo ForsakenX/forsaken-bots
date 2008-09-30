@@ -201,7 +201,7 @@ class Url < Meth::Plugin
       raise "This message shouldn't be printed."
 
     rescue Exception
-      @bot.logger.error "Url: (#{$!}):\n#{$@.join("\n")}"
+      LOGGER.error "Url: (#{$!}):\n#{$@.join("\n")}"
       m.reply $!
       return nil
     end

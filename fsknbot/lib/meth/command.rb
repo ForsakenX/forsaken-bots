@@ -53,7 +53,7 @@ class Meth::Command < Irc::PrivMessage
     # call easy to use command event
     if @command
       ignored = @bot.ignored.include?(@source.nick.downcase)
-      @bot.logger.info("meth.command `#{command.downcase}' "+
+      LOGGER.info("meth.command `#{command.downcase}' "+
                        "ignore_user => `#{ignored.to_s}'")
       @bot.event.call("meth.command",self)
       if !ignored

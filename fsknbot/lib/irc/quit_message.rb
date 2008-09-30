@@ -9,7 +9,7 @@ class Irc::QuitMessage < Irc::Message
     # :methods!n=daquino@c-68-36-237-152.hsd1.nj.comcast.net QUIT :"Leaving."
     # :Deadly_Methods!22510264@68.36.237.152 QUIT :FUCKING WORK!
     unless line =~ /:([^ ]*)![^@]*@[^ ]* QUIT *:*([^\n]*)/i
-      client.logger.error "Bad QUIT message..."
+      LOGGER.error "Bad QUIT message..."
     end
 
     # nick
@@ -20,7 +20,7 @@ class Irc::QuitMessage < Irc::Message
     if @user = Irc::User.find(nick)
       @user.destroy
     else
-      @client.logger.error "[QUIT] but user was not found..."
+      LOGGER.error "[QUIT] but user was not found..."
     end
 
   end

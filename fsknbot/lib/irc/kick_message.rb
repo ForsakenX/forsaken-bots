@@ -6,7 +6,7 @@ class Irc::KickMessage < Irc::Message
     # :methods!n=daquino@c-68-36-237-152.hsd1.nj.comcast.net
     # KICK #forsaken DIII-The_Lion :methods
     unless line =~ /:([^ ]*)![^@]*@[^ ]* KICK (#[^ ]*) ([^ ]*) *:*([^\n]*)/i
-      client.logger.error "Bad Kick message..."
+      LOGGER.error "Bad Kick message..."
       return
     end
 
@@ -18,11 +18,11 @@ class Irc::KickMessage < Irc::Message
     @channel = @client.channels[channel.downcase]
 
     unless @admin = Irc::User.find(kicker)
-      @client.logger.info "[KICK] Kicker was not found..."
+      LOGGER.info "[KICK] Kicker was not found..."
     end
 
     unless @user = Irc::User.find(kicked)
-      @client.logger.error "[KICK] Kicked was not found..."
+      LOGGER.error "[KICK] Kicked was not found..."
     else
       @user.destroy
     end

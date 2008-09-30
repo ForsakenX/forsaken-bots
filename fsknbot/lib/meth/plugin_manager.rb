@@ -74,7 +74,7 @@ class Meth::PluginManager
     begin
       p.cleanup
     rescue Exception
-      @bot.logger.warn "[unload plugin error] #{$!}\n#{$@.join("\n")}"
+      LOGGER.warn "[unload plugin error] #{$!}\n#{$@.join("\n")}"
     end
     @plugins.delete(p)
   end
@@ -99,10 +99,10 @@ class Meth::PluginManager
       constant = Object.const_get(plugin.camel_case)
       @plugins[plugin] = constant.new(@bot)
     rescue Exception => e
-      @bot.logger.warn "[_load plugin error] #{$!}\n#{$@.join("\n")}"
+      LOGGER.warn "[_load plugin error] #{$!}\n#{$@.join("\n")}"
       return e
     end
-    @bot.logger.info "Bot (#{bot.name}) Loaded Plugin (#{plugin.snake_case})"
+    LOGGER.info "Bot (#{bot.name}) Loaded Plugin (#{plugin.snake_case})"
     @bot.event.call('meth.plugin.loaded', plugin)
     true
   end
@@ -111,7 +111,7 @@ class Meth::PluginManager
     enabled.each do |plugin|
       plugin = @plugins[plugin]
       if plugin.respond_to?(:reload)
-        @bot.logger.info "Reloading #{plugin.class.name}"
+        LOGGER.info "Reloading #{plugin.class.name}"
         plugin.reload
       end
     end

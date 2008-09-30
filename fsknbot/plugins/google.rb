@@ -56,7 +56,7 @@ class Google < Meth::Plugin
       m.reply "Results: #{formated.join("  ")}"
     rescue Exception
       m.reply "Error: (#{$!})"
-      @bot.logger.error "(#{$!}):\n#{$@.join("\n")}"
+      LOGGER.error "(#{$!}):\n#{$@.join("\n")}"
       return
     end
   end
