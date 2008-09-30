@@ -8,7 +8,7 @@ class GameModel
   #
 
   @@games = []
-  @@event = Irc::Event.new
+  @@event = Event.new
   @@wait_timeout = 5*60
 
   def self.wait_timeout; @@wait_timeout; end

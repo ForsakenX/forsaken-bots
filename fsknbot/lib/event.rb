@@ -1,4 +1,4 @@
-class Irc::Event
+class Event
   attr_reader :topics
   def initialize
     @topics = Hash.new {|h,k| h[k] = []}
@@ -17,7 +17,7 @@ class Irc::Event
       begin
         callback.call(data) unless callback.nil?
       rescue Exception
-        Irc::Client.logger.error "#{$!}\n#{$@.join("\n")}"
+#        Irc::Client.logger.error "#{$!}\n#{$@.join("\n")}"
       end
     end
   end

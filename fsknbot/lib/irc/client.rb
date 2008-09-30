@@ -23,7 +23,7 @@ class Irc::Client < EM::Connection
     @port     = 6667
     @default_channels = ['#forsaken']
     @ignored  = []
-    @event    = Irc::Event.new
+    @event    = Event.new
     @timer    = Irc::Timer.new
     @username = Process.uid
     @servername = Socket.gethostname
