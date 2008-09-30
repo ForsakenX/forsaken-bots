@@ -8,7 +8,7 @@ module Irc::HandleMessage
 
     # IRCD says fatal error
     when /^ERROR/i
-      logger.error "ERROR - Server disconnecting..."
+      LOGGER.error "ERROR - Server disconnecting..."
 
     # ping
     when /^PING ([^\n]*)$/i
@@ -126,7 +126,7 @@ module Irc::HandleMessage
       if channel = channels[channel.downcase]
         channel.mode = mode
       else
-        logger.warn "[324] unknown channel."
+        LOGGER.warn "[324] unknown channel."
       end
 
     when /^:[^ ]* (332|TOPIC)/i
