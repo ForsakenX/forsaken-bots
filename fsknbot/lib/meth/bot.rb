@@ -16,9 +16,9 @@ class Meth::Bot < Irc::Client
     @port     = CONFIG['port']
     @default_channels = CONFIG['channels']
     # change @logger
-    @@logger.close
-    @@logger = Logger.new("#{ROOT}/logs/#{CONFIG['name']}")
-    @@logger.level = Logger.const_get(CONFIG['logger']['severity'])
+    LOGGER.close
+    LOGGER = Logger.new("#{ROOT}/logs/#{CONFIG['name']}")
+    LOGGER.level = Logger.const_get(CONFIG['logger']['severity'])
     # bot stuff
     @target = CONFIG['target']||nil
     @command_manager = Meth::CommandManager.new(self)

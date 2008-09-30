@@ -5,6 +5,8 @@ Globals
 =end
 
 ROOT  = File.dirname(__FILE__)
+LOGGER = Logger.new(STDOUT)
+
 
 =begin
 Load Path
