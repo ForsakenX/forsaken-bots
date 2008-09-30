@@ -41,6 +41,9 @@ class Ignore < Meth::Plugin
       m.reply help(m)
       return
     end
+    if nick =~ /meth/i
+      return m.reply "foff"
+    end
     if @bot.ignored.include?(nick) && @ignored.include?(nick)
       m.reply "#{nick} is allready ignored..."
       return
