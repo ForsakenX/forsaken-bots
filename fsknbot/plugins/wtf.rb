@@ -2,7 +2,7 @@ class Wtf < Meth::Plugin
   def initialize *args
     super *args
     @bot.command_manager.register("wtf",self)
-    @db = File.expand_path("#{BOT}/db/acronyms.yaml")
+    @db = File.expand_path("${ROOT}/db/acronyms.yaml")
     @acronyms = File.exists?(@db) ? (YAML.load_file(@db)||{}) : {}
   end
   def help(m=nil, topic=nil)

@@ -3,7 +3,7 @@ class Ping < Meth::Plugin
     super *args
     @bot.command_manager.register("ping",self)  # ping room
     @bot.command_manager.register("!ping",self) # test bots
-    @db = File.expand_path("#{BOT}/db/ping_blocked.yaml")
+    @db = File.expand_path("${ROOT}/db/ping_blocked.yaml")
     @blocked = (FileTest.exists?(@db) && YAML.load_file(@db)) || []
   end
   def help(m=nil, topic=nil)

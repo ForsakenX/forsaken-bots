@@ -2,7 +2,7 @@ class Launcher < Meth::Plugin
   def pre_init
     @bot.command_manager.register("launcher",self)
     @bot.command_manager.register("!launcher",self)
-    @db = "#{BOT}/db/launcher.link"
+    @db = "${ROOT}/db/launcher.link"
   end
   def url
     File.read(@db).gsub("\n","")

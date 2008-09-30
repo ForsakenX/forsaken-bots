@@ -6,7 +6,7 @@ class Url < Meth::Plugin
     @bot.command_manager.register("urls",self)
     @bot.command_manager.register("url",self)
     @bot.command_manager.register("links",self)
-    @db = File.expand_path("#{BOT}/db/urls.yaml")
+    @db = File.expand_path("${ROOT}/db/urls.yaml")
     @urls = (File.exists?(@db) && YAML.load_file(@db)) || []
   end
   def help(m=nil, topic=nil)

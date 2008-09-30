@@ -1,21 +1,10 @@
 #!/usr/bin/env ruby
 
 =begin
-Check Parameters
-=end
-
-if ARGV[0].nil?
-  puts "Missing bot name argument."
-  exit
-end
-
-=begin
 Globals
 =end
 
 ROOT  = File.dirname(__FILE__)
-DIST  = "#{ROOT}/dist"
-BOT   = "#{DIST}/bots/#{ARGV[0]}"
 
 =begin
 Load Path
@@ -35,14 +24,12 @@ require 'yaml'
 require "meth/meth.rb"
 
 Dir[
-  "#{DIST}/lib/*.rb",
-  "#{DIST}/lib/*.so",
-  "#{DIST}/models/*.rb",
-  "#{BOT}/lib/*.rb",
-  "#{BOT}/models/*.rb"
+  "#{ROOT}/lib/*.rb",
+  "#{ROOT}/lib/*.so",
+  "#{ROOT}/models/*.rb",
 ].each { |m| require m if FileTest.executable?(m) }
 
-CONFIG = YAML.load(File.open("#{BOT}/conf/settings.yaml"))
+CONFIG = YAML.load(File.open("#{ROOT}/conf/settings.yaml"))
 
 
 =begin

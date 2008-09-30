@@ -5,7 +5,7 @@ class VersionCatcher < Meth::Plugin
 
   def pre_init
     @commands = [:versions,:version,:version_format]
-    @db = File.expand_path("#{BOT}/db/versions.yaml")
+    @db = File.expand_path("${ROOT}/db/versions.yaml")
     @versions = File.exists?(@db) ? (YAML.load_file(@db)||{}) : {}
     @format = "(ProjectX_([0-9\.]+)-([^.]+)\.zip)"
   end
@@ -104,7 +104,7 @@ class VersionCatcher < Meth::Plugin
       })
     end
     # dump to file...
-    path = File.expand_path("#{BOT}/db/versions.xml")
+    path = File.expand_path("${ROOT}/db/versions.xml")
     file = File.open( path, 'w+' )
     file.write doc
     file.close

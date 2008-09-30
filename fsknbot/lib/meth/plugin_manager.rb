@@ -6,7 +6,7 @@ class Meth::PluginManager
     # we belong to this bot instance
     @bot = bot
     # path to plugins
-    @glob = "#{BOT}/plugins/*.rb"
+    @glob = "#{ROOT}/plugins/*.rb"
     # plugin instances
     @plugins = {}
     # load plugins
@@ -23,7 +23,7 @@ class Meth::PluginManager
 
   # list of plugins
   def list
-    Dir[@glob,"#{DIST}/plugins/*.rb"].map do |plugin|
+    Dir[@glob,"#{ROOT}/plugins/*.rb"].map do |plugin|
       File.basename(plugin).gsub('.rb','')
     end
   end
@@ -31,7 +31,7 @@ class Meth::PluginManager
   # path to plugin
   def path plugin
     bot_path = @glob.gsub('*',plugin.snake_case)
-    global_path = "#{DIST}/plugins/#{plugin.snake_case}.rb"
+    global_path = "#{ROOT}/plugins/#{plugin.snake_case}.rb"
     return bot_path if FileTest.exists?(bot_path) # bot_path takes precedence
     return global_path if FileTest.exists?(global_path) # global plugin?
     bot_path # default bot_path

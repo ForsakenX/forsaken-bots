@@ -2,7 +2,7 @@ require 'yaml'
 class Faq < Meth::Plugin
   def initialize *args
     super *args
-    @db = "#{BOT}/db/faq.yaml"
+    @db = "${ROOT}/db/faq.yaml"
     @bot.command_manager.register("faq",self)
     @faq = (FileTest.exists?(@db) && YAML.load_file(@db)) || {}
   end

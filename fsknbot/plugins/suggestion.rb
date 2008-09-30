@@ -4,7 +4,7 @@ class Suggestion < Meth::Plugin
     super *args
     @bot.command_manager.register("suggestion",self)
     # storage
-    @db = File.expand_path("#{BOT}/db/suggestions.yaml")
+    @db = File.expand_path("${ROOT}/db/suggestions.yaml")
     @suggestions = File.exists?(@db) ? (YAML.load_file(@db)||[]) : []
   end
 

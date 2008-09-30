@@ -4,7 +4,7 @@ class ForsakenBug < Meth::Plugin
     super *args
     @bot.command_manager.register("forsakenbug",self)
     # storage
-    @db = File.expand_path("#{BOT}/db/forsaken_bugs.yaml")
+    @db = File.expand_path("${ROOT}/db/forsaken_bugs.yaml")
     @forsaken_bugs = File.exists?(@db) ? (YAML.load_file(@db)||[]) : []
     @url = "http://chino.homelinux.org/~daquino/forsaken/forsaken_bugs.yaml"
   end
