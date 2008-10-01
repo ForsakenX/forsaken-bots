@@ -4,7 +4,7 @@ class WineBug < Meth::Plugin
     super *args
     @bot.command_manager.register("winebug",self)
     # storage
-    @db = File.expand_path("${ROOT}/db/wine_bugs.yaml")
+    @db = File.expand_path("#{ROOT}/db/wine_bugs.yaml")
     @wine_bugs = File.exists?(@db) ? (YAML.load_file(@db)||[]) : []
     @url = "http://fly.thruhere.net/wine/bugs.txt"
   end

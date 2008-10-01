@@ -1,7 +1,7 @@
 class Players < Meth::Plugin
   def pre_init
     @commands = [:player,:players]
-    @db = File.expand_path("${ROOT}/db/players.yaml")
+    @db = File.expand_path("#{ROOT}/db/players.yaml")
     @players = File.exists?(@db) ? (YAML.load_file(@db)||[]) : []
   end
   def help m=nil, topic=nil

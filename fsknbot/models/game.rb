@@ -39,7 +39,7 @@ class GameModel
                                  "version" => game.version,
                                  "started_at" => time})
     end
-    path = File.expand_path("${ROOT}/db/games.xml")
+    path = File.expand_path("#{ROOT}/db/games.xml")
     file = File.open( path, 'w+' )
     file.write doc
     file.close

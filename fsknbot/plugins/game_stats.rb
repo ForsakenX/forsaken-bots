@@ -4,7 +4,7 @@ class GameStats < Meth::Plugin
   def initialize *args
     super *args
     # storage
-    @db = File.expand_path("${ROOT}/db/game_stats.yaml")
+    @db = File.expand_path("#{ROOT}/db/game_stats.yaml")
     @game_stats = File.exists?(@db) ? (YAML.load_file(@db)||[]) : []
     # events
     @game_stopped = Proc.new{|game|
