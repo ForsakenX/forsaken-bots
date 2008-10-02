@@ -40,7 +40,7 @@ Run
 
 EM::run {
   begin
-    EM::connect(CONFIG['server'],CONFIG['port'],Meth::Bot)
+    EM::connect(CONFIG['server'],CONFIG['port'],Irc::Client)
   rescue
     puts "#{$!}\n#{$@.join("\n")}"
     exit 1
