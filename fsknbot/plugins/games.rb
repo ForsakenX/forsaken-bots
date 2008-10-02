@@ -3,7 +3,6 @@ class Games < Irc::Plugin
 
   def initialize *args
     super *args
-    @bot.command_manager.register("games",self)
     @bot.command_manager.register("!games",self)
   end
 

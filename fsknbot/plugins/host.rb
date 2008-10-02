@@ -2,7 +2,6 @@ class Host < Irc::Plugin
 
   def initialize *args
     super *args
-    @bot.command_manager.register("host",self)
     @bot.command_manager.register("!host",self)
   end
 

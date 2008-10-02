@@ -5,7 +5,6 @@ class Url < Irc::Plugin
   def pre_init
     @bot.command_manager.register("urls",self)
     @bot.command_manager.register("url",self)
-    @bot.command_manager.register("links",self)
     @db = File.expand_path("#{ROOT}/db/urls.yaml")
     @urls = (File.exists?(@db) && YAML.load_file(@db)) || []
   end

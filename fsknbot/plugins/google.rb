@@ -11,11 +11,6 @@ class Google < Irc::Plugin
   def initialize *args
     super *args
     @bot.command_manager.register("!google",self)
-    @bot.command_manager.register("google",self)
-    @bot.command_manager.register("search",self)
-    @bot.command_manager.register("news",self)
-    @bot.command_manager.register("wp",self)
-    @bot.command_manager.register("youtube",self)
   end
   def help(m=nil, topic=nil)
     "google|search <search> => Return top #{@@results} results from google.com.  "+

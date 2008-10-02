@@ -2,7 +2,6 @@ module Irc
 end
 
 require 'irc/message_helpers'
-require 'irc/helpers'
 require 'irc/user'
 require 'irc/channel'
 

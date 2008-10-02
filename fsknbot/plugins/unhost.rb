@@ -3,7 +3,6 @@ class Unhost < Irc::Plugin
 
   def initialize *args
     super *args
-    @bot.command_manager.register("unhost",self)
     @bot.command_manager.register("!unhost",self)
   end
 
