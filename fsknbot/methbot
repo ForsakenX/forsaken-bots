@@ -32,7 +32,7 @@ Dir[
   "#{ROOT}/models/*.rb",
 ].each { |m| require m if FileTest.executable?(m) }
 
-require "meth/meth.rb"
+require "irc/irc.rb"
 
 =begin
 Run
