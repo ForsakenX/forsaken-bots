@@ -103,7 +103,6 @@ class Irc::PluginManager
       return e
     end
     LOGGER.info "Bot Loaded Plugin (#{plugin.snake_case})"
-    @bot.event.call('meth.plugin.loaded', plugin)
     true
   end
 

@@ -6,14 +6,6 @@ class HandleMessage < Irc::Plugin
 
     case line
 
-    # IRCD says fatal error
-    when /^ERROR/i
-      LOGGER.error "ERROR - Server disconnecting..."
-
-    # ping
-    when /^PING ([^\n]*)$/i
-      send_data "PONG #{$1}\n"
-
     # set nick succeeded
       # :hostname NICK :methods
     when /^:([^ ]+)![^@]*@[^ ]* NICK [:]*([^ ]*)/i
@@ -26,46 +18,6 @@ class HandleMessage < Irc::Plugin
           user.nick = new_nick
         end
       end
-
-    ##
-    # 1st whois line (start)
-    ##
-
-    # 1st whois line (start)
-    # WHO does this
-      # :koolaid.ny.us.blitzed.org 311 _0_fskn_games Silence
-      # FUHQ c-24-63-156-24.hsd1.ma.comcast.net * :BLABLA
-    #when /^[^ ] 311 [^ ]* ([^ ]*) ([^ ]*) ([^ ]*) [^ ]* [:]*([^\n ]*)/
-
-    # 2nd whois line
-      # if you see @# means your in same room as this person
-      # :zelazny.freenode.net 319 _MethBot chino
-      # :#what #crack #meth #ruby-lang @#forsaken
-    #when /^[^ ]* 319 [^ ]* ([^ ]*) [:]*(.*)/m
-      #nick = $1
-      # list of channels the user is in
-      #channels = "#{$2}".gsub('@','').split(' ')
-      # find user
-      #user = Irc::User.find(nick)
-      # join them to the channel
-      #channels.each do |channel|
-      #  user.join channel
-      #end
-
-    # 3rd whois line
-    # WHO does this
-      # :koolaid.ny.us.blitzed.org 312 _0_fskn_games Silence
-      #  cookies.on.ca.blitzed.org :C is for c00kie eh?
-    #when /^[^ ]* 312 [^ ]* ([^ ]*) [^ ]* /
-
-    # 4th whois line (end)
-    # WHO does this
-      # :koolaid.ny.us.blitzed.org 318 _0_fskn_games Silence :End of /WHOIS list.
-    #when /^[^ ]* 318/
-
-    # names list
-    # WHO does this
-    #when /^[^ ]* (353|366)/
 
     # who lines
     # a single user in who list
