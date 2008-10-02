@@ -2,7 +2,6 @@ require 'socket'
 class Irc::Client < EM::Connection
 
   include EM::Protocols::LineText2
-  include Irc::HandleMessage
   include Irc::Helpers
 
   def plugins; @plugin_manager.plugins; end
@@ -52,7 +51,7 @@ class Irc::Client < EM::Connection
     time = Time.now
     @event.call('irc.receive_line',line)
     LOGGER.info "<<< #{line}"
-    handle_message line, time
+    @event.call('irc.message.listen',[self,line,time])
     LOGGER.info "Time Taken (seconds) => #{Time.now-time}"
   end
 

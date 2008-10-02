@@ -1,8 +1,6 @@
-module Irc::HandleMessage
+class HandleMessage < Irc::Plugin
 
-  def handle_message line, time
-
-    @event.call('irc.message.listen',line)
+  def listen client, line, time
 
     case line
 
@@ -17,7 +15,7 @@ module Irc::HandleMessage
     # login completed
     when /^:[^ ]* 001/
       # join default channels
-      send_join @default_channels
+      send_join @client.default_channels
 
     # set nick succeeded
       # :hostname NICK :methods
@@ -130,32 +128,32 @@ module Irc::HandleMessage
       end
 
     when /^:[^ ]* (332|TOPIC)/i
-      m = Irc::TopicMessage.new(self,line,time)
-      @event.call('irc.message.topic',m)
+      m = Irc::TopicMessage.new(client,line,time)
+      @client.event.call('irc.message.topic',m)
 
     when /^:[^ ]* JOIN/
-      m = Irc::JoinMessage.new(self,line,time)
-      @event.call('irc.message.join',m)
+      m = Irc::JoinMessage.new(client,line,time)
+      @client.event.call('irc.message.join',m)
 
     when /^:[^ ]* PART/i
-      m = Irc::PartMessage.new(self,line,time)
-      @event.call('irc.message.part',m)
+      m = Irc::PartMessage.new(client,line,time)
+      @client.event.call('irc.message.part',m)
 
     when /^:[^ ]* QUIT/i
-      m = Irc::QuitMessage.new(self,line,time)
-      @event.call('irc.message.quit',m)
+      m = Irc::QuitMessage.new(client,line,time)
+      @client.event.call('irc.message.quit',m)
 
     when /^:[^ ]* KICK/i
-      m = Irc::KickMessage.new(self,line,time)
-      @event.call('irc.message.kick',m)
+      m = Irc::KickMessage.new(client,line,time)
+      @client.event.call('irc.message.kick',m)
 
     when /^:[^ ]* PRIVMSG/i
-      m = Irc::PrivMessage.new(self,line,time)
-      @event.call('irc.message.privmsg',m)
+      m = Irc::PrivMessage.new(client,line,time)
+      @client.event.call('irc.message.privmsg',m)
     
     when /^:[^ ]* NOTICE/i
-      m = Irc::NoticeMessage.new(self,line,time)
-      @event.call('irc.message.notice',m)
+      m = Irc::NoticeMessage.new(client,line,time)
+      @client.event.call('irc.message.notice',m)
 
     end
   end
