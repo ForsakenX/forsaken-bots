@@ -5,22 +5,30 @@ class Irc::Client < EM::Connection
   include Irc::HandleMessage
   include Irc::Helpers
 
-  attr_reader :event, :name, :nick_sent, :realname, :server, :port, :username, :hostname, :config
-  attr_accessor :nick, :ignored
+  def plugins; @plugin_manager.plugins; end
+  def commands; @command_manager.commands; end
+
+  attr_reader :event, :name, :nick_sent, :realname, :server,
+              :port, :username, :hostname, :config, :plugin_manager, 
+	      :command_manager
+  attr_accessor :nick, :ignored, :target
 
   def initialize
-    @name     = "RubyIrcClient"
-    @nick     = "RubyIrcClient"
-    @password = ""
-    @realname = "RubyIrcClient"
-    @server   = "irc.freenode.net"
-    @port     = 6667
-    @default_channels = ['#forsaken']
+    @name     = CONFIG['name']
+    @nick     = CONFIG['nick']
+    @password = CONFIG['password']
+    @realname = CONFIG['realname']
+    @server   = CONFIG['server']
+    @port     = CONFIG['port']
+    @default_channels = CONFIG['channels']
+    @target   = CONFIG['target']||nil
     @ignored  = []
     @event    = Event.new
     @timer    = Timer.new
     @username = Process.uid
     @servername = Socket.gethostname
+    @command_manager = Meth::CommandManager.new(self)
+    @plugin_manager  = Meth::PluginManager.new(self)
   end
 
   def post_init

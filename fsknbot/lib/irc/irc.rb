@@ -17,6 +17,9 @@ require 'irc/kick_message'
 require 'irc/notice_message'
 require 'irc/topic_message'
 
-# the actual client
 require 'irc/client'
+require 'irc/command'
+require 'irc/command_manager'
+require 'irc/plugin_manager'
+require 'irc/plugin'
 
