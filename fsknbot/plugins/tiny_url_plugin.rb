@@ -1,5 +1,5 @@
 require 'tinyurl'
-class TinyUrlPlugin < Meth::Plugin
+class TinyUrlPlugin < Client::Plugin
   def pre_init
     @bot.command_manager.register("tinyurl",self)
   end

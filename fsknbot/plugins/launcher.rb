@@ -1,4 +1,4 @@
-class Launcher < Meth::Plugin
+class Launcher < Client::Plugin
   def pre_init
     @bot.command_manager.register("launcher",self)
     @bot.command_manager.register("!launcher",self)

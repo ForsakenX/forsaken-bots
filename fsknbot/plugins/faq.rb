@@ -1,5 +1,5 @@
 require 'yaml'
-class Faq < Meth::Plugin
+class Faq < Client::Plugin
   def initialize *args
     super *args
     @db = "#{ROOT}/db/faq.yaml"

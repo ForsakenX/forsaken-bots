@@ -1,5 +1,5 @@
 # scan channel users for hosting
-class Scan < Meth::Plugin
+class Scan < Client::Plugin
 
   include DirectPlay
 

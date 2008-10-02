@@ -1,4 +1,4 @@
-class Hangman < Meth::Plugin
+class Hangman < Client::Plugin
 
   class Game
     attr_reader :word, :found, :guessed, :chances

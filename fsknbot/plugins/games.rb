@@ -1,5 +1,5 @@
 # get games of running games
-class Games < Meth::Plugin
+class Games < Client::Plugin
 
   def initialize *args
     super *args

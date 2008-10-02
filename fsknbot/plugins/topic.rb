@@ -1,4 +1,4 @@
-class Topic < Meth::Plugin
+class Topic < Client::Plugin
 
   def initialize *args
     super *args

@@ -1,4 +1,4 @@
-class Ip < Meth::Plugin
+class Ip < Client::Plugin
 
   include DirectPlay
 

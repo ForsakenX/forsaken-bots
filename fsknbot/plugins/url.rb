@@ -1,7 +1,7 @@
 require 'net/http'
 require 'htmlentities'
 require 'timeout'
-class Url < Meth::Plugin
+class Url < Client::Plugin
   def pre_init
     @bot.command_manager.register("urls",self)
     @bot.command_manager.register("url",self)

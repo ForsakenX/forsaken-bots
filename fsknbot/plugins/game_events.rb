@@ -1,4 +1,4 @@
-class GameEvents < Meth::Plugin
+class GameEvents < Client::Plugin
 
   include DirectPlay
 

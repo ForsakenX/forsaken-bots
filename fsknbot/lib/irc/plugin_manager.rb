@@ -1,4 +1,4 @@
-class Meth::PluginManager
+class Client::PluginManager
 
   attr_reader :bot, :glob, :plugins
 

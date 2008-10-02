@@ -1,4 +1,4 @@
-class Meth::Plugin
+class Client::Plugin
 
   # defaults
   def pre_init; end

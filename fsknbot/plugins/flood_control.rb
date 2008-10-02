@@ -1,4 +1,4 @@
-class FloodControl < Meth::Plugin
+class FloodControl < Client::Plugin
   def post_init
     @logs = Hash.new{|h,k|h[k]={
       :last => 0, # last time of offense

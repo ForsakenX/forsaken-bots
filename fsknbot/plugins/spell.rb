@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'raspell'
-class Spell < Meth::Plugin
+class Spell < Client::Plugin
   def initialize *args
     super *args
     @bot.command_manager.register('spell',self)

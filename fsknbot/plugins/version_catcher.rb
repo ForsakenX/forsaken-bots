@@ -1,5 +1,5 @@
 require 'tinyurl'
-class VersionCatcher < Meth::Plugin
+class VersionCatcher < Client::Plugin
 
   # @version = { :url => '', :tinyurl => '', :number => '', :time => '' }
 

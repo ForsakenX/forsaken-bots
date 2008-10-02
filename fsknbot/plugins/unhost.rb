@@ -1,5 +1,5 @@
 # removes a game from list
-class Unhost < Meth::Plugin
+class Unhost < Client::Plugin
 
   def initialize *args
     super *args

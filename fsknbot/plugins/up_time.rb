@@ -1,4 +1,4 @@
-class UpTime < Meth::Plugin
+class UpTime < Client::Plugin
   def pre_init
     @commands = [:uptime]
   end

@@ -1,4 +1,4 @@
-class Meth::Command < Irc::PrivMessage
+class Client::Command < Irc::PrivMessage
 
   attr_reader :params, :command
 

@@ -1,4 +1,4 @@
-class Players < Meth::Plugin
+class Players < Client::Plugin
   def pre_init
     @commands = [:player,:players]
     @db = File.expand_path("#{ROOT}/db/players.yaml")

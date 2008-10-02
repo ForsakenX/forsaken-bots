@@ -1,4 +1,4 @@
-class ForsakenBug < Meth::Plugin
+class ForsakenBug < Client::Plugin
 
   def initialize *args
     super *args

@@ -1,5 +1,5 @@
 require 'time'
-class GameStats < Meth::Plugin
+class GameStats < Client::Plugin
 
   def initialize *args
     super *args

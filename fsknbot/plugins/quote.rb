@@ -1,4 +1,4 @@
-class Quote < Meth::Plugin
+class Quote < Client::Plugin
 
   def initialize *args
     super *args

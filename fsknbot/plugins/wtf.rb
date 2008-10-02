@@ -1,4 +1,4 @@
-class Wtf < Meth::Plugin
+class Wtf < Client::Plugin
   def initialize *args
     super *args
     @bot.command_manager.register("wtf",self)

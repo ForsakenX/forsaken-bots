@@ -1,4 +1,4 @@
-class Help < Meth::Plugin
+class Help < Client::Plugin
   def initialize *args
     super *args
     @bot.command_manager.register("help",self)

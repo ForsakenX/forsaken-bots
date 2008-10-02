@@ -1,4 +1,4 @@
-class WineBug < Meth::Plugin
+class WineBug < Client::Plugin
 
   def initialize *args
     super *args

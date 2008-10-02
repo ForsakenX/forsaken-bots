@@ -27,8 +27,8 @@ class Irc::Client < EM::Connection
     @timer    = Timer.new
     @username = Process.uid
     @servername = Socket.gethostname
-    @command_manager = Meth::CommandManager.new(self)
-    @plugin_manager  = Meth::PluginManager.new(self)
+    @command_manager = Client::CommandManager.new(self)
+    @plugin_manager  = Client::PluginManager.new(self)
   end
 
   def post_init

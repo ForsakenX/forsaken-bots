@@ -1,4 +1,4 @@
-class Suggestion < Meth::Plugin
+class Suggestion < Client::Plugin
 
   def initialize *args
     super *args

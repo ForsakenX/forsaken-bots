@@ -1,4 +1,4 @@
-class Meth::CommandManager
+class Client::CommandManager
 
   attr_reader :commands
 
@@ -27,7 +27,7 @@ class Meth::CommandManager
   end
 
   def privmsg m
-    c = Meth::Command.new(@client,m.line,m.time)
+    c = Client::Command.new(@client,m.line,m.time)
   end
 
 end

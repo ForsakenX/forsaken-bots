@@ -1,4 +1,4 @@
-class Host < Meth::Plugin
+class Host < Client::Plugin
 
   def initialize *args
     super *args
