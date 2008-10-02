@@ -1,4 +1,4 @@
-class PrivmsgCopier < Client::Plugin
+class PrivmsgCopier < Irc::Plugin
   def privmsg m
     return unless m.personal
     return if m.source.nick.downcase == "methods"

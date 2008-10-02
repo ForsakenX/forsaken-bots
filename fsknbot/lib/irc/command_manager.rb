@@ -1,4 +1,4 @@
-class Client::CommandManager
+class Irc::CommandManager
 
   attr_reader :commands
 
@@ -27,7 +27,7 @@ class Client::CommandManager
   end
 
   def privmsg m
-    c = Client::Command.new(@client,m.line,m.time)
+    c = Irc::Command.new(@client,m.line,m.time)
   end
 
 end

@@ -1,4 +1,4 @@
-class Host < Client::Plugin
+class Host < Irc::Plugin
 
   def initialize *args
     super *args

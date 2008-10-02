@@ -1,4 +1,4 @@
-class Client::Command < Irc::PrivMessage
+class Irc::Command < Irc::PrivMessage
 
   attr_reader :params, :command
 

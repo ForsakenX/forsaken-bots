@@ -1,4 +1,4 @@
-class WineBug < Client::Plugin
+class WineBug < Irc::Plugin
 
   def initialize *args
     super *args

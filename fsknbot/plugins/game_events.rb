@@ -1,4 +1,4 @@
-class GameEvents < Client::Plugin
+class GameEvents < Irc::Plugin
 
   include DirectPlay
 

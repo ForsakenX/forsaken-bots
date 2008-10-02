@@ -1,4 +1,4 @@
-class Wtf < Client::Plugin
+class Wtf < Irc::Plugin
   def initialize *args
     super *args
     @bot.command_manager.register("wtf",self)

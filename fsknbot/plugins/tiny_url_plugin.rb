@@ -1,5 +1,5 @@
 require 'tinyurl'
-class TinyUrlPlugin < Client::Plugin
+class TinyUrlPlugin < Irc::Plugin
   def pre_init
     @bot.command_manager.register("tinyurl",self)
   end

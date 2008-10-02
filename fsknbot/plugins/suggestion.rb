@@ -1,4 +1,4 @@
-class Suggestion < Client::Plugin
+class Suggestion < Irc::Plugin
 
   def initialize *args
     super *args

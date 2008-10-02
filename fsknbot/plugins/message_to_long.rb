@@ -1,4 +1,4 @@
-class MessageToLong < Client::Plugin
+class MessageToLong < Irc::Plugin
   def privmsg m
     # 512 - \r\n parsed by receive line
     max = 512 - 2

@@ -3,7 +3,7 @@ require 'uri'
 require 'net/http'
 require 'rubygems'
 require 'htmlentities'
-class Google < Client::Plugin
+class Google < Irc::Plugin
   @@wap_search = "http://www.google.com/wml/search?hl=en&q="
   @@wap_news_search = "http://news.google.com/wml/search?hl=en&q="
   @@wap_link   = /<a accesskey="(\d)" href=".*?u=(.*?)">(.*?)<\/a>/im

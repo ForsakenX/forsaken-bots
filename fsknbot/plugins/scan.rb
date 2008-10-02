@@ -1,5 +1,5 @@
 # scan channel users for hosting
-class Scan < Client::Plugin
+class Scan < Irc::Plugin
 
   include DirectPlay
 

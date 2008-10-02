@@ -1,5 +1,5 @@
 require 'yaml'
-class Faq < Client::Plugin
+class Faq < Irc::Plugin
   def initialize *args
     super *args
     @db = "#{ROOT}/db/faq.yaml"

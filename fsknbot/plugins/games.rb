@@ -1,5 +1,5 @@
 # get games of running games
-class Games < Client::Plugin
+class Games < Irc::Plugin
 
   def initialize *args
     super *args

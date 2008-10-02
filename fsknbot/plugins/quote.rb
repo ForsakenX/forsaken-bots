@@ -1,4 +1,4 @@
-class Quote < Client::Plugin
+class Quote < Irc::Plugin
 
   def initialize *args
     super *args

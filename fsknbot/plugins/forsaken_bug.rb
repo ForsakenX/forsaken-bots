@@ -1,4 +1,4 @@
-class ForsakenBug < Client::Plugin
+class ForsakenBug < Irc::Plugin
 
   def initialize *args
     super *args

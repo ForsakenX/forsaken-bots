@@ -1,4 +1,4 @@
-class Hangman < Client::Plugin
+class Hangman < Irc::Plugin
 
   class Game
     attr_reader :word, :found, :guessed, :chances

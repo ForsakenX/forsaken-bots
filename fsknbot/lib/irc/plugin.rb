@@ -1,4 +1,4 @@
-class Client::Plugin
+class Irc::Plugin
 
   # defaults
   def pre_init; end

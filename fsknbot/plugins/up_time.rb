@@ -1,4 +1,4 @@
-class UpTime < Client::Plugin
+class UpTime < Irc::Plugin
   def pre_init
     @commands = [:uptime]
   end

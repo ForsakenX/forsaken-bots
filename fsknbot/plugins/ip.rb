@@ -1,4 +1,4 @@
-class Ip < Client::Plugin
+class Ip < Irc::Plugin
 
   include DirectPlay
 

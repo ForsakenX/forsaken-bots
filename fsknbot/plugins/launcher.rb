@@ -1,4 +1,4 @@
-class Launcher < Client::Plugin
+class Launcher < Irc::Plugin
   def pre_init
     @bot.command_manager.register("launcher",self)
     @bot.command_manager.register("!launcher",self)

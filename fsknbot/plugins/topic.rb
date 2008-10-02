@@ -1,4 +1,4 @@
-class Topic < Client::Plugin
+class Topic < Irc::Plugin
 
   def initialize *args
     super *args

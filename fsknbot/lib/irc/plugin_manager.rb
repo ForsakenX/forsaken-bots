@@ -1,4 +1,4 @@
-class Client::PluginManager
+class Irc::PluginManager
 
   attr_reader :bot, :glob, :plugins
 

@@ -1,5 +1,5 @@
 # removes a game from list
-class Unhost < Client::Plugin
+class Unhost < Irc::Plugin
 
   def initialize *args
     super *args

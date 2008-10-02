@@ -1,5 +1,5 @@
 require 'time'
-class GameStats < Client::Plugin
+class GameStats < Irc::Plugin
 
   def initialize *args
     super *args

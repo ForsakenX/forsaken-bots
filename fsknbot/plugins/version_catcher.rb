@@ -1,5 +1,5 @@
 require 'tinyurl'
-class VersionCatcher < Client::Plugin
+class VersionCatcher < Irc::Plugin
 
   # @version = { :url => '', :tinyurl => '', :number => '', :time => '' }
 

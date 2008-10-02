@@ -1,4 +1,4 @@
-class Help < Client::Plugin
+class Help < Irc::Plugin
   def initialize *args
     super *args
     @bot.command_manager.register("help",self)
