@@ -19,7 +19,6 @@ module Irc::Helpers
       :privmsg => "PRIVMSG",
       :notice  => "NOTICE",
     }
-    # return if @ignored.include?(to.downcase)
     message = message.to_s if message.respond_to?(:to_s)
     return message unless message
     # for each line

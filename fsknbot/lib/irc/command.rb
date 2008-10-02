@@ -4,10 +4,7 @@ class Irc::Command < Irc::PrivMessage
 
   def initialize *args
     super *args
-    
-    # alias in Meth
-    @bot = @client
-
+ 
     # look for our nick or target as first word
     # then extract them from the message
     # "(<nick>: |<target>)"
@@ -22,13 +19,7 @@ class Irc::Command < Irc::PrivMessage
     
     # addressed to my name
     # remove my name and set is_command
-    unless is_command = @named =  !message.slice!(/^#{Regexp.escape(@bot.nick)}: /).nil?
-      # addressed to target
-      # remove target set is_command
-      unless @bot.target.nil?
-        is_command = !message.slice!(/^#{Regexp.escape(@bot.target)}/).nil?
-      end
-    end
+    is_command = @named =  !message.slice!(/^#{Regexp.escape(@client.nick)}: /).nil?
 
     # "hi 1 2 3"
     # now that nick/target is extracted
@@ -52,13 +43,9 @@ class Irc::Command < Irc::PrivMessage
 
     # call easy to use command event
     if @command
-      ignored = @bot.ignored.include?(@source.nick.downcase)
-      LOGGER.info("meth.command `#{command.downcase}' "+
-                       "ignore_user => `#{ignored.to_s}'")
-      @bot.event.call("meth.command",self)
-      if !ignored
-        @bot.event.call("meth.command.#{command.downcase}",self)
-      end
+      LOGGER.info("meth.command #{command.downcase}")
+      @client.event.call("meth.command",self)
+      @client.event.call("meth.command.#{command.downcase}",self)
     end
 
   end

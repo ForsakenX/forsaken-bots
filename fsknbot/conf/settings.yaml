@@ -6,14 +6,7 @@ logger:
   severity: DEBUG
   rotate: daily
 
-name: fskn_bot
 server: localhost
 port: 6667
-channels:
-- "#forsaken"
-- "#6dof"
 nick: "FsknBot"
-password: PASSWORD
-target: ""
-realname: FsknBot
 

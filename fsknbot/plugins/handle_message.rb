@@ -1,6 +1,8 @@
 class HandleMessage < Irc::Plugin
 
-  def listen client, line, time
+  def listen args
+  
+    client, line, time = args
 
     case line
 
@@ -12,33 +14,18 @@ class HandleMessage < Irc::Plugin
     when /^PING ([^\n]*)$/i
       send_data "PONG #{$1}\n"
 
-    # login completed
-    when /^:[^ ]* 001/
-      # join default channels
-      send_join @client.default_channels
-
     # set nick succeeded
       # :hostname NICK :methods
     when /^:([^ ]+)![^@]*@[^ ]* NICK [:]*([^ ]*)/i
       old_nick = $1
       new_nick = $2
 
-      # i successfully changed my nick
-      if nick.downcase == old_nick.downcase
-        nick = new_nick
       # someone else changed their nick
-      else
+      if nick.downcase != old_nick.downcase
         if user = Irc::User.find(old_nick)
           user.nick = new_nick
         end
       end
-
-    # set nick failed
-    when /^:[^ ]* 433 /i
-      send_nick "#{nick_sent}_"
-
-    # motd
-    #when /^:[^ ]* (375|372|376)/
 
     ##
     # 1st whois line (start)
@@ -107,53 +94,33 @@ class HandleMessage < Irc::Plugin
               :realname => realname})
       end
 
-      # get list of chats the user is in
-      #send_data "WHOIS #{u.nick}\n"
-
-    # end of who list
-    #when /^:[^ ]* 315/
-
-    # mode responses
-      # :ChanServ!ChanServ@services. MODE #projectx +o methods
-      # :kornbluth.freenode.net 324 FsknBot #forsaken +tncz
-      # :kornbluth.freenode.net 329 FsknBot #forsaken 1192567839
-    when /^:[^ ]* 324 [^ ]* (#[^ ]*) ([^ ]*)/
-      channel = $1
-      mode    = $2
-
-      if channel = channels[channel.downcase]
-        channel.mode = mode
-      else
-        LOGGER.warn "[324] unknown channel."
-      end
-
     when /^:[^ ]* (332|TOPIC)/i
       m = Irc::TopicMessage.new(client,line,time)
-      @client.event.call('irc.message.topic',m)
+      client.event.call('irc.message.topic',m)
 
     when /^:[^ ]* JOIN/
       m = Irc::JoinMessage.new(client,line,time)
-      @client.event.call('irc.message.join',m)
+      client.event.call('irc.message.join',m)
 
     when /^:[^ ]* PART/i
       m = Irc::PartMessage.new(client,line,time)
-      @client.event.call('irc.message.part',m)
+      client.event.call('irc.message.part',m)
 
     when /^:[^ ]* QUIT/i
       m = Irc::QuitMessage.new(client,line,time)
-      @client.event.call('irc.message.quit',m)
+      client.event.call('irc.message.quit',m)
 
     when /^:[^ ]* KICK/i
       m = Irc::KickMessage.new(client,line,time)
-      @client.event.call('irc.message.kick',m)
+      client.event.call('irc.message.kick',m)
 
     when /^:[^ ]* PRIVMSG/i
       m = Irc::PrivMessage.new(client,line,time)
-      @client.event.call('irc.message.privmsg',m)
+      client.event.call('irc.message.privmsg',m)
     
     when /^:[^ ]* NOTICE/i
       m = Irc::NoticeMessage.new(client,line,time)
-      @client.event.call('irc.message.notice',m)
+      client.event.call('irc.message.notice',m)
 
     end
   end

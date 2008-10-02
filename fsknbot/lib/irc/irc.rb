@@ -7,7 +7,6 @@ require 'irc/user'
 require 'irc/channel'
 
 # handles a message
-require 'irc/handle_message'
 require 'irc/message' 
 require 'irc/privmsg_message'
 require 'irc/join_message'

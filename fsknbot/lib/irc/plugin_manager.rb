@@ -102,7 +102,7 @@ class Irc::PluginManager
       LOGGER.warn "[_load plugin error] #{$!}\n#{$@.join("\n")}"
       return e
     end
-    LOGGER.info "Bot (#{bot.name}) Loaded Plugin (#{plugin.snake_case})"
+    LOGGER.info "Bot Loaded Plugin (#{plugin.snake_case})"
     @bot.event.call('meth.plugin.loaded', plugin)
     true
   end

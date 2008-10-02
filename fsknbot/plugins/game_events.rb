@@ -40,8 +40,6 @@ class GameEvents < Irc::Plugin
 
       # list of users
       users = channel.users.select{|u|
-        # not in ignore list
-        next if @bot.ignored.include?(u.nick.downcase)
         # has a non nil ip
         u.ip
       }

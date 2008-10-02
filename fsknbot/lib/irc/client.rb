@@ -7,52 +7,39 @@ class Irc::Client < EM::Connection
   def plugins; @plugin_manager.plugins; end
   def commands; @command_manager.commands; end
 
-  attr_reader :event, :name, :nick_sent, :realname, :server,
-              :port, :username, :hostname, :config, :plugin_manager, 
-	      :command_manager
-  attr_accessor :nick, :ignored, :target
+  attr_reader :event, :plugin_manager, :command_manager
+  attr_accessor :nick
 
   def initialize
-    @name     = CONFIG['name']
     @nick     = CONFIG['nick']
-    @password = CONFIG['password']
-    @realname = CONFIG['realname']
-    @server   = CONFIG['server']
-    @port     = CONFIG['port']
-    @default_channels = CONFIG['channels']
-    @target   = CONFIG['target']||nil
-    @ignored  = []
     @event    = Event.new
     @timer    = Timer.new
-    @username = Process.uid
-    @servername = Socket.gethostname
     @command_manager = Irc::CommandManager.new(self)
     @plugin_manager  = Irc::PluginManager.new(self)
   end
 
   def post_init
     @event.call('irc.post_init',nil)
-    LOGGER.info "Connected #{@name} to #{@server}:#{@port}"
-    # send password
-    send_data "PASS #{@password}\n" if @password
-    # login
-    send_data "USER #{@username} #{@servername} #{@server} :#{@realname}\n"
-    # send initial nick
-    send_nick @nick
+    send_join ['#forsaken']
+    LOGGER.info "Connected"
   end
 
   def unbind
+    puts "unbind"
     @event.call('irc.unbind',nil)
-    reconnect @server, @port
+    reconnect CONFIG['server'], CONFIG['port']
     post_init
   end
 
   def receive_line line
+begin
     time = Time.now
-    @event.call('irc.receive_line',line)
-    LOGGER.info "<<< #{line}"
     @event.call('irc.message.listen',[self,line,time])
+    LOGGER.info "<<< #{line}"
     LOGGER.info "Time Taken (seconds) => #{Time.now-time}"
+rescue Exception
+  puts $!
+end
   end
 
   def send_data line

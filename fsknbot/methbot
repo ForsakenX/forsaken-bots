@@ -18,7 +18,7 @@ ROOT  = File.dirname(__FILE__)
 
 CONFIG = YAML.load(File.open("#{ROOT}/conf/settings.yaml"))
 
-LOGGER = Logger.new("#{ROOT}/logs/#{CONFIG['name']}")
+LOGGER = Logger.new("#{ROOT}/logs/client")
 LOGGER.level = Logger.const_get(CONFIG['logger']['severity'])
 
 =begin
