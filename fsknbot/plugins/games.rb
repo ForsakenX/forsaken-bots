@@ -11,9 +11,6 @@ class Games < Irc::Plugin
   end
 
   def command m
-    if m.command == "games"
-      return m.reply("Please use !games")
-    end
     games = GameModel.games
     unless games.length > 0
       m.reply "There are currently no games..."

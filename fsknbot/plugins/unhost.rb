@@ -12,9 +12,6 @@ class Unhost < Irc::Plugin
 
   # remove a game
   def command m
-    if m.command == "unhost"
-      return m.reply("Please use !unhost")
-    end
     if m.source.ip == nil
       m.reply "You don't have an ip number..."
       return

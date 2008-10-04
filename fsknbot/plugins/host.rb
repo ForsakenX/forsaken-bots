@@ -6,9 +6,6 @@ class Host < Irc::Plugin
   end
 
   def command m
-    if m.command == "host"
-      return m.reply("Please use !host")
-    end
     if m.params.length < 1
       return m.reply(help)
     end

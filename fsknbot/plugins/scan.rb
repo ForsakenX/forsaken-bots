@@ -14,10 +14,6 @@ class Scan < Irc::Plugin
 
   def command m
 
-    if m.command == "scan"
-      return m.reply("Please use !scan")
-    end
-
     if m.personal
       m.reply "This command only works in a channel..."
       return
