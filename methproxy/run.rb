@@ -3,122 +3,134 @@
 require 'rubygems'
 require 'eventmachine'
 
+# line protocol class
 module EM::Protocols::LineText2
+
+  # helper which adds a new line to send_data
   def send_line line
     send_data "#{line}\n"
   end
+
 end
 
+# this is the class clients connect to
 class IrcProxy < EM::Connection
   include EM::Protocols::LineText2
+
   #
   # Class
   #
+  
+  # list of clients connected
   @@connections = []
+
+  # send data to all clients
   def self.notify line
-    @@connections.each do |connection|
-      connection.send_line line
-    end
+    @@connections.each {|c|c.send_line line}
   end
+
   #
-  # Instances
+  # Instance
   #
+
+  # client expects all this input when it requests a join
   def bootstrap channel
-    # join to forsaken
     send_line(":FsknBot!n=x@localdomain JOIN :#{channel}",true)
-    # client also needs all this data
-    # all of this data is automatically sent on joins
     IrcClient.send_line "TOPIC #{channel}"
     IrcClient.send_line "NAMES #{channel}"
     IrcClient.send_line "MODE #{channel}"
   end
+
+  # got client connect
   def post_init
     puts "--- Got client"
     @@connections << self
-    # custom auth notice
-    send_line "NOTICE AUTH :*** You do not need to authenticate"
-    send_line "NOTICE AUTH :*** Proxy is already authenticated"
-    # my bots expect this
+    # my bots expect 001 as a sign of succesfull login
     send_line ":FsknBot!n=x@localdomain 001 FsknBot :login success", true
-    # send motd
-    send_line ":FsknBot!n=x@localdomain 375 FsknBot :- localhost message of the day -", true
-    send_line ":FsknBot!n=x@localdomain 372 FsknBot :- Welcome to Meth Proxy", true
-    send_line ":FsknBot!n=x@localdomain 376 FsknBot :End of /MOTD command.", true
-    # bootstrap channels
-    # just program your bots to join them
-    #bootstrap '#forsaken'
-    #bootstrap '#6dof'
+    # send motd required for pidgin to see successful login
+    send_line ":FsknBot!n=x@localdomain 375 FsknBot :MOTD", true
+    send_line ":FsknBot!n=x@localdomain 372 FsknBot :- Welcome", true
+    send_line ":FsknBot!n=x@localdomain 376 FsknBot :/MOTD", true
   end
+
+  # lost a client
   def unbind
     puts "Lost client"
     @@connections.delete self
   end
+
+  # receive data from client
   def receive_line line
-    # catch join messages to channels we are in already
-    # since are already joined these commands will do nothing
+
+    # catch join requests of client
     if line =~ /^JOIN :?([^ ]+)/i
+
+      # boot strap #forsaken
       unless line.slice!(/,?#forsaken/i).nil?
         puts "client >>> JOIN #forsaken"
         bootstrap '#forsaken'
       end
+
+      # boot strap #6dof
       unless line.slice!(/,?#6dof/i).nil?
         puts "client >>> JOIN #6dof"
         bootstrap '#6dof'
       end
-      # if there is no more channels in the argument
-      # then don't send an empty join message
-      return unless line =~ /^JOIN :?([^ ]+)$/i
+
+      # do not allow clients to join other channels
+      return
     end
-    # don't allow bad clients to part us from main rooms
-    if line =~ /^PART/i
-      line.gsub!(/,?(#forsaken|#6dof)/,'')
-      # don't send empty part command
-      return if line =~ /^PART $/i
-    end
-    # don't allow bad bots to make us quit
+
+    # do not allow client to make us quit
     if line =~ /^QUIT/i
+
+      # kill the connection since client requests it
       @@connections.delete self
       puts "client >>> #{line}"
       send_line "ERROR :Closing Link: hostname (Client Quit)", true
       close_connection_after_writing
       return
+
     end
-    # don't allow bots to change our nick
-    if line =~ /^NICK (.*)/i
-      puts "client >>> #{line}"
-      if $1.downcase != "fsknbot"
-        send_line ":FsknBot!n=x@localdomain 432 FsknBot #{$1} :"+
-                  "Client not allowed to change nick", true
-      end
-      return
-    end
-    # these should only be sent at startup
-    action = line.split(' ').first
-    if !action.nil? && %{user pass}.include?(action.downcase)
-      puts "client >>> #{line}"
-      return
-    end
-    # send line to irc
+
+    # blocked commands
+    return if line =~ /^(PART|NICK|USER|PASS|AWAY|KICK|QUIT|JOIN)/i
+
+    # forward input to irc
     IrcClient.send_line line
+
   end
+
+  # send data to client
   def send_line line, print=false
     puts "client <<< #{line}" if print
     super line
   end
+
 end
 
+# this is the class we use to connect to irc
 class IrcClient < EM::Connection
+
   include EM::Protocols::LineText2
+
   #
   # Class
   #
+
+  # our connection to irc server
   @@connection = nil
+
+  # allows outside objects to send to irc
   def self.send_line line
     @@connection.send_line(line) unless @@connection.nil?
   end
+
   #
   # Instance
   #
+
+  # we are connected to irc
   def post_init
     puts "Connected to freenode"
     @@connection = self
@@ -127,39 +139,67 @@ class IrcClient < EM::Connection
     send_line "NICK FsknBot"
     send_line "JOIN #forsaken,#6dof"
   end
+
+  # we lost connectino to irc
   def unbind
     reconnect 'irc.freenode.net', 6667
     post_init
   end
+
+  # irc has sent us data
   def receive_line line
+
+    #
+    # Bug
+    #   Need to auto rejoin on part|kick|quit|error detections
+    #
+
     # respond to pings
     if line =~ /^:[^ ]+ ping (.*)/im
       send_data "PONG #{$1}\n"
       return
     end
+
     # respond to version ctcp
     if line =~ /^:([^!]+)[^ ]+ PRIVMSG fsknbot :\001VERSION\001/i
       send_line "PRIVMSG #{$1} :Meth Proxy 0.1"
     end
-    # print to the screen
+
+    # privmsg detected
     if line =~ /^:([^!]+)[^ ]+ PRIVMSG ([^ ]+) :(.*)/im
-      # only print user name for readability
+
+      # only print channel and nick for readability
       puts "irc >>> #{$2} #{$1}: #{$3}"
+
+    # other types of input
     else
+
       # remove hostname from server lines for readability
       puts "irc >>> #{line.sub(/^:[^ ]+ /,'')}"
+
     end
+
     # broadcast to clients
     IrcProxy.notify(line)
+
   end
+
+  # print data sent to screen
   def send_line line
     send_data "#{line}\n"
     puts "irc <<< #{line}"
   end
+
 end
 
+# run the server
 EM::run {
+
+  # connect to irc server
   EM::connect 'irc.freenode.net', 6667, IrcClient
+
+  # listen for clients
   EM::start_server "127.0.0.1", 6667, IrcProxy
+
 }
 

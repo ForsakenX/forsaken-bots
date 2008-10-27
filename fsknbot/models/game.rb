@@ -40,9 +40,13 @@ class GameModel
                                  "started_at" => time})
     end
     path = File.expand_path("#{ROOT}/db/games.xml")
-    file = File.open( path, 'w+' )
-    file.write doc
-    file.close
+    begin
+	file = File.open( path, 'w+' )
+	file.write doc
+	file.close
+    rescue Exception
+    	puts "#{$!}"
+    end
   end
 
   #

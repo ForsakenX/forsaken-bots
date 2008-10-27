@@ -31,14 +31,14 @@ class Irc::Client < EM::Connection
   end
 
   def receive_line line
-begin
     time = Time.now
-    @event.call('irc.message.listen',[self,line,time])
+    begin
+      @event.call('irc.message.listen',line)
+    rescue Exception
+      puts $!
+    end
     LOGGER.info "<<< #{line}"
     LOGGER.info "Time Taken (seconds) => #{Time.now-time}"
-rescue Exception
-  puts $!
-end
   end
 
   def send_data line
