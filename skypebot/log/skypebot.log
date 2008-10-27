@@ -1,0 +1,25 @@
+Skype4Py/API thread started
+Skype4Py/API Xlib error 5
+Skype4Py/API AttachmentStatus 32769
+API attachment status: API Available
+Error Attaching to Skype:  Skype attach timeout
+Error Attaching to Skype:  Skype attach timeout
+Traceback (most recent call last):
+  File "./skypebot.py", line 360, in ?
+    skype.Settings.AutoAway = False;
+  File "/usr/lib/python2.4/site-packages/Skype4Py/settings.py", line 154, in _SetAutoAway
+    self._Skype.Variable('AUTOAWAY', cndexp(value, 'ON', 'OFF'))
+  File "/usr/lib/python2.4/site-packages/Skype4Py/skype.py", line 861, in Variable
+    return self._Property(Name, '', '', Set)
+  File "/usr/lib/python2.4/site-packages/Skype4Py/skype.py", line 394, in _Property
+    self._DoCommand('SET %s %s' % (jarg, Value), jarg)
+  File "/usr/lib/python2.4/site-packages/Skype4Py/skype.py", line 359, in _DoCommand
+    self.SendCommand(command)
+  File "/usr/lib/python2.4/site-packages/Skype4Py/skype.py", line 790, in SendCommand
+    self._API.SendCommand(Command)
+  File "/usr/lib/python2.4/site-packages/Skype4Py/API/posix_x11.py", line 363, in SendCommand
+    self.Attach(Command.Timeout)
+  File "/usr/lib/python2.4/site-packages/Skype4Py/API/posix_x11.py", line 322, in Attach
+    time.sleep(1.0)
+KeyboardInterrupt
+X connection to :0.0 broken (explicit kill or server shutdown).
