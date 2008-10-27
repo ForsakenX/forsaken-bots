@@ -1,23 +1,29 @@
 class HandleMessage < Irc::Plugin
 
-  def listen args
-  
-    client, line, time = args
+  def listen line
 
+    time = Time.now
+  
     case line
 
-    # set nick succeeded
-      # :hostname NICK :methods
-    when /^:([^ ]+)![^@]*@[^ ]* NICK [:]*([^ ]*)/i
+    #
+    #  Nick Changes
+    #
+
+    # :methods!n=daquino@c-68-36-237-152.hsd1.nj.comcast.net NICK :ype
+    when /^:([^!]+)[^ ]* NICK :([^ ]+)$/i
+
       old_nick = $1
       new_nick = $2
 
-      # someone else changed their nick
-      if nick.downcase != old_nick.downcase
-        if user = Irc::User.find(old_nick)
-          user.nick = new_nick
-        end
+      # fsknbot never changes his name
+      next if @bot.nick.downcase == old_nick.downcase
+
+      # update nick
+      if user = Irc::User.find(old_nick)
+        user.nick = new_nick
       end
+
 
     # who lines
     # a single user in who list
@@ -47,32 +53,32 @@ class HandleMessage < Irc::Plugin
       end
 
     when /^:[^ ]* (332|TOPIC)/i
-      m = Irc::TopicMessage.new(client,line,time)
-      client.event.call('irc.message.topic',m)
+      m = Irc::TopicMessage.new(@bot,line,time)
+      @bot.event.call('irc.message.topic',m)
 
     when /^:[^ ]* JOIN/
-      m = Irc::JoinMessage.new(client,line,time)
-      client.event.call('irc.message.join',m)
+      m = Irc::JoinMessage.new(@bot,line,time)
+      @bot.event.call('irc.message.join',m)
 
     when /^:[^ ]* PART/i
-      m = Irc::PartMessage.new(client,line,time)
-      client.event.call('irc.message.part',m)
+      m = Irc::PartMessage.new(@bot,line,time)
+      @bot.event.call('irc.message.part',m)
 
     when /^:[^ ]* QUIT/i
-      m = Irc::QuitMessage.new(client,line,time)
-      client.event.call('irc.message.quit',m)
+      m = Irc::QuitMessage.new(@bot,line,time)
+      @bot.event.call('irc.message.quit',m)
 
     when /^:[^ ]* KICK/i
-      m = Irc::KickMessage.new(client,line,time)
-      client.event.call('irc.message.kick',m)
+      m = Irc::KickMessage.new(@bot,line,time)
+      @bot.event.call('irc.message.kick',m)
 
     when /^:[^ ]* PRIVMSG/i
-      m = Irc::PrivMessage.new(client,line,time)
-      client.event.call('irc.message.privmsg',m)
+      m = Irc::PrivMessage.new(@bot,line,time)
+      @bot.event.call('irc.message.privmsg',m)
     
     when /^:[^ ]* NOTICE/i
-      m = Irc::NoticeMessage.new(client,line,time)
-      client.event.call('irc.message.notice',m)
+      m = Irc::NoticeMessage.new(@bot,line,time)
+      @bot.event.call('irc.message.notice',m)
 
     end
   end

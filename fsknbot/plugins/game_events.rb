@@ -33,16 +33,8 @@ class GameEvents < Irc::Plugin
 
     @game_checker = Proc.new{|game|
 
-      # get forsaken channel
-      channels = Irc::Channel.channels
-      next unless channels.has_key?("#forsaken") 
-      channel = channels["#forsaken"]
-
-      # list of users
-      users = channel.users.select{|u|
-        # has a non nil ip
-        u.ip
-      }
+      # list of users with unique ip
+      users = Irc::User.users.select{|u|u.ip}
   
       # compact by unique ip addresses
       users.each do |user|

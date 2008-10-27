@@ -3,7 +3,7 @@ class Faq < Irc::Plugin
   def initialize *args
     super *args
     @db = "#{ROOT}/db/faq.yaml"
-    @bot.command_manager.register("faq",self)
+    @bot.command_manager.register("!faq",self)
     @faq = (FileTest.exists?(@db) && YAML.load_file(@db)) || {}
   end
   def help m=nil, topic=nil

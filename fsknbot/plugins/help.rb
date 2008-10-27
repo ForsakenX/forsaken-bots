@@ -1,7 +1,7 @@
 class Help < Irc::Plugin
   def initialize *args
     super *args
-    @bot.command_manager.register("help",self)
+    @bot.command_manager.register("!help",self)
   end
   def help(m=nil, topic=nil)
     "help [command] => return help on a command.  "+
