@@ -1,48 +1,40 @@
 class IrcCommandManager
   def self.scan
+    return if @msg.private || ScanCommand.scanning
+    ScanCommand.scanning = true
+    ScanCommand.run do |results|
+        hosts = []
+        results[:hosts].each{|u| hosts << u.hostmask }
+  
+        time_taken = results[:time_finished] - results[:time_started]
+  
+        output  = "#{hosts.length} hosting"
+        output += ": #{hosts.join(', ')}  " if hosts.length > 0
+        #output += "Scanned #{users.length} users in #{time_taken} seconds."
+  
+        IrcConnection.chatmsg output
 
-    ## only valid in channels
-    return if @msg.private
-
-    ## list of users
-    users = IrcUser.users.select{|u| u.ip}
-
-    ## compact by unique ip addresses
-    users.each do |user|
-      users.each do |u|
-        users.delete(user) if (user != u) && (user.ip == u.ip)
-      end
+        ScanCommand.scanning = false
     end
-
-    ## tempt message
-    @msg.reply "One moment please..."
-
-    # check the users
-    DirectPlay::find_hosts(users){|results|
-
-      # format hosts output
-      hosts = []
-      results[:hosts].each do |user|
-        hosts << "#{user.nick}@#{user.ip}"
-      end
-
-      # calculations
-      time_taken = results[:time_finished] - results[:time_started]
-
-      # print results
-      @msg.reply "Scanned (#{users.length}) users (#{time_taken}) seconds. "+
-                 "Found (#{hosts.length}) hosting: #{hosts.join(', ')}"
-
-=begin
-      # add hosts to game list
-      results[:hosts].each do |user|
-        next if GameModel.find(user.ip)
-        game = GameModel.create({:user => user})
-      end
-=end
-
-    }
-
   end
 end
+
+class ScanCommand
+  class << self
+    @scanning = false
+    attr_accessor :scanning
+    def run
+  
+      DirectPlay::find_hosts( IrcUser.unique_by_ip ) do |results|
+
+        yield results if block_given?
+
+        results[:hosts].each {|u| Game.create({:host => u}) }
+
+      end
+
+    end
+  end
+end
+
 

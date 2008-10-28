@@ -1,9 +1,9 @@
 class IrcTopic
+  class << self
 
-  ## $channel channel topic
-  @@topic = ""
+    @topic = ""
 
-  # public api
-  def topic; @@topic; end
+    attr_accessor :topic
 
+  end
 end

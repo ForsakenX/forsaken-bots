@@ -1,28 +1,20 @@
 require 'resolv'
+
+#
+# Public API
+#
+
 class IrcUser
-
-  #
-  # public api
-  #
-
-  ## holds a list of hidden users
-  @@hidden = %w{chanserv}
-
-  ## holds list of users
-  @@users = []
-
   class << self
+
+    @@hidden = %w{chanserv epsy}
+
+    @@users = []; def users; @@users; end
   
-    ## readers
-    def users; @@users; end
-  
-    ## find a user
     def find_by_nick nick
-      @@users.each {|u| return u if u.nick == nick }
-      nil
+      @@users.detect{|u| u.nick == nick }
     end
   
-    ## delete a user
     def delete_by_nick nick
       if user = IrcUser.find_by_nick(nick)
         @@users.delete user
@@ -30,19 +22,6 @@ class IrcUser
       user
     end
 
-=begin
-    ## get unique-ip list
-    def users_by_ip
-      unique = []
-      @@users.each do |user|
-        next if user.ip.nil?
-        unique.each do |uniq|
-        end
-      end
-    end
-=end
-  
-    ## get user ip
     def get_ip user
       ignored = ["unaffiliated/#{user.nick}","services."]
       return nil if ignored.include? user.host
@@ -52,26 +31,51 @@ class IrcUser
       nil
     end
 
+    def create hash
+      unless user = IrcUser.find_by_nick(hash[:nick])
+        user = IrcUser.new(hash)
+      end
+      user
+    end
+
+    def length
+      @@users.length
+    end
+
+    def unique_by_ip
+      users = @@users.select{|u|u.ip} # has ip
+      users.each do |user|
+        users.each do |u|
+          users.delete(user) if (user != u) && (user.ip == u.ip)
+        end
+      end
+      users
+    end
+
   end
+end
 
-  #
-  # instance api
-  #
+#
+# instance api
+#
 
-  ## reads
+class IrcUser
+
   attr_accessor :nick, :host, :ip
 
-  ## instance constructor
   def initialize hash
 
-    # populate values
     @nick = hash[:nick]
     @host = hash[:host]
     @ip   = IrcUser.get_ip(self)
 
-    # add to list
     @@users << self unless @@hidden.include?(hash[:nick])
 
   end
 
+  def hostmask
+    "#{@nick}@#{@ip}"
+  end
+
 end
+

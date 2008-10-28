@@ -3,9 +3,6 @@ require 'irc_connection'
 require 'irc_command_manager'
 class IrcChatMsg
 
-  ## command notifier
-  @@prefix = '!'
-
   ## readers
   attr_reader :prefix, :from, :to, :message, :channel,
               :targeted, :private, :command, :args, :type
@@ -40,11 +37,11 @@ class IrcChatMsg
    message.sub!(/^#{$nick}:? /,'') if message.split.first =~ /#{$nick}:?/
 
    ## check for notifier
-   message.sub!(/^#{@@prefix}/,'') if @@prefix && message[0] == @@prefix[0]
+   message.sub!(/^#{$prefix}/,'') if $prefix && message[0] == $prefix[0]
 
    ## if we are targetted by this message
    ## always targeted in non channel
-   @targeted = @@prefix.nil? || @private || message.length < hash[:message].length
+   @targeted = $prefix.nil? || @private || message.length < hash[:message].length
 
    ## parse out command and args if targted
    @command = nil

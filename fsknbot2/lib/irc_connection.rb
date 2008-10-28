@@ -26,9 +26,19 @@ class IrcConnection < EM::Connection
       IrcConnection.send_line "PRIVMSG #{target} :#{message}"
     end
 
+    # send to $channel
+    def chatmsg message
+      IrcConnection.privmsg $channel, message
+    end
+
     # send who message
     def who target
       IrcConnection.send_line "WHO #{target}"
+    end
+
+    # send topic
+    def topic data
+      IrcConnection.send_line "TOPIC #{$channel} :#{data}"
     end
 
   end
@@ -41,7 +51,7 @@ class IrcConnection < EM::Connection
 
   ## connection lost
   def unbind
-    reconnect $server, "$port"
+    reconnect $server, $port
     post_init
   end
 
@@ -57,11 +67,9 @@ class IrcConnection < EM::Connection
     ##  pass to line handler
     IrcHandleLine.new line
 
-  ## trap any errors
   rescue Exception
 
-    ## print error
-    puts "-- ERROR: #{$!}"
+    puts_error __FILE__,__LINE__
 
   end
 

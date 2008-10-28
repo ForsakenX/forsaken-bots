@@ -120,7 +120,7 @@ class IrcHandleLine
         return unless @parts.shift == $channel
 
         ## set topic
-        IrcTopic.topic = @parts.join(' ')
+        IrcTopic.topic = @parts.join(' ').sub(/^:/,'')
 
     end
 
