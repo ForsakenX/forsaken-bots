@@ -8,7 +8,6 @@ Main Libs
 require 'rubygems'
 require 'eventmachine'
 require 'logger'
-require 'yaml'
 
 =begin
 Globals
@@ -16,10 +15,8 @@ Globals
 
 ROOT  = File.dirname(__FILE__)
 
-CONFIG = YAML.load(File.open("#{ROOT}/conf/settings.yaml"))
-
 LOGGER = Logger.new("#{ROOT}/logs/client")
-LOGGER.level = Logger.const_get(CONFIG['logger']['severity'])
+LOGGER.level = Logger.const_get(DEBUG)
 
 =begin
 Application Libs
@@ -40,7 +37,7 @@ Run
 
 EM::run {
   begin
-    EM::connect(CONFIG['server'],CONFIG['port'],Irc::Client)
+    EM::connect('localhost',6667,Irc::Client)
   rescue
     puts "#{$!}\n#{$@.join("\n")}"
     exit 1

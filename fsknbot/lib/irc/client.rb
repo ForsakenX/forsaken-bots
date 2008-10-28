@@ -10,7 +10,7 @@ class Irc::Client < EM::Connection
   attr_accessor :nick
 
   def initialize
-    @nick     = CONFIG['nick']
+    @nick     = 'FsknBot'
     @event    = Event.new
     @timer    = Timer.new
     @command_manager = Irc::CommandManager.new(self)
@@ -26,7 +26,7 @@ class Irc::Client < EM::Connection
   def unbind
     puts "unbind"
     @event.call('irc.unbind',nil)
-    reconnect CONFIG['server'], CONFIG['port']
+    reconnect 'localhost', 6667
     post_init
   end
 
