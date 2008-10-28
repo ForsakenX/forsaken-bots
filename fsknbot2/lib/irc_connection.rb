@@ -69,7 +69,7 @@ class IrcConnection < EM::Connection
 
   rescue Exception
 
-    puts_error __FILE__,__LINE__
+    puts_error
 
   end
 

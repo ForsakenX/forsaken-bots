@@ -1,21 +1,19 @@
-class IrcCommandManager
-  def self.scan
-    return if @msg.private || ScanCommand.scanning
-    ScanCommand.scanning = true
-    ScanCommand.run do |results|
-        hosts = []
-        results[:hosts].each{|u| hosts << u.hostmask }
-  
-        time_taken = results[:time_finished] - results[:time_started]
-  
-        output  = "#{hosts.length} hosting"
-        output += ": #{hosts.join(', ')}  " if hosts.length > 0
-        #output += "Scanned #{users.length} users in #{time_taken} seconds."
-  
-        IrcConnection.chatmsg output
+IrcCommandManager.register 'scan', 'looks for hosts' do |m|
+  return if m.private || ScanCommand.scanning
+  ScanCommand.scanning = true
+  ScanCommand.run do |results|
+    hosts = []
+    results[:hosts].each{|u| hosts << u.hostmask }
 
-        ScanCommand.scanning = false
-    end
+      time_taken = results[:time_finished] - results[:time_started]
+
+    output  = "#{hosts.length} hosting"
+    output += ": #{hosts.join(', ')}  " if hosts.length > 0
+    #output += "Scanned #{users.length} users in #{time_taken} seconds."
+
+    IrcConnection.chatmsg output
+
+    ScanCommand.scanning = false
   end
 end
 

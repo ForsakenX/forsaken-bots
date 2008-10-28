@@ -55,7 +55,7 @@ class IrcChatMsg
      @command = @args.shift
 
      ## call command
-     IrcCommandManager.call @command.to_sym, self
+     IrcCommandManager.call @command, self
 
    end
 

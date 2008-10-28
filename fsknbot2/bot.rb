@@ -28,7 +28,7 @@ Dir["lib/*.rb","models/*.rb","commands/*.rb"].each do |f|
 end
 
 # error helper
-def puts_error file, line
+def puts_error file=nil, line=nil
   puts "--- ERROR: #{file} #{line}: #{$!}"
 end
 

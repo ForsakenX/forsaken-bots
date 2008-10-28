@@ -1,33 +1,31 @@
-class IrcCommandManager
-  def self.games
+IrcCommandManager.register 'games', 'list games' do |m|
 
-    return @msg.reply("Read the topic...") unless Game.length > 0
+  return m.reply("Read the topic...") unless Game.length > 0
 
-    hosts = []
-    waiting = []
-    Game.games.each do |game|
-      unless game.start_time
-        time_left = game.timeout - (Time.now - game.created_at).to_i
-        time = GamesCommand::seconds_to_clock(time_left)
-        waiting << "{ "+
-                   "#{game.hostmask} "+
-                   "version: (#{game.version}) "+
-                   "times out in: (#{time}) "+
-                   "}"
-        next
-      end
-      time = GamesCommand::seconds_to_clock( Time.now - game.start_time )
-      hosts << "{ "+
-               "#{game.hostmask} version: (#{game.version}) "+
-               "since #{game.start_time.strftime('%I:%M:%S')} "+
-               "runtime #{time}"+
-               " }"
+  hosts = []
+  waiting = []
+  Game.games.each do |game|
+    unless game.start_time
+      time_left = game.timeout - (Time.now - game.created_at).to_i
+      time = GamesCommand::seconds_to_clock(time_left)
+      waiting << "{ "+
+                 "#{game.hostmask} "+
+                 "version: (#{game.version}) "+
+                 "times out in: (#{time}) "+
+                 "}"
+      next
     end
-
-    @msg.reply "Hosting: #{hosts.join(', ')}" if hosts.length > 0
-    @msg.reply "Waiting: #{waiting.join(', ')}" if waiting.length > 0
-
+    time = GamesCommand::seconds_to_clock( Time.now - game.start_time )
+    hosts << "{ "+
+             "#{game.hostmask} version: (#{game.version}) "+
+             "since #{game.start_time.strftime('%I:%M:%S')} "+
+             "runtime #{time}"+
+             " }"
   end
+
+  m.reply "Hosting: #{hosts.join(', ')}" if hosts.length > 0
+  m.reply "Waiting: #{waiting.join(', ')}" if waiting.length > 0
+
 end
 
 module GamesCommand

@@ -1,11 +1,9 @@
-class IrcCommandManager
-  def self.unhost
+IrcCommandManager.register 'unhost', 'removes your game' do |m|
 
-    return if @msg.from.ip.nil?
+  return if m.from.ip.nil?
 
-    Game.destroy(@msg.from.ip)
+  Game.destroy(m.from.ip)
 
-    @msg.reply "Your game has been removed..."
+  m.reply "Your game has been removed..."
 
-  end
 end
