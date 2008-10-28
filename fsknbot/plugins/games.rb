@@ -13,7 +13,7 @@ class Games < Irc::Plugin
   def command m
     games = GameModel.games
     unless games.length > 0
-      m.reply "There are currently no games..."
+      m.reply "Read the topic..."
       return
     end
     hosts = []

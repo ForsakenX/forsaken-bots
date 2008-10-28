@@ -1,5 +1,10 @@
 class Topic < Irc::Plugin
 
+  @@buffer = []
+  @@last_buffer = []
+  @@last   = nil
+  @@last_time = nil
+
   def initialize *args
     super *args
     @bot.command_manager.register("topic",self)
@@ -8,9 +13,16 @@ class Topic < Irc::Plugin
   def help(m=nil, topic=nil)
     "topic => Displays the current topic.  "+
     "topic <message> => Resets the user section of the topic to <message>.  "+
+    "topic last => Shows last 4 sentences and setter. "+
     "topic +|> <message> => Adds <message> to the end of the current topic.  "+
     "topic r <find> <replace> => Replaces all occurances of <find> with <replace>.  "+
     "Topic should be relavant to the current conversations."
+  end
+
+  def privmsg m
+    @@buffer.push m.source.nick+": "+ m.message
+    @@buffer[3] == nil
+    @@buffer = @@buffer.compact
   end
 
   def command m
@@ -39,12 +51,26 @@ class Topic < Irc::Plugin
       return
     end
 
+    if @topic.split.first == "last"
+      m.reply "Topic Setter Was:  #{@@last} @ #{@@last_time.strftime('%a %b %d %I:%M %p %Z')}"  
+
+      @@last_buffer.each do |line|
+        m.reply_directly line
+      end
+      return
+    end
+
+    @@last_buffer = @@buffer.dup
+    @@last = m.source.nick
+    @@last_time = m.time
+
     # parse switch
     @topic.slice!(/^(r|\+|>|<) /)
     switch = $1
 
     # handle switch
     case switch
+
 
     # find replace
     when "r"
@@ -100,6 +126,8 @@ class Topic < Irc::Plugin
       send_topic
 
     end
+
+
   end
 
   private
