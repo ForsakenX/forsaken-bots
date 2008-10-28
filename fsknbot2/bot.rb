@@ -1,45 +1,45 @@
 #!/usr/bin/env ruby
 
-## libraries
+# libraries
 require 'rubygems'
 require 'eventmachine'
 
-## main settings
+# main settings
 $nick    = 'fsknbot'
 $channel = '#forsaken' #'#6dof'
 $server  = 'localhost'
 $port    = 6667
 $prefix  = ','
 
-## start observers
+# start observers
 $run_observers = []
 
-## constants
+# constants
 ROOT = File.dirname(__FILE__)
 
-## lib path
+# lib path
 $: << "#{ROOT}/lib/"
 $: << "#{ROOT}/models/"
 $: << "#{ROOT}/commands/"
 
-## load lib and commands
+# load lib and commands
 Dir["lib/*.rb","models/*.rb","commands/*.rb"].each do |f|
   require f if FileTest.executable?(f)
 end
 
-## error helper
+# error helper
 def puts_error file, line
   puts "--- ERROR: #{file} #{line}: #{$!}"
 end
 
-## catch errors
+# catch errors
 module EM
   def handle_runtime_error
-    puts "RuntimeError: #{$!}"
+    puts_error __FILE__,__LINE__
   end
 end
 
-## run servers
+# run servers
 EM::run {
 
   ## connect to irc
