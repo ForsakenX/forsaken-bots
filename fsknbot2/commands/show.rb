@@ -21,7 +21,11 @@ IrcCommandManager.register 'show', 'admin tools' do |m|
     ## send command list
     when 'commands'
       m.reply IrcCommandManager.commands.keys.join(', ')
-      
+
+    ## show help
+    else
+      m.reply "users|user|topic|commands"
+
   end
 
 end

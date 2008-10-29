@@ -6,6 +6,9 @@ class IrcHandleLine
   ## parse incoming line
   def initialize line
 
+    ## save original line
+    original_line = line.dup
+
     ## cut up the line
     @parts = line.downcase.split(' ')
 
@@ -108,7 +111,8 @@ class IrcHandleLine
 
         ## pass to chat message handler
         IrcChatMsg.new :to => target, :from => @nick,
-                       :type => @action, :message => message
+                       :type => @action, :message => message,
+                       :line => original_line
 
       ## handle topic messages
       when 'topic','332'

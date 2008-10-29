@@ -52,6 +52,10 @@ class IrcUser
       users
     end
 
+    def nicks
+      @@users.map{|u|u.nick}
+    end
+
   end
 end
 

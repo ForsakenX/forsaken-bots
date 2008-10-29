@@ -10,7 +10,7 @@ class HelpCommand
       help(command) || not_found
     end
 
-    def help command='help'
+    def help command
       (command||'help') == 'help' ? helphelp : IrcCommandManager.help[ command ]
     end
 

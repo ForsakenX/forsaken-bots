@@ -6,13 +6,15 @@ class IrcCommandManager
 
     def call command, msg
       return unless @@commands[ command ]
-      @@commands[ command ].call(msg)
+      @@commands[ command ].call(msg.dup)
     end
 
     # register both at once or one at a time
-    def register command, help=nil, &block
-      @@help[ command ] = help unless help.nil?
-      @@commands[ command ] = block if block_given?
+    def register commands, help=nil, &block
+      [commands].flatten.each do |command|
+        @@help[ command ] = help unless help.nil?
+        @@commands[ command ] = block if block_given?
+      end
     end
 
   end

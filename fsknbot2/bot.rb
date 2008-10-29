@@ -9,7 +9,7 @@ $nick    = 'fsknbot'
 $channel = '#forsaken' #'#6dof'
 $server  = 'localhost'
 $port    = 6667
-$prefix  = ','
+$prefix  = '!'
 
 # start observers
 $run_observers = []

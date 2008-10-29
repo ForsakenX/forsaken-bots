@@ -1,10 +1,37 @@
 require 'irc_user'
 require 'irc_connection'
 require 'irc_command_manager'
+
+#
+# Public API
+#
+
+class IrcChatMsg
+  class << self
+
+    @@listeners = []
+
+    def register &block
+      @@listeners << block
+    end
+
+    def run m
+      @@listeners.each{|l|l.call(m)}
+    rescue Exception
+      puts "Error in IrcChatMsg listener: #{$!}"
+    end
+
+  end
+end
+
+#
+# Instance
+#
+
 class IrcChatMsg
 
   ## readers
-  attr_reader :prefix, :from, :to, :message, :channel,
+  attr_reader :prefix, :from, :to, :message, :line, :channel,
               :targeted, :private, :command, :args, :type
 
   ## instance constructor
@@ -16,6 +43,12 @@ class IrcChatMsg
    ## get user message came from
    ## only handle messages for users we know 
    return unless @from = IrcUser.find_by_nick(hash[:from])
+
+   ## save the raw line
+   @line = hash[:line]
+
+   ## save the message
+   @message = hash[:message]
 
    ## save the type
    @type = hash[:type]
@@ -58,6 +91,9 @@ class IrcChatMsg
      IrcCommandManager.call @command, self
 
    end
+
+   ## call listeners
+   IrcChatMsg.run self
 
   end
 

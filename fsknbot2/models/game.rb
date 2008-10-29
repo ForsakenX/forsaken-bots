@@ -1,10 +1,15 @@
 require "rexml/document"
 
 #
-# Main Scanner
+# Startup
 #
 
-$run_observers << Proc.new() { EM::PeriodicTimer.new( 30 ) { ScanCommand.run } }
+# periodic game scanner
+$run_observers << Proc.new(){ EM::PeriodicTimer.new(30){ ScanCommand.run } }
+
+# initial topic checker
+#EM::Timer.new(10){ Game.update }
+
 
 #
 # Public API
@@ -43,15 +48,13 @@ class Game
     def update
       update_topic
       update_xml
-    rescue Exception
-      puts_error __FILE__,__LINE__
     end
 
     def update_topic
       games = @@games.select{|g|g.hosting}.length
-      current = IrcTopic.topic.split(' ')[0]
-      if current.to_i != games
-        topic = IrcTopic.topic.gsub(/^[0-9]+/,games.to_s)
+      current = IrcTopic.get.split('games')[0].to_i
+      if current != games
+        topic = IrcTopic.get.sub(/^[0-9]+/,games.to_s)
         IrcConnection.topic topic
       end
     end
@@ -84,7 +87,7 @@ end
 
 class Game
 
-  attr_reader :host, :hosting, :timer, :start_time, :created_at, :ip
+  attr_reader :host, :hosting, :timer, :start_time, :created_at, :ip, :timeout
   attr_accessor :version
 
   def initialize game
@@ -187,4 +190,3 @@ class Game
   end
 
 end
-
