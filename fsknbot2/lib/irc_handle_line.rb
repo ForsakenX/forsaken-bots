@@ -1,6 +1,28 @@
+require 'observe'
 require 'irc_user'
 require 'irc_chat_msg'
 require 'irc_connection'
+
+#
+# Public API
+#
+
+class IrcHandleLine
+  class << self
+
+    @@events = {
+      :join => Observe.new
+    }
+
+    def events; @@events; end
+
+  end
+end
+
+#
+# Instance
+#
+
 class IrcHandleLine
 
   ## parse incoming line
@@ -60,6 +82,9 @@ class IrcHandleLine
 
         ## we only care about $channel
         return unless @parts.shift.sub(/^:/,'') == $channel
+
+        ## send join event
+        self.class.events[:join].call @nick
 
         ## we just joined 
         if @nick == $nick

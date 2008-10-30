@@ -7,7 +7,8 @@ require 'resolv'
 class IrcUser
   class << self
 
-    @@hidden = %w{chanserv epsy}
+    @@hidden = %w{chanserv epsy mr_term mr_ter1 ter1 term}
+    def hidden; @@hidden; end
 
     @@users = []; def users; @@users; end
   
@@ -73,7 +74,7 @@ class IrcUser
     @host = hash[:host]
     @ip   = IrcUser.get_ip(self)
 
-    @@users << self unless @@hidden.include?(hash[:nick])
+    @@users << self unless @@hidden.include?(hash[:nick]) || @ip == '82.16.37.214'
 
   end
 

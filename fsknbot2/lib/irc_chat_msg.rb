@@ -102,4 +102,9 @@ class IrcChatMsg
     IrcConnection.privmsg @reply_to, message
   end
 
+  ## reply to sender directly
+  def reply_directly message
+    IrcConnection.privmsg @from.nick, message
+  end
+
 end
