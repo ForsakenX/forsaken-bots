@@ -1,13 +1,11 @@
 
-class Foo
-  class << self
+require 'observe'
 
-    def bar
-      false ||
-      1
-    end
+events = { :a => Observe.new }
 
-  end
+events[:a].register do |*args|
+  puts args.inspect
 end
 
-puts Foo.bar
+events[:a].notify( 1 )
+
