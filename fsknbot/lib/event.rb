@@ -17,7 +17,7 @@ class Event
       begin
         callback.call(data) unless callback.nil?
       rescue Exception
-        LOGGER.error "#{$!}\n#{$@.join("\n")}"
+        puts "#{$!}\n#{$@.join("\n")}"
       end
     end
   end

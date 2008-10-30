@@ -7,16 +7,12 @@ Main Libs
 
 require 'rubygems'
 require 'eventmachine'
-require 'logger'
 
 =begin
 Globals
 =end
 
 ROOT  = File.dirname(__FILE__)
-
-LOGGER = Logger.new()
-LOGGER.level = Logger::Severity::DEBUG
 
 =begin
 Application Libs
