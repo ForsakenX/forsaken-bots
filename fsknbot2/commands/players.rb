@@ -24,8 +24,8 @@ class Player
     end
 
     def players m
-      return "There are no players :[" if list.empty?
-      list.sort.join(', ')
+      l = list
+      "#{list.length} players: #{list.sort.join(', ')}"
     end
 
     def add players
