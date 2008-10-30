@@ -36,12 +36,12 @@ class Irc::Client < EM::Connection
     rescue Exception
       puts $!
     end
-    LOGGER.info "<<< #{line}"
+    LOGGER.info "irc >>> (fsknbot) #{line}"
     LOGGER.info "Time Taken (seconds) => #{Time.now-time}"
   end
 
   def send_data line
-    LOGGER.info ">>> #{line}"
+    LOGGER.info "irc <<< (fsknbot) #{line}"
     @event.call('irc.send_data',line)
     super line
   end

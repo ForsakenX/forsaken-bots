@@ -15,7 +15,7 @@ Globals
 
 ROOT  = File.dirname(__FILE__)
 
-LOGGER = Logger.new("#{ROOT}/logs/client")
+LOGGER = Logger.new()
 LOGGER.level = Logger::Severity::DEBUG
 
 =begin
