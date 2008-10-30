@@ -12,7 +12,6 @@ class Irc::Client < EM::Connection
   def initialize
     @nick     = 'FsknBot'
     @event    = Event.new
-    @timer    = Timer.new
     @command_manager = Irc::CommandManager.new(self)
     @plugin_manager  = Irc::PluginManager.new(self)
   end
