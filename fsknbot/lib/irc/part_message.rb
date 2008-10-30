@@ -8,7 +8,7 @@ class Irc::PartMessage < Irc::Message
     # :Deadly_Methods!22510264@68.36.237.152 PART #GSP!forsaken :
     # :Deadly_Methods!22510264@68.36.237.152 PART #GSP!forsaken :blow me
     unless line =~ /:([^!]*)![^@]*@[^ ]* PART (#[^ ]+) :*([^\n]*)$/i
-      LOGGER.error "Badly formed PART message: #{line}"
+      puts "Badly formed PART message: #{line}"
       return
     end
 

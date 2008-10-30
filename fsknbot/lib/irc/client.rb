@@ -19,7 +19,7 @@ class Irc::Client < EM::Connection
   def post_init
     @event.call('irc.post_init',nil)
     send_join ['#forsaken']
-    LOGGER.info "Connected"
+    puts "Connected"
   end
 
   def unbind
@@ -36,12 +36,12 @@ class Irc::Client < EM::Connection
     rescue Exception
       puts $!
     end
-    LOGGER.info "irc >>> (fsknbot) #{line}"
-    LOGGER.info "Time Taken (seconds) => #{Time.now-time}"
+    puts "irc >>> (fsknbot) #{line}"
+    puts "Time Taken (seconds) => #{Time.now-time}"
   end
 
   def send_data line
-    LOGGER.info "irc <<< (fsknbot) #{line}"
+    puts "irc <<< (fsknbot) #{line}"
     @event.call('irc.send_data',line)
     super line
   end

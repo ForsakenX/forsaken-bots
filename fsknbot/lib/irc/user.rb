@@ -103,7 +103,7 @@ class Irc::User
     begin
       return (@ip = Resolv.getaddress host)
     rescue Exception #Resolv::Error
-      LOGGER.error "Resolving: "+
+      puts "Resolving: "+
                                self.inspect+
                                "seconds => #{Time.now-start}, "+
                                "error => #{$!}"

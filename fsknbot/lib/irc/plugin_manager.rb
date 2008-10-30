@@ -74,7 +74,7 @@ class Irc::PluginManager
     begin
       p.cleanup
     rescue Exception
-      LOGGER.warn "[unload plugin error] #{$!}\n#{$@.join("\n")}"
+      puts "[unload plugin error] #{$!}\n#{$@.join("\n")}"
     end
     @plugins.delete(p)
   end
@@ -99,10 +99,10 @@ class Irc::PluginManager
       constant = Object.const_get(plugin.camel_case)
       @plugins[plugin] = constant.new(@bot)
     rescue Exception => e
-      LOGGER.warn "[_load plugin error] #{$!}\n#{$@.join("\n")}"
+      puts "[_load plugin error] #{$!}\n#{$@.join("\n")}"
       return e
     end
-    LOGGER.info "Bot Loaded Plugin (#{plugin.snake_case})"
+    puts "Bot Loaded Plugin (#{plugin.snake_case})"
     true
   end
 
@@ -110,7 +110,7 @@ class Irc::PluginManager
     enabled.each do |plugin|
       plugin = @plugins[plugin]
       if plugin.respond_to?(:reload)
-        LOGGER.info "Reloading #{plugin.class.name}"
+        puts "Reloading #{plugin.class.name}"
         plugin.reload
       end
     end

@@ -43,7 +43,7 @@ class Irc::Command < Irc::PrivMessage
 
     # call easy to use command event
     if @command
-      LOGGER.info("meth.command #{command.downcase}")
+      puts("meth.command #{command.downcase}")
       @client.event.call("meth.command",self)
       @client.event.call("meth.command.#{command.downcase}",self)
     end

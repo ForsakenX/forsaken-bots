@@ -51,7 +51,7 @@ class Google < Irc::Plugin
       m.reply "Results: #{formated.join("  ")}"
     rescue Exception
       m.reply "Error: (#{$!})"
-      LOGGER.error "(#{$!}):\n#{$@.join("\n")}"
+      puts "(#{$!}):\n#{$@.join("\n")}"
       return
     end
   end

@@ -200,7 +200,7 @@ class Url < Irc::Plugin
       raise "This message shouldn't be printed."
 
     rescue Exception
-      LOGGER.error "Url: (#{$!}):\n#{$@.join("\n")}"
+      puts "Url: (#{$!}):\n#{$@.join("\n")}"
       m.reply $!
       return nil
     end
