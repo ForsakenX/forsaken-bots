@@ -7,7 +7,12 @@ class GamesCommand
 
     def run m
 
-      return "Read the topic..." unless Game.length > 0
+      unless Game.length > 0
+        if m.from.nick =~ /^ski/
+          return "Go away..."
+        end
+        return "Read the topic..."
+      end
     
       hosts = []
       waiting = []

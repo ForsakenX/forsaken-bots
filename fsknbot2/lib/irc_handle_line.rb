@@ -11,7 +11,8 @@ class IrcHandleLine
   class << self
 
     @@events = {
-      :join => Observe.new
+      :join    => Observe.new,
+      :message => Observe.new
     }
 
     def events; @@events; end
@@ -134,10 +135,15 @@ class IrcHandleLine
         ## parse message
         message = @parts.join(' ').sub(/^:/,'')
 
-        ## pass to chat message handler
-        IrcChatMsg.new :to => target, :from => @nick,
-                       :type => @action, :message => message,
-                       :line => original_line
+        ## args to pass
+        args = {:to   => target,
+                :from => @nick,
+                :type => @action,
+                :line => original_line,
+                :message => message}
+
+        ## send message event
+        self.class.events[:message].call args
 
       ## handle topic messages
       when 'topic','332'

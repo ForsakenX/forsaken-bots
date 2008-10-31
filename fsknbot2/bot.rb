@@ -10,6 +10,7 @@ $channel = '#forsaken' #'#6dof'
 $server  = 'localhost'
 $port    = 6667
 $prefix  = '!'
+$privmsg_port = 6668
 
 # start observers
 $run_observers = []
@@ -44,6 +45,9 @@ EM::run {
 
   ## connect to irc
   EM::connect $server, $port, IrcConnection
+
+  ## privmsg proxy
+  EM::start_server $server, $privmsg_port, IrcPrivmsgProxy
 
   ## tell people we are now running
   $run_observers.each{|o|o.call}

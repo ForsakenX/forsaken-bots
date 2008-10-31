@@ -70,9 +70,9 @@ class Game
                                    "started_at" => time})
       end
       begin
-  	file = File.open( File.expand_path( "#{ROOT}/db/games.xml" ), 'w+' )
-  	file.write doc
-  	file.close
+        file = File.open( File.expand_path( "#{ROOT}/db/games.xml" ), 'w+' )
+        file.write doc
+        file.close
       rescue Exception
       	puts "Error Saving Games.xml: #{$!}"
       end

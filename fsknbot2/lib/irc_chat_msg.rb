@@ -1,27 +1,15 @@
+require 'observe'
 require 'irc_user'
 require 'irc_connection'
+require 'irc_handle_line'
 require 'irc_command_manager'
 
 #
-# Public API
+# Listener
 #
 
-class IrcChatMsg
-  class << self
-
-    @@listeners = []
-
-    def register &block
-      @@listeners << block
-    end
-
-    def run m
-      @@listeners.each{|l|l.call(m)}
-    rescue Exception
-      puts "Error in IrcChatMsg listener: #{$!}"
-    end
-
-  end
+IrcHandleLine.events[:message].register do |args|
+  IrcChatMsg.new( args )
 end
 
 #
@@ -29,6 +17,10 @@ end
 #
 
 class IrcChatMsg
+
+  ## public api
+  @@observer = Observe.new
+  def self.register(&block); @@observer.register(&block); end
 
   ## readers
   attr_reader :prefix, :from, :to, :message, :line, :channel,
@@ -93,7 +85,7 @@ class IrcChatMsg
    end
 
    ## call listeners
-   IrcChatMsg.run self
+   @@observer.call self
 
   end
 

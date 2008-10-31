@@ -43,14 +43,21 @@ class IrcConnection < EM::Connection
 
   end
 
+  ## startup
+  def initialize
+    status "Startup"
+  end
+
   ## successfull connection
   def post_init
+    status "Connected"
     @@connection = self
     send_line "JOIN #{$channel}"
   end
 
   ## connection lost
   def unbind
+    status "Disconnected"
     reconnect $server, $port
     post_init
   end
