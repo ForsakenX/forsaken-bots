@@ -1,11 +1,13 @@
 
-require 'observe'
-
-events = { :a => Observe.new }
-
-events[:a].register do |*args|
-  puts args.inspect
+def x &block
+  block.call 1
 end
 
-events[:a].notify( 1 )
+def y &block
+  x &block
+end
+
+y do |arg|
+  puts arg
+end
 

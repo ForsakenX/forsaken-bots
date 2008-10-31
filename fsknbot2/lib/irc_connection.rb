@@ -66,7 +66,7 @@ class IrcConnection < EM::Connection
   def receive_line line
   
     ## print data to console
-    puts "irc >>> #{line}"
+    puts "irc >>> (fsknbot2) #{line}"
 
     ## if server sent error
     close_connection if line.split.first.downcase == "error"

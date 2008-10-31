@@ -30,7 +30,7 @@ end
 
 # error helper
 def puts_error file=nil, line=nil
-  puts "--- ERROR: #{file} #{line}: #{$!}"
+  puts "--- ERROR: #{file} #{line}: (#{$!}):\n#{$@.join("\n")}"
 end
 
 # catch errors
