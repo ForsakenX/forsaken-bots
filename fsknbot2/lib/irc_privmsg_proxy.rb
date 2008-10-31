@@ -14,22 +14,6 @@ IrcHandleLine.events[:message].register do |args|
 end
 
 #
-# Class
-#
-
-class IrcPrivmsgProxy < EM::Connection
-  class << self
-
-    @@connections = []
-
-    def send_line line
-      @@connections.each{|c| c.send_line line }
-    end
-
-  end
-end
-
-#
 # Instance
 #   - only comes alive after sender sends a message
 #   - upon connection you should say "hello <name>" to begin receiving lines
@@ -37,16 +21,26 @@ end
 
 class IrcPrivmsgProxy < EM::Connection
   include EM::Protocols::LineText2
+
+  # public api
+  @@connections = Observe.new
+  def self.send_line(line); @@connections.call(line); end
+
   def initialize
     status "Startup: sig => #{@signature}"
-    @@connections << self
+    @@connections.register do |line|
+      send_line line
+    end
   end
+
   def unbind
     status "Lost Client #{@signature}"
   end
+ 
   def receive_line line
     puts "PrivmsgProxy <<< (#{@signature}): #{line}"
     IrcConnection.privmsg $channel, line
   end
+
 end
 
