@@ -51,8 +51,4 @@ Cleaners
     self.gsub(/^ +/,'').gsub(/ +$/,'')
   end
 
-  def clean_ends!
-    replace clean_ends
-  end
-
 end
