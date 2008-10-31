@@ -19,16 +19,16 @@ class PingCommand
 
       case m.args.first
       when 'block'
-        blocked << m.from.nick
+        blocked << m.from.nick.downcase
         save blocked.uniq
         "You have been blocked"
       when 'unblock'
-        blocked.delete(m.from.nick)
+        blocked.delete(m.from.nick.downcase)
         save blocked.uniq
         "You have been unblocked."
       else
         users = IrcUser.nicks
-        blocked.each { |user| users.delete(user) }
+        users.map{|u| blocked.index(u.downcase) ? nil : u }.compact
         users.sort.join(' ')
       end
 

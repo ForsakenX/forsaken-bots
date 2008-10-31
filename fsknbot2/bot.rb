@@ -23,14 +23,18 @@ $: << "#{ROOT}/lib/"
 $: << "#{ROOT}/models/"
 $: << "#{ROOT}/commands/"
 
-# load lib and commands
-Dir["lib/*.rb","models/*.rb","commands/*.rb"].each do |f|
-  require f if FileTest.executable?(f)
-end
-
 # error helper
 def puts_error file=nil, line=nil
   puts "--- ERROR: #{file} #{line}: (#{$!}):\n#{$@.join("\n")}"
+end
+
+# load lib and commands
+begin
+  Dir["lib/*.rb","models/*.rb","commands/*.rb"].each do |f|
+    require f if FileTest.executable?(f)
+  end
+rescue Exception
+  return puts_error(__FILE__,__LINE__)
 end
 
 # catch errors

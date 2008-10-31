@@ -24,13 +24,13 @@ class IrcChatMsg
 
   ## readers
   attr_reader :prefix, :from, :to, :message, :line, :channel,
-              :targeted, :private, :command, :args, :type
+              :targeted, :private, :command, :args, :type, :time
 
   ## instance constructor
   def initialize hash
 
    ## only handle $channel or private messages
-   return unless [$nick,$channel].include? hash[:to]
+   return unless [$nick,$channel].include? hash[:to].downcase
 
    ## get user message came from
    ## only handle messages for users we know 
@@ -59,7 +59,7 @@ class IrcChatMsg
    message = hash[:message].dup
 
    ## check for name with optional colon
-   message.sub!(/^#{$nick}:? /,'') if message.split.first =~ /#{$nick}:?/
+   message.sub!(/^#{$nick}:? /i,'') if message.split.first =~ /#{$nick}:?/i
 
    ## check for notifier
    message.sub!(/^#{$prefix}/,'') if $prefix && message[0] == $prefix[0]
@@ -77,7 +77,7 @@ class IrcChatMsg
      @args = message.split.compact
 
      ## command is first word
-     @command = @args.shift
+     @command = @args.shift.downcase
 
      ## call command
      IrcCommandManager.call @command, self

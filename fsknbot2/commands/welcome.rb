@@ -8,7 +8,7 @@ IrcCommandManager.register 'welcome' do |m|
 end
 
 IrcHandleLine.events[:join].register do |nick|
-  WelcomeCommand.join nick
+  WelcomeCommand.join nick.downcase
 end
 
 class WelcomeCommand
@@ -18,8 +18,8 @@ class WelcomeCommand
 
     def join nick
       return if nick == $nick # don't send messages to our selves
-      return if IrcUser.hidden.include? nick
-      list_names.each do |file|
+      return if IrcUser.hidden nick
+      welcome_files.each do |file|
         path = db_path( file )
         db = load_yaml( path )
         unless db.include? nick
@@ -34,9 +34,9 @@ class WelcomeCommand
     def command m
       case m.args.shift
       when 'list'
-        m.reply "messages => "+list_names.sort.join(', ')
+        m.reply "messages => "+welcome_files.sort.join(', ')
       when 'show'
-        if list_names.include? m.args.first
+        if welcome_files.include? m.args.first
           m.reply "=> "+ read("#{m.args.first}.txt")
         else
           m.reply "Unknown message"
@@ -64,7 +64,7 @@ class WelcomeCommand
       File.read("#{@@db_dir}/#{file}.txt").gsub("\n",' ')
     end
 
-    def list_names
+    def welcome_files
       list.map{|w|File.basename(w.sub(/.txt$/,''))}
     end
 

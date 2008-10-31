@@ -1,9 +1,7 @@
 
-# need un downsized support
-
 require 'irc_chat_msg'
 IrcChatMsg.register do |m|
-  m.reply VersionCatcherCommand.message(m)
+  VersionCatcherCommand.message(m)
 end
 
 IrcCommandManager.register 'version',
@@ -65,8 +63,7 @@ class VersionCatcherCommand
       urls.each do |url|
         next unless url =~ /#{@@format}/
         update $1, $2, $3, url
-        return "Saved: { version => #{$2}, build => #{$3} } "+
-               "Type, 'versions' for a list of known versions..."
+        return m.reply "Saved: { version => #{$2}, build => #{$3} }"
       end
     end
   
@@ -91,8 +88,9 @@ class VersionCatcherCommand
   
     def set_topic version
       official,user = IrcTopic.get.split('||')
-      official.gsub!(/Forsaken: [^ ]+/,"Forsaken: #{version}")
-      IrcConnection.topic "#{official}||#{user}"
+      if official.gsub!(/Forsaken: [^ ]+/i,"Forsaken: #{version}")
+        IrcConnection.topic "#{official}||#{user}"
+      end
     end
   
     def save list

@@ -1,12 +1,12 @@
 
 IrcCommandManager.register 'help' do |m|
-  m.reply HelpCommand.run(m.args[0])
+  m.reply HelpCommand.run( m.args.first ? m.args.first.downcase : '' )
 end
 
 class HelpCommand
   class << self
 
-    def run command
+    def run command=''
       help(command) || not_found
     end
 

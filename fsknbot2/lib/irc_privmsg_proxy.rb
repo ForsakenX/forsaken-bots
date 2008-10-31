@@ -6,7 +6,7 @@ require 'em_protocols_line_text_2'
 #
 
 IrcHandleLine.events[:message].register do |args|
-  next unless args[:to] == $channel
+  next unless args[:to].downcase == $channel
   next if args[:type] == "notice" # not suppose to respond to notices
   message = "#{args[:from]}: #{args[:message]}"
   puts "PrivmsgProxy >>> #{message}"

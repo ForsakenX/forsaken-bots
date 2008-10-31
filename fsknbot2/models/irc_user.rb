@@ -7,13 +7,17 @@ require 'resolv'
 class IrcUser
   class << self
 
-    @@hidden = %w{chanserv epsy mr_term mr_ter1 ter1 term}
-    def hidden; @@hidden; end
+    @@hidden = %w{chanserv epsy .*term.* .*ski.*}
+
+    def hidden nick
+      not @@hidden.detect{|h| nick =~ /#{h}/i }.nil?
+    end
 
     @@users = []; def users; @@users; end
   
     def find_by_nick nick
-      @@users.detect{|u| u.nick == nick }
+      nick = nick.downcase
+      @@users.detect{|u| u.nick.downcase == nick }
     end
   
     def delete_by_nick nick
@@ -74,7 +78,7 @@ class IrcUser
     @host = hash[:host]
     @ip   = IrcUser.get_ip(self)
 
-    @@users << self unless @@hidden.include?(hash[:nick]) || @ip == '82.16.37.214'
+    @@users << self unless IrcUser.hidden(hash[:nick]) || @ip == '82.16.37.214'
 
   end
 

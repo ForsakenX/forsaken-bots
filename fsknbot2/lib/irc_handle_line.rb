@@ -29,11 +29,14 @@ class IrcHandleLine
   ## parse incoming line
   def initialize line
 
+    ## save message time
+    @time = Time.now
+
     ## save original line
     original_line = line.dup
 
     ## cut up the line
-    @parts = line.downcase.split(' ')
+    @parts = line.split(' ')
 
     ## first part of line is hostname of server or user_tag
     ## server == :koolaid.ny.us.blitzed.org
@@ -43,7 +46,7 @@ class IrcHandleLine
     @nick = $1 # nick or hostname of server
 
     ## 2nd part of line is the irc action
-    @action = @parts.shift
+    @action = @parts.shift.downcase
 
     ## handle the action
     case @action
@@ -67,7 +70,7 @@ class IrcHandleLine
         me,channel,user,host,server,nick,shit,hops,realname = @parts
 
         ## we only care about one channel
-        return if channel != $channel
+        return if channel.downcase != $channel
 
         ## find user
         if user = IrcUser.find_by_nick(nick)
@@ -82,13 +85,13 @@ class IrcHandleLine
       when 'join'
 
         ## we only care about $channel
-        return unless @parts.shift.sub(/^:/,'') == $channel
+        return unless @parts.shift.sub(/^:/,'').downcase == $channel
 
         ## send join event
         self.class.events[:join].call @nick
 
         ## we just joined 
-        if @nick == $nick
+        if @nick.downcase == $nick
 
           ## ask for details on all users in room
           IrcConnection.who $channel
@@ -106,7 +109,7 @@ class IrcHandleLine
       when 'part'
 
         ## we only care about $channel
-        return unless @parts.shift == $channel
+        return unless @parts.shift.downcase == $channel
 
         ## remove user
         IrcUser.delete_by_nick @nick
@@ -121,7 +124,7 @@ class IrcHandleLine
       when 'kick'
 
         ## we only care about $channel
-        return unless @parts.shift == $channel
+        return unless @parts.shift.downcase == $channel
 
         ## get rid of user
         IrcUser.delete_by_nick @parts.shift
@@ -136,7 +139,8 @@ class IrcHandleLine
         message = @parts.join(' ').sub(/^:/,'')
 
         ## args to pass
-        args = {:to   => target,
+        args = {:time => @time,
+                :to   => target,
                 :from => @nick,
                 :type => @action,
                 :line => original_line,
@@ -152,7 +156,7 @@ class IrcHandleLine
         @parts.shift if @action == '332'
 
         ## we only care about $channel
-        return unless @parts.shift == $channel
+        return unless @parts.shift.downcase == $channel
 
         ## set topic
         IrcTopic.topic = @parts.join(' ').sub(/^:/,'')

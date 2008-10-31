@@ -1,6 +1,6 @@
 
 IrcCommandManager.register 'spell' do |m|
-  m.reply SpellCommand.run(m)
+  m.reply SpellCommand.run(m.args.first.downcase)
 end
 
 IrcCommandManager.register 'spell',
@@ -10,10 +10,10 @@ require 'raspell'
 class SpellCommand
   @speller = Aspell.new("en_US")
   @speller.suggestion_mode = Aspell::NORMAL
-  def self.run m
-    output  = "#{m.args.first}: "
-    output += "Looks correct.  Other " if @speller.check(m.args.first)
-    output += "Suggestions: "+@speller.suggest(m.args.first).join(', ')
+  def self.run word
+    output  = "#{word}: "
+    output += "Looks correct.  Other " if @speller.check(word)
+    output += "Suggestions: "+@speller.suggest(word).join(', ')
     output
   end
 end

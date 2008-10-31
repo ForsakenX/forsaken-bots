@@ -16,7 +16,7 @@ class Player
     def player m
       case m.args.shift
       when 'add'
-        add m.args.map{|p|p.downcase}
+        add m.args
         "Player(s) have been added :]"
       else
         "Unknown Option: "+HelpCommand.run('player')
@@ -25,13 +25,16 @@ class Player
 
     def players m
       l = list
-      "#{list.length} players: #{list.sort.join(', ')}"
+      "#{list.length} players: #{list.join(', ')}"
     end
 
     def add players
       l = list
-      l << players
-      save l.flatten
+      [players].flatten.each do |p|
+        next if l.detect{|_l| _l.downcase == p.downcase }
+        l << p
+      end
+      save l.flatten.sort
     end
 
     def list

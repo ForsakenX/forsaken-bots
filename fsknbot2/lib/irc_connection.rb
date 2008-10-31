@@ -23,7 +23,7 @@ class IrcConnection < EM::Connection
 
     # privmsg helper
     def privmsg target, message
-      IrcConnection.send_line "PRIVMSG #{target} :#{message}"
+      IrcConnection.send_line "PRIVMSG #{target.downcase} :#{message}"
     end
 
     # send to $channel

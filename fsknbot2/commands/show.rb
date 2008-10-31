@@ -1,10 +1,10 @@
 IrcCommandManager.register 'show', 'admin tools' do |m|
 
   ## authorize user
-  return unless m.from.nick == 'methods'
+  return unless m.from.nick.downcase == 'methods'
 
   ## parse sub command
-  case m.args[0]
+  case m.args.first.downcase
 
     ## send back user list
     when 'users'
@@ -16,7 +16,7 @@ IrcCommandManager.register 'show', 'admin tools' do |m|
 
     ## send back topic
     when 'topic'
-      m.reply IrcTopic.topic
+      m.reply IrcTopic.get
 
     ## send command list
     when 'commands'
