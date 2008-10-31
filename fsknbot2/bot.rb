@@ -51,7 +51,7 @@ EM::run {
   EM::connect $server, $port, IrcConnection
 
   ## privmsg proxy
-  EM::start_server $server, $privmsg_port, IrcPrivmsgProxy
+  #EM::start_server $server, $privmsg_port, IrcPrivmsgProxy
 
   ## tell people we are now running
   $run_observers.each{|o|o.call}

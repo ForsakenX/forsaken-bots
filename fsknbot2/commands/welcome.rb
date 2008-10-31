@@ -2,6 +2,7 @@
 IrcCommandManager.register 'welcome',
 "welcome list => List messages.  "+
 "welcome show <message> => Show a message."
+"welcome add|edit <name> <message> => Adds a message."
 
 IrcCommandManager.register 'welcome' do |m|
   WelcomeCommand.command m
@@ -25,7 +26,7 @@ class WelcomeCommand
         unless db.include? nick
           db << nick
           save path, db
-          IrcConnection.privmsg nick, read(file)
+          IrcConnection.privmsg nick, read(file+".txt")
           return
         end
       end
@@ -37,10 +38,16 @@ class WelcomeCommand
         m.reply "messages => "+welcome_files.sort.join(', ')
       when 'show'
         if welcome_files.include? m.args.first
-          m.reply "=> "+ read("#{m.args.first}.txt")
+          m.reply "#{m.args.first} => "+ read("#{m.args.first}.txt")
         else
           m.reply "Unknown message"
         end
+      when 'add','edit'
+        return m.relpy("You are not authorized") unless m.from.authorized?
+        f = File.open("#{@@db_dir}/#{m.args.shift}.txt",'w+')
+        f.write m.args.join(' ')
+        f.close
+        m.reply "Welcome message has been created."
       else
         m.reply "Unknown option: "+IrcCommandManager.help[ 'welcome' ]
       end
@@ -61,7 +68,7 @@ class WelcomeCommand
     end
 
     def read file
-      File.read("#{@@db_dir}/#{file}.txt").gsub("\n",' ')
+      File.read("#{@@db_dir}/#{file}").gsub("\n",' ')
     end
 
     def welcome_files

@@ -7,17 +7,24 @@ require 'resolv'
 class IrcUser
   class << self
 
-    @@hidden = %w{chanserv epsy .*term.* .*ski.*}
+    @@authorized = %w{methods silence diii-the_lion}
 
-    def hidden nick
-      not @@hidden.detect{|h| nick =~ /#{h}/i }.nil?
-    end
+    @@hidden = %w{chanserv epsy ski.* }
+    @@hidden << $nick
 
     @@users = []; def users; @@users; end
-  
+
+    def authorized? hostmask
+      not @@authorized.detect{|a| a =~ /#{hostmask}/i }.nil?
+    end
+
+    def hidden hostmask
+      not @@hidden.detect{|h| h =~ /#{hostmask}/i }.nil?
+    end
+
     def find_by_nick nick
-      nick = nick.downcase
-      @@users.detect{|u| u.nick.downcase == nick }
+      return false if nick.nil? || nick.empty?
+      @@users.detect{|u| u.nick.downcase == nick.downcase }
     end
   
     def delete_by_nick nick
@@ -78,12 +85,16 @@ class IrcUser
     @host = hash[:host]
     @ip   = IrcUser.get_ip(self)
 
-    @@users << self unless IrcUser.hidden(hash[:nick]) || @ip == '82.16.37.214'
+    @@users << self unless IrcUser.hidden(hash[:nick])
 
   end
 
   def hostmask
     "#{@nick}@#{@ip}"
+  end
+
+  def authorized?
+    IrcUser.authorized? self.nick
   end
 
 end

@@ -18,8 +18,15 @@ class IrcConnection < EM::Connection
       @@connection.close_connection unless @@connection.nil?
     end
 
-    def privmsg target, message
-      IrcConnection.send_line "PRIVMSG #{target.downcase} :#{message}"
+    def privmsg target, messages
+      [messages].flatten.each do |message|
+        next if message.nil? or message.empty? or !message.respond_to?(:to_s)
+        # irc sends max of 512 bytes to sender
+        # this should stop message from behind cut off
+        message.to_s.scan(/.{1,280}[^ ]{0,100}/m){|chunk|
+          IrcConnection.send_line "PRIVMSG #{target.downcase} :#{chunk}"
+        }
+      end
     end
 
     def chatmsg message
@@ -59,17 +66,6 @@ class IrcConnection < EM::Connection
     status "Disconnected"
     reconnect $server, $port
     post_init
-  end
-
-  def send_line line
-    return if line.nil? or line.empty? or !line.respond_to?(:to_s)
-    puts "irc <<< #{line}"
-    message = message.to_s
-    # irc sends max of 512 bytes to sender
-    # this should stop message from behind cut off
-    message.scan(/.{1,280}[^ ]{0,100}/m){|chunk|
-      send_line chunk unless chunk.length < 1
-    }
   end
 
   def receive_line line

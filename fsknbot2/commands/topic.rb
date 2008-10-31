@@ -37,8 +37,7 @@ class TopicCommand
   
       # show topic
       if (topic = m.args.join(' ')).empty?
-puts 1
-        return m.reply IrcTopic.get
+        return m.reply(IrcTopic.get)
       end
    
       # last command

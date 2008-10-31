@@ -66,11 +66,19 @@ class IrcHandleLine
       ## handle who responses
       when '352'
 
-        ## split line
-        me,channel,user,host,server,nick,shit,hops,realname = @parts
+        ## line parts
+        @parts.shift # my name - uneeded
+        channel  = @parts.shift.downcase # channel name
+        user     = @parts.shift # n=mr_term
+        host     = @parts.shift # hostname
+        server   = @parts.shift # irc server
+        nick     = @parts.shift # user nick
+        flags    = @parts.shift # (H|G)
+        hops     = @parts.shift # :0
+        realname = @parts.join(' ') # freeform
 
         ## we only care about one channel
-        return if channel.downcase != $channel
+        return if channel != $channel
 
         ## find user
         if user = IrcUser.find_by_nick(nick)

@@ -5,7 +5,7 @@ IrcCommandManager.register 'ping',
 "ping unblock => Removes your name from the block list."
 
 IrcCommandManager.register 'ping' do |m|
-  m.reply "(FsknBot2): #{PingCommand.run(m)}"
+  m.reply "#{PingCommand.run(m)}"
 end
 
 class PingCommand
@@ -27,9 +27,9 @@ class PingCommand
         save blocked.uniq
         "You have been unblocked."
       else
-        users = IrcUser.nicks
-        users.map{|u| blocked.index(u.downcase) ? nil : u }.compact
-        users.sort.join(' ')
+        blocked << m.from.nick.downcase
+        users = IrcUser.nicks.map{|n|blocked.index(n.downcase)?nil:n}.compact
+        "(FsknBot2) " + users.sort.join(', ')
       end
 
     end

@@ -55,15 +55,24 @@ class VersionCatcherCommand
       end
       output.join(', ')
     end
-  
+
+=begin
+ require 'rubygems'
+ require 'mechanize'
+
+ agent = WWW::Mechanize.new
+ agent.pluggable_parser.pdf = WWW::Mechanize::FileSaver
+ agent.get('http://example.com/foo.pdf')
+=end  
+
     def message m
-      return unless authorized?(m.from.nick)
+      return unless m.from.authorized?
       words = m.message.split(' ')
       urls = words.find_all{|w| w =~ /^(https?:\/\/.+)/im; w }
       urls.each do |url|
         next unless url =~ /#{@@format}/
         update $1, $2, $3, url
-        return m.reply "Saved: { version => #{$2}, build => #{$3} }"
+        return m.reply("Saved: { version => #{$2}, build => #{$3} }")
       end
     end
   
@@ -80,10 +89,6 @@ class VersionCatcherCommand
       }
       save list
       set_topic(version) if build == 'release'
-    end
-  
-    def authorized? user
-      ["silence","methods"].include?(user)
     end
   
     def set_topic version

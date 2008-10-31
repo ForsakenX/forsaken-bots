@@ -1,28 +1,28 @@
 IrcCommandManager.register 'show', 'admin tools' do |m|
 
-  ## authorize user
-  return unless m.from.nick.downcase == 'methods'
+  # authorize user
+  return unless m.from.authorized?
 
-  ## parse sub command
-  case m.args.first.downcase
+  # parse sub command
+  case m.args.first
 
-    ## send back user list
+    # send back user list
     when 'users'
       m.reply IrcUser.users.map{|u|u.nick}.join(', ')
 
-    ## get a specific user
+    # get a specific user
     when 'user'
       m.reply IrcUser.find_by_nick(m.args[1]).inspect
 
-    ## send back topic
+    # send back topic
     when 'topic'
       m.reply IrcTopic.get
 
-    ## send command list
+    # send command list
     when 'commands'
       m.reply IrcCommandManager.commands.keys.join(', ')
 
-    ## show help
+    # show help
     else
       m.reply "users|user|topic|commands"
 

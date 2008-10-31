@@ -11,7 +11,11 @@ class HelpCommand
     end
 
     def help command
-      (command||'help') == 'help' ? helphelp : IrcCommandManager.help[ command ]
+      if [nil,'','help'].include?(command)
+        helphelp
+      else
+        IrcCommandManager.help[ command ]
+      end
     end
 
     def helphelp
