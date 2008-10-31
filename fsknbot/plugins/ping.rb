@@ -4,6 +4,6 @@ class Ping < Irc::Plugin
     @bot.command_manager.register("!ping",self)
   end
   def command m
-    m.reply "pong"
+    m.reply "(FsknBot1) pong"
   end
 end
