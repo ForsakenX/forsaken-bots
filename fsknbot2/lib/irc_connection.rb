@@ -1,83 +1,84 @@
 require 'irc_handle_line'
 require 'em_protocols_line_text_2'
+
+#
+# Public API
+#
+
 class IrcConnection < EM::Connection
-
-  ## line protocol helpers
-  include EM::Protocols::LineText2
-
-  ## reference to connection
-  @@connection = nil
-
-  ## outside api
   class <<self
 
-    ## send data to active connection
-    def send_line data
-      @@connection.send_line data unless @@connection.nil?
+    @@connection = nil
+
+    def send_line line
+      @@connection.send_line line unless @@connection.nil?
     end
 
-    ## close connection
     def close
       @@connection.close_connection unless @@connection.nil?
     end
 
-    # privmsg helper
     def privmsg target, message
       IrcConnection.send_line "PRIVMSG #{target.downcase} :#{message}"
     end
 
-    # send to $channel
     def chatmsg message
       IrcConnection.privmsg $channel, message
     end
 
-    # send who message
     def who target
       IrcConnection.send_line "WHO #{target}"
     end
 
-    # send topic
-    def topic data
-      IrcConnection.send_line "TOPIC #{$channel} :#{data}"
+    def topic str
+      IrcConnection.send_line "TOPIC #{$channel} :#{str}"
     end
 
   end
+end
 
-  ## startup
+#
+#  Instance
+#
+
+class IrcConnection < EM::Connection
+
+  include EM::Protocols::LineText2
+
   def initialize
     status "Startup"
   end
 
-  ## successfull connection
   def post_init
     status "Connected"
     @@connection = self
     send_line "JOIN #{$channel}"
   end
 
-  ## connection lost
   def unbind
     status "Disconnected"
     reconnect $server, $port
     post_init
   end
 
-  ## line has been received
+  def send_line line
+    return if line.nil? or line.empty? or !line.respond_to?(:to_s)
+    puts "irc <<< #{line}"
+    message = message.to_s
+    # irc sends max of 512 bytes to sender
+    # this should stop message from behind cut off
+    message.scan(/.{1,280}[^ ]{0,100}/m){|chunk|
+      send_line chunk unless chunk.length < 1
+    }
+  end
+
   def receive_line line
-  
-    ## print data to console
     puts "irc >>> (fsknbot2) #{line}"
-
-    ## if server sent error
     close_connection if line.split.first.downcase == "error"
-
-    ##  pass to line handler
     IrcHandleLine.new line
-
   rescue Exception
-
-    puts_error
-
+    puts_error __FILE__,__LINE__
   end
 
 end
+
