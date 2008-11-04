@@ -6,6 +6,10 @@ IrcCommandManager.register 'show', 'admin tools' do |m|
   # parse sub command
   case m.args.first
 
+    # show authorized list
+    when 'authorized'
+      m.reply IrcUser.authorized.join(', ')
+
     # send back user list
     when 'users'
       m.reply IrcUser.users.map{|u|u.nick}.join(', ')
@@ -24,7 +28,7 @@ IrcCommandManager.register 'show', 'admin tools' do |m|
 
     # show help
     else
-      m.reply "users|user|topic|commands"
+      m.reply "authorized|users|user|topic|commands"
 
   end
 

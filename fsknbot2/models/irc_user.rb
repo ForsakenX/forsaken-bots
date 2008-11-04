@@ -8,6 +8,7 @@ class IrcUser
   class << self
 
     @@authorized = %w{methods silence diii-the_lion}
+    def authorized; @@authorized; end
 
     @@hidden = %w{chanserv epsy ski.* }
     @@hidden << $nick

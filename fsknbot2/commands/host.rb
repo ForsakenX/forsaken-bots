@@ -1,4 +1,4 @@
-IrcCommandManager.register 'host', 'host a game' do |m|
+IrcCommandManager.register ['host','die'], 'host a game' do |m|
 
     return m.reply("You don't have an ip number...") if m.from.ip.nil?
 

@@ -68,6 +68,7 @@ class IrcChatMsg
    ## always targeted in non channel
    @targeted = $prefix.nil? || @private || message.length < hash[:message].length
 
+
    ## parse out command and args if targted
    @command = nil
    @args = []
@@ -77,7 +78,7 @@ class IrcChatMsg
      @args = message.split.compact
 
      ## command is first word
-     @command = @args.shift.downcase
+     @command = (@args.shift||'').downcase
 
      ## call command
      IrcCommandManager.call @command, self

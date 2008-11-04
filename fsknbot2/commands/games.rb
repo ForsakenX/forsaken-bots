@@ -8,9 +8,6 @@ class GamesCommand
     def run m
 
       unless Game.length > 0
-        if m.from.nick =~ /^ski/
-          return "Go away..."
-        end
         return "Read the topic..."
       end
     

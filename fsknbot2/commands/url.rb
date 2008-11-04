@@ -91,15 +91,11 @@ class UrlCommand
     def check_url m, url
       url = "http://#{url}" unless url =~ /^http/
       page = @@agent.get(url)
-      title = if page.respond_to?(:title)
-        handle_html_page(m,url,page)
-      else
-        handle_non_html_page(m,url,page)
-      end
+      info = handle_page(m,url,page)
       # delete last entry for this url
       @@urls.dup.each{|u| @@urls.delete u if u[0] == url }
       # save the url
-      @@urls.unshift [url,title,m.from.nick,$channel,m.time]
+      @@urls.unshift [url,info,m.from.nick,$channel,m.time]
     rescue WWW::Mechanize::RedirectLimitReachedError
       m.reply "To many redirects for: #{url}"
     rescue WWW::Mechanize::ResponseCodeError
@@ -117,29 +113,38 @@ class UrlCommand
       puts_error __FILE__,__LINE__
     end
 
-    def handle_html_page(m,url,page)
-      if page.title
-        #HTMLEntities.decode_entities
-        #html_unescape (WWW::Mechanize::Util)
-        m.reply "[Link Title]: #{page.title}"
-        page.title
+    def handle_page(m,url,page)
+      info = nil
+      if !page.respond_to?(:title)
+        info = link_info(m,url,page)
+      elsif page.title.nil? || page.title.gsub(/\s+/,'').empty?
+        m.reply "Title is missing."
       else
-        m.reply "Page title is missing."
-        #url.request_uri =~ /\/([^\/\?]+)$/
-        url =~ /\/([^\/\?]+)$/
-        filename = $1
-        #if length = @@agent.headers['content_length']
-        #  length format_size(length)
-        #end
-        info = "filename: #{filename}"
-        #info += ", size: (#{length})" unless length.nil?
+        info = page.title
+        # one time printed entire set of links on page
+        # protect by cutting down to 200 chars
+        m.reply "[Link Title]: #{info.slice(0,200)}"
       end
+      info
     end
 
-    def handle_non_html_page m,url,page
-      m.reply page.response['content-length']
+    def link_info m,url,page
+# need way to get final url or response['file-name']
+      #url.request_uri =~ /\/([^\/\?]+)$/
+      url =~ /\/([^\/\?]+)$/
+      filename = $1
+      if length = page.response['content-length']
+        length = format_size(length)
+      end
+      info  = "[Link Info]: "+
+              "filename: '#{filename||'unknown'}', "+
+              "size: (#{length||0}), "+
+              "content-type: (#{page.response['content-type']}), "+
+              "last-modified: (#{page.response['last-modified']})"
+      m.reply info
+      info
     end
-  
+
     def format_size bytes
       n = bytes.to_f
       sizes = %w{B KB MB GB}

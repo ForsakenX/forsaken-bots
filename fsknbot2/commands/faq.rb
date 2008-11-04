@@ -21,7 +21,8 @@ class FAQ
       when "",nil
         m.reply IrcCommandManager.help[ 'faq' ]
       when "list"
-        list m
+        m.reply "http://fly.thruhere.net/faq.txt"
+        #list m
       when "set","add"
         set m
       when "del"

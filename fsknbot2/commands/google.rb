@@ -1,81 +1,92 @@
 
-IrcCommandManager.register ['google','wiki','youtube'], 'google <search>' do |m|
+IrcCommandManager.register ['google','wiki','wp','youtube'], 'google <search>' do |m|
   m.reply GoogleCommand.run(m)
 end
 
-=begin
-  require 'rubygems'
-  require 'mechanize'
+IrcCommandManager.register 'news', 'news <search>' do |m|
+  m.reply GoogleNewsCommand.run(m)
+end
 
-  a = WWW::Mechanize.new { |agent|
-    agent.user_agent_alias = 'Mac Safari'
-  }
-
-  a.get('http://google.com/') do |page|
-    search_result = page.form_with(:name => 'f') do |search|
-      search.q = 'Hello world'
-    end.submit
-
-    search_result.links.each do |link|
-      puts link.text
-    end
-  end
-=end
-
-require 'cgi'
-require 'uri'
-require 'net/http'
-require 'rubygems'
-require 'htmlentities'
-
+require 'mechanize'
 class GoogleCommand
   class << self
-
-    @@results = 3
-    @@wap_search = "http://www.google.com/wml/search?hl=en&q="
-    @@wap_link   = /<a accesskey="(\d)" href=".*?u=(.*?)">(.*?)<\/a>/im
-  
+    @@max_results = 3
+    @@agent = WWW::Mechanize.new
+    @@page = @@agent.get('http://google.com')
+    @@form = @@page.form_with(:name => 'f')
     def run m
-  
-      return false if (query = m.args.join(' ')).empty?
-  
-      query = "#{query} site:wikipedia.org" if m.command == "wiki"
-      query = "#{query} site:youtube.com" if m.command == "youtube"
+      query = m.args.join(' ')
+      return m.reply("Missing search") if query.empty?
+      query += " site:wikipedia.org" if %w{wp wiki}.include? m.command
+      query += " site:youtube.com.org" if %w{you}.include? m.command
+      count = 0
+      links = search( query )
+      formatted = ""
+      links[0..(@@max_results-1)].each do |link|
+        t = GoogleLink.parse( link.href )
+        r = "(#{count+=1}) #{link.text} #{t}"
+        # keep limited to one line of irc
+        break if formatted.length + r.length > 230
+        formatted += "#{r} "
+      end
+      "Results: #{formatted}"
+    end
+    def search query
+      form = @@form.dup
+      form.q = query
+      result = form.submit
+      result.links.select{|l|l.attributes['class']=='l'}
+    end
+  end
+end
 
-      search query
+require 'rss'
+class GoogleNewsCommand
+  class << self
 
-   end
+    @@max_results = 3
+    @@search = "http://www.google.com/news"+
+               "?hl=en&ned=us&q=[[query]]&ie=UTF-8&nolr=1&output=rss"
 
-   def search query
-  
-      url      = URI.parse( @@wap_search + CGI.escape(query) )
-      http     = Net::HTTP.new(url.host, url.port)
-      response = http.request(Net::HTTP::Get.new(url.request_uri))
-   
-      return "Sorry, Google is acting up..." unless check_response(response)
-
-      results = response.body.scan(@@wap_link)
-
-      return "No results found for: #{query}" if results.length == 0
-
-      formated = results[0...@@results].map {|result|
-        number = result[0]
-        url    = URI.unescape(result[1])
-        title  = HTMLEntities.decode_entities(result[2].strip)
-        "(#{number}) #{title} #{url}"
-      }
-
-      "Results: #{formated.join("  ")}"
-
-    rescue Exception
-      puts_error __FILE__,__LINE__
+    def run m
+      search m.args.join(' ')
     end
 
-    def check_response response
-      Net::HTTPOK === response ||
-      Net::HTTPPartialContent === response ||
-      response.body
+    def search query
+      count = 0
+      formatted = ""
+      parse(query).items[0..(@@max_results-1)].each do |item|
+        link = GoogleLink.parse(item.link.split('url=')[1])
+        title = WWW::Mechanize::Util::html_unescape( item.title )
+        r = "(#{count+=1}) #{title} #{link}"
+        # keep limited to one line of irc
+        break if formatted.length + r.length > 230
+        formatted += "#{r} "
+      end
+      "Results: #{formatted}"
+    end
+
+    def url query
+      @@search.sub('[[query]]',query)
+    end
+
+    def parse query
+      rss = RSS::Parser.parse(url(query))
+    rescue RSS::InvalidRSSError
+      RSS::Parser.parse(url(query),false)
     end
 
   end
 end
+
+require 'tinyurl'
+class GoogleLink
+  class << self
+    def parse url
+      return url if url.length < 40
+      t = Tinyurl.new( url )
+      t.tiny || t.original
+    end
+  end
+end
+

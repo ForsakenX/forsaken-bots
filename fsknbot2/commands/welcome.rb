@@ -1,7 +1,7 @@
 
 IrcCommandManager.register 'welcome',
 "welcome list => List messages.  "+
-"welcome show <message> => Show a message."
+"welcome show <message> => Show a message.  "+
 "welcome add|edit <name> <message> => Adds a message."
 
 IrcCommandManager.register 'welcome' do |m|
@@ -43,7 +43,7 @@ class WelcomeCommand
           m.reply "Unknown message"
         end
       when 'add','edit'
-        return m.relpy("You are not authorized") unless m.from.authorized?
+        return m.reply("You are not authorized") unless m.from.authorized?
         f = File.open("#{@@db_dir}/#{m.args.shift}.txt",'w+')
         f.write m.args.join(' ')
         f.close
