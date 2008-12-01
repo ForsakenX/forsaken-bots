@@ -37,11 +37,13 @@ class WelcomeCommand
       when 'list'
         m.reply "messages => "+welcome_files.sort.join(', ')
       when 'show'
-        if welcome_files.include? m.args.first
-          m.reply "#{m.args.first} => "+ read("#{m.args.first}.txt")
-        else
-          m.reply "Unknown message"
-        end
+        file = m.args.shift
+        return m.reply("Unknown message") unless welcome_files.include? file
+        msg = read("#{file}.txt")
+        who = m.args.shift
+        return m.reply("#{m.args.first} => " + msg) unless who
+        IrcConnection.privmsg( who, msg )
+        m.reply "Message sent."
       when 'add','edit'
         return m.reply("You are not authorized") unless m.from.authorized?
         f = File.open("#{@@db_dir}/#{m.args.shift}.txt",'w+')

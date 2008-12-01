@@ -1,9 +1,10 @@
 
 IrcCommandManager.register 'urls',
 "urls => Prints last few urls seen in channel.  "+
-"urls [words] => Search url history.  "+
+"urls <[-]words> => Search on all words and remove those prefixed with '-'.  "+
 "urls last => Return the last url seen.  "+
-"urls count => Return the count of saved urls."
+"urls count => Return the count of saved urls.  "+
+"urls list => Link to the whole database."
 
 IrcCommandManager.register 'urls' do |m|
   m.reply UrlCommand.run(m)
@@ -42,6 +43,8 @@ class UrlCommand
         count m
       when nil
         urls m
+      when "list"
+        "http://fly.thruhere.net/status/urls.txt"
       else
         search m
       end
@@ -57,14 +60,24 @@ class UrlCommand
     end
   
     def search m
-      needle = m.args.join(' ')
-      urls = @@urls.find_all {|url|
-                             fields = url[0..2].join(' ').downcase
-                             fields.include?(needle.downcase)
-                            }.map{|url|
-                             "#{url[2]}: #{url[1]} => #{url[0]}"
-                            }
+      urls = @@urls
+      # for each search word
+      while needle = m.args.shift
+        # unmatch
+        needle.slice!(1,needle.length) if (unmatch = (needle[0] == '-'[0]))
+        # find urls that match
+        urls = urls.find_all do |url|
+          # if needle is found in search fields
+          fields = url[0..2].join(' ').downcase
+          includes = fields.include?(needle.downcase)
+          unmatch ? !includes : includes
+        end
+      end
+      # any found?
       return "Your search did not return any results..." if urls.empty?
+      # format output
+      urls = urls.map{|url| "#{url[2]}: #{url[1]} => #{url[0]}" }
+      # only show top results
       urls[0..1].join(', ')
     end
   

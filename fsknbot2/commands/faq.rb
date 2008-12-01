@@ -46,24 +46,24 @@ class FAQ
       faq = self.load
       return m.reply("Missing <name>.") if name.nil?
       return m.reply("faq `#{name}' does not exist.") unless faq[name]
-      m.reply faq[name]
+      m.reply faq[name.downcase]
     end
 
     def set m
       faq = self.load
       return m.reply("Missing <name>.") unless name = m.args.shift
       return m.reply("Missing <answer>.") unless answer = m.args.join(' ')
-      faq[name] = answer
+      faq[name.downcase] = answer
       save faq
       m.reply "Saved"
     end
 
     def del m
       faq = self.load
-      return m.reply("Missing <name>.") unless name = m.params.shift
+      return m.reply("Missing <name>.") unless name = m.args.shift
       return m.reply("faq `#{name}' does not exist.") if faq[name].nil?
-      faq.delete name
-      save del
+      faq.delete name.downcase
+      save faq
       m.reply "Deleted"
     end
 

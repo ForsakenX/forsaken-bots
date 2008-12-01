@@ -50,12 +50,12 @@ class WhatCommand
     end
   
     def learn m
-      unless m.args.join(' ') =~ /(.*) *is *(.*)/i && $1 && $2
+      unless m.args.join(' ') =~ /(.*) is (.*)/i && $1 && $2
         return "learn <target> is <something>"
       end
       @@db[$1] = $2
       save
-      m.reply "Done."
+      "Done."
     end
   
     def save

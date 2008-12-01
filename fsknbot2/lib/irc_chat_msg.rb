@@ -56,7 +56,7 @@ class IrcChatMsg
    @reply_to = @channel ? @to : @from.nick
 
    ## temp message var for cutting up command|args
-   message = hash[:message].dup
+   message = hash[:message].dup.sub(/^\s+/,'')
 
    ## check for name with optional colon
    message.sub!(/^#{$nick}:? /i,'') if message.split.first =~ /#{$nick}:?/i
