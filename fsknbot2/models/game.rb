@@ -94,6 +94,10 @@ class Game
     "#{name}@#{@ip}"
   end
 
+  def url
+    "fskn://#{ip}"
+  end
+
   def check_game
     status "Checking Game"
     if @canceled || @checking
@@ -123,7 +127,7 @@ class Game
     @hosting     = true
     @start_time  = Time.now
     @timer.interval = 30  # higher updater
-    IrcConnection.chatmsg "#{hostmask} has started a game!"
+    IrcConnection.chatmsg "#{name} has started a game @ #{url}"
     Game.update
   end
 
@@ -134,7 +138,7 @@ class Game
       return
     end
     status "Closing: Finished"
-    IrcConnection.chatmsg "Game Finished: #{hostmask}"
+    IrcConnection.chatmsg "#{name}'s game has closed."
     @hosting = false
     destroy
   end
@@ -149,7 +153,7 @@ class Game
     seconds = (Time.now - @created_at).to_i
     if seconds > @timeout
       status "Closing: To long to start"
-      IrcConnection.chatmsg "Game Timeout: #{hostmask}"
+      IrcConnection.chatmsg "Timed out waiting for #{name} to start a game."
       destroy
     end
   end
