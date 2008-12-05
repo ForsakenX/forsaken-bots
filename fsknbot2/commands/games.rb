@@ -8,7 +8,7 @@ class GamesCommand
     def run m
 
       unless Game.length > 0
-        return "Read the topic..."
+        return "No games..."
       end
     
       hosts = []
