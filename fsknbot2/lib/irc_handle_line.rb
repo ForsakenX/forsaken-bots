@@ -173,7 +173,7 @@ class IrcHandleLine
         # args
         args = { :channel => channel,
                  :setter  => @nick, 
-                 :topic   => topic )
+                 :topic   => topic }
 
         ## set topic
         self.class.events[:topic].call( args )

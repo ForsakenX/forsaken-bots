@@ -31,10 +31,12 @@ end
 # load lib and commands
 begin
   Dir["lib/*.rb","models/*.rb","plugins/*.rb"].each do |f|
+    puts "Loading File: #{f}"
     require f if FileTest.executable?(f)
   end
 rescue Exception
-  return puts_error(__FILE__,__LINE__)
+  puts_error(__FILE__,__LINE__)
+  exit 1
 end
 
 # catch errors
