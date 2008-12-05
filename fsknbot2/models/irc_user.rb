@@ -10,17 +10,17 @@ class IrcUser
     @@authorized = %w{methods silence diii-the_lion}
     def authorized; @@authorized; end
 
-    @@hidden = %w{chanserv epsy ski.* }
+    @@hidden = %w{chanserv epsy ski.* ntrek.*}
     @@hidden << $nick
 
     @@users = []; def users; @@users; end
 
-    def authorized? hostmask
-      not @@authorized.detect{|a| a =~ /#{hostmask}/i }.nil?
+    def authorized? nick
+      not @@authorized.detect{|hostmask| nick =~ /#{hostmask}/i }.nil?
     end
 
-    def hidden hostmask
-      not @@hidden.detect{|h| h =~ /#{hostmask}/i }.nil?
+    def hidden nick
+      not @@hidden.detect{|hostmask| nick =~ /#{hostmask}/i }.nil?
     end
 
     def find_by_nick nick
