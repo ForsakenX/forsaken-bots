@@ -34,16 +34,22 @@ class IrcConnection < EM::Connection
       end
     end
 
-    def chatmsg message
-      IrcConnection.privmsg $channel, message
+    def chatmsg channel, message
+      IrcConnection.privmsg channel, message
     end
 
     def who target
       IrcConnection.send_line "WHO #{target}"
     end
 
-    def topic str
-      IrcConnection.send_line "TOPIC #{$channel} :#{str}"
+    def topic channel, str
+      IrcConnection.send_line "TOPIC #{channel} :#{str}"
+    end
+
+    def join channels
+      [channels].flatten.each do |channel|
+        IrcConnection.send_line "JOIN #{channel}"
+      end
     end
 
   end
@@ -64,7 +70,7 @@ class IrcConnection < EM::Connection
   def post_init
     status "Connected"
     @@connection = self
-    send_line "JOIN #{$channel}"
+    IrcConnection.join $channels
   end
 
   def unbind

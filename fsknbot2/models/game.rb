@@ -79,11 +79,12 @@ class Game
     @ip          = @host.ip
     @canceled    = false
     @hosting     = false
-    @checking     = false
+    @checking    = false
     @start_time  = nil
     @fail_count  = 0
     @created_at  = Time.now
     @timer       = EM::PeriodicTimer.new( 1 ) { check_game }
+    @channel     = "#forsaken"
   end
 
   def name
@@ -127,7 +128,7 @@ class Game
     @hosting     = true
     @start_time  = Time.now
     @timer.interval = 30  # higher updater
-    IrcConnection.chatmsg "#{name} has started a game @ #{url}"
+    IrcConnection.chatmsg @channel, "#{name} has started a game @ #{url}"
     Game.update
   end
 
@@ -138,7 +139,7 @@ class Game
       return
     end
     status "Closing: Finished"
-    IrcConnection.chatmsg "#{name}'s game has closed."
+    IrcConnection.chatmsg @channel, "#{name}'s game has closed."
     @hosting = false
     destroy
   end
@@ -153,7 +154,7 @@ class Game
     seconds = (Time.now - @created_at).to_i
     if seconds > @timeout
       status "Closing: To long to start"
-      IrcConnection.chatmsg "Timed out waiting for #{name} to start a game."
+      IrcConnection.chatmsg @channel, "Timed out waiting for #{name} to start a game."
       destroy
     end
   end

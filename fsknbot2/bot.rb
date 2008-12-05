@@ -5,11 +5,11 @@ require 'rubygems'
 require 'eventmachine'
 
 # main settings
-$nick    = 'fsknbot'
-$channel = '#forsaken' #'#6dof'
-$server  = 'localhost'
-$port    = 6667
-$prefix  = '!'
+$nick     = 'fsknbot'
+$channels = ['#forsaken','#6dof']
+$server   = 'localhost'
+$port     = 6667
+$prefix   = '!'
 $privmsg_port = 6668
 
 # start observers
@@ -30,7 +30,11 @@ end
 
 # load lib and commands
 begin
-  Dir["lib/*.rb","models/*.rb","plugins/*.rb"].each do |f|
+  Dir[
+      "lib/*.rb",
+      "models/*.rb",
+      "plugins/*.rb"
+  ].each do |f|
     puts "Loading File: #{f}"
     require f if FileTest.executable?(f)
   end
@@ -49,11 +53,13 @@ end
 # run servers
 EM::run {
 
-  ## connect to irc
-  EM::connect $server, $port, IrcConnection
-
-  ## privmsg proxy
-  #EM::start_server $server, $privmsg_port, IrcPrivmsgProxy
+  begin
+    ## connect to irc
+    EM::connect $server, $port, IrcConnection
+  rescue Exception
+    puts_error(__FILE__,__LINE__)
+    exit 1
+  end
 
   ## tell people we are now running
   $run_observers.each{|o|o.call}

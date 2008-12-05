@@ -29,8 +29,8 @@ class IrcChatMsg
   ## instance constructor
   def initialize hash
 
-   ## only handle $channel or private messages
-   return unless [$nick,$channel].include? hash[:to].downcase
+   ## only handle $channels or private messages
+   return unless [$nick,$channels].flatten.include? hash[:to].downcase
 
    ## get user message came from
    ## only handle messages for users we know 

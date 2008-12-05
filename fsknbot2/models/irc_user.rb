@@ -78,8 +78,7 @@ end
 
 class IrcUser
 
-  attr_accessor :nick
-  attr_reader :host, :ip, :ignored
+  attr_accessor :nick,:host, :ip, :ignored
 
   def initialize hash
 

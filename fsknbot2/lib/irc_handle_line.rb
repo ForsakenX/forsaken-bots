@@ -80,8 +80,8 @@ class IrcHandleLine
         hops     = @parts.shift # :0
         realname = @parts.join(' ') # freeform
 
-        ## we only care about one channel
-        return if channel != $channel
+        ## alloud channels
+        return unless $channels.include? channel
 
         ## find user
         if user = IrcUser.find_by_nick(nick)
@@ -95,8 +95,9 @@ class IrcHandleLine
       ## handle join
       when 'join'
 
-        ## we only care about $channel
-        return unless @parts.shift.sub(/^:/,'').downcase == $channel
+        ## alloud channels
+        channel = @parts.shift.sub(/^:/,'').downcase
+        return unless $channels.include? channel
 
         ## send join event
         self.class.events[:join].call @nick
@@ -105,7 +106,7 @@ class IrcHandleLine
         if @nick.downcase == $nick
 
           ## ask for details on all users in room
-          IrcConnection.who $channel
+          IrcConnection.who channel
 
         ## someone else joined
         else
@@ -119,8 +120,8 @@ class IrcHandleLine
       ## user left channel
       when 'part'
 
-        ## we only care about $channel
-        return unless @parts.shift.downcase == $channel
+        ## allowed channels
+        return unless $channels.include? @parts.shift.downcase
 
         ## remove user
         IrcUser.delete_by_nick @nick
@@ -134,8 +135,8 @@ class IrcHandleLine
       ## user was kicked
       when 'kick'
 
-        ## we only care about $channel
-        return unless @parts.shift.downcase == $channel
+        ## allowed channels
+        return unless $channels.include? @parts.shift.downcase
 
         ## get rid of user
         IrcUser.delete_by_nick @parts.shift

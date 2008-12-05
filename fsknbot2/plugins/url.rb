@@ -108,7 +108,7 @@ class UrlCommand
       # delete last entry for this url
       @@urls.dup.each{|u| @@urls.delete u if u[0] == url }
       # save the url
-      @@urls.unshift [url,info,m.from.nick,$channel,m.time]
+      @@urls.unshift [url,info,m.from.nick,m.to,m.time]
     rescue WWW::Mechanize::RedirectLimitReachedError
       m.reply "To many redirects for: #{url}"
     rescue WWW::Mechanize::ResponseCodeError
