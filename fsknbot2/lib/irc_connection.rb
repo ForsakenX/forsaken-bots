@@ -42,6 +42,10 @@ class IrcConnection < EM::Connection
       IrcConnection.send_line "WHO #{target}"
     end
 
+    def topic str
+      IrcConnection.send_line "TOPIC #{$channel} :#{str}"
+    end
+
   end
 end
 
