@@ -59,7 +59,7 @@ class IrcHandleLine
         new = @parts.shift.sub(/^:/,'')
 
         ## send to user manager
-        if user = IrcUser.find_by_nick @nick
+        if user = IrcUser.find_by_nick(@nick)
 
           ## change the nick
           user.nick = new
