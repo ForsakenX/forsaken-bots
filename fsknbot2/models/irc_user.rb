@@ -78,15 +78,17 @@ end
 
 class IrcUser
 
-  attr_accessor :nick, :host, :ip
+  attr_accessor :nick
+  attr_reader :host, :ip, :ignored
 
   def initialize hash
 
-    @nick = hash[:nick]
-    @host = hash[:host]
-    @ip   = IrcUser.get_ip(self)
+    @nick    = hash[:nick]
+    @host    = hash[:host]
+    @ip      = IrcUser.get_ip(self)
+    @ignored =  IrcUser.hidden(hash[:nick])
 
-    @@users << self unless IrcUser.hidden(hash[:nick])
+    @@users << self
 
   end
 
