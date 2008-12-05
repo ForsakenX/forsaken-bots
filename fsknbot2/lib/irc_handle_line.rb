@@ -157,18 +157,6 @@ class IrcHandleLine
         ## send message event
         self.class.events[:message].call args
 
-      ## handle topic messages
-      when 'topic','332'
-
-        ## your own nick -- uneeded
-        @parts.shift if @action == '332'
-
-        ## we only care about $channel
-        return unless @parts.shift.downcase == $channel
-
-        ## set topic
-        IrcTopic.topic = @parts.join(' ').sub(/^:/,'')
-
     end
 
   end
