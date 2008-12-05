@@ -88,14 +88,6 @@ class VersionCatcherCommand
         :build    => build
       }
       save list
-      set_topic(version) if build == 'release'
-    end
-  
-    def set_topic version
-      official,user = IrcTopic.get.split('||')
-      if official.gsub!(/Forsaken: [^ ]+/i,"Forsaken: #{version}")
-        IrcConnection.topic "#{official}||#{user}"
-      end
     end
   
     def save list
