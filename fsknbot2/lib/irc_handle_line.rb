@@ -170,8 +170,13 @@ class IrcHandleLine
         # the topic
         topic = @parts.join(' ').sub(/^:/,'')
 
+        # args
+        args = { :channel => channel,
+                 :setter  => @nick, 
+                 :topic   => topic )
+
         ## set topic
-        self.class.events[:topic].call( channel, @nick, topic )
+        self.class.events[:topic].call( args )
 
     end
 
