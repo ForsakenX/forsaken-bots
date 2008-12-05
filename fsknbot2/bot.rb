@@ -30,7 +30,7 @@ end
 
 # load lib and commands
 begin
-  Dir["lib/*.rb","models/*.rb","commands/*.rb"].each do |f|
+  Dir["lib/*.rb","models/*.rb","plugins/*.rb"].each do |f|
     require f if FileTest.executable?(f)
   end
 rescue Exception
