@@ -7,10 +7,6 @@ require "rexml/document"
 # periodic game scanner
 $run_observers << Proc.new(){ EM::PeriodicTimer.new(30){ ScanCommand.run } }
 
-# initial topic checker
-#EM::Timer.new(10){ Game.update }
-
-
 #
 # Public API
 #
@@ -46,20 +42,6 @@ class Game
     end
 
     def update
-      update_topic
-      update_xml
-    end
-
-    def update_topic
-      games = @@games.select{|g|g.hosting}.length
-      current = IrcTopic.get.split('games')[0].to_i
-      if current != games
-        topic = IrcTopic.get.sub(/^[0-9]+/,games.to_s)
-        IrcConnection.topic topic
-      end
-    end
-
-    def update_xml
       doc = REXML::Document.new
       games = doc.add_element("games")
       @@games.each do |game|
