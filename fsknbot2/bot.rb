@@ -21,7 +21,7 @@ ROOT = File.dirname(__FILE__)
 # lib path
 $: << "#{ROOT}/lib/"
 $: << "#{ROOT}/models/"
-$: << "#{ROOT}/commands/"
+$: << "#{ROOT}/plugins/"
 
 # error helper
 def puts_error file=nil, line=nil
