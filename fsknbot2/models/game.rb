@@ -134,7 +134,7 @@ class Game
       return
     end
     status "Closing: Finished"
-    IrcConnection.chatmsg "Game Finished!"
+    IrcConnection.chatmsg "Game Finished: #{hostmask}"
     @hosting = false
     destroy
   end
@@ -149,7 +149,7 @@ class Game
     seconds = (Time.now - @created_at).to_i
     if seconds > @timeout
       status "Closing: To long to start"
-      IrcConnection.chatmsg "Game Timeout!"
+      IrcConnection.chatmsg "Game Timeout: #{hostmask}"
       destroy
     end
   end
