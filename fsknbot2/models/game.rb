@@ -164,16 +164,17 @@ class Game
     @canceled = true
     @timer.cancel if @timer
     Game.update
+    self
   end
 
   def status msg
-    #puts "GameTimer (#{hostmask}): #{msg}"
+    puts "GameTimer (#{hostmask}): #{msg}"
   end
 
   def to_s
-    output  = "#{hostmask} has started a game!  "+
-    output += "version => #{@version} " if @version
-    output += "started at => #{@start_time.strftime('%I:%M:%S')}"
+    output  = "#{name} @ #{url}"
+    output += "version: #{@version} " if @version
+    output
   end
 
 end

@@ -10,7 +10,7 @@ class IrcUser
     @@authorized = %w{methods silence diii-the_lion}
     def authorized; @@authorized; end
 
-    @@hidden = %w{chanserv epsy ski.* ntrek.*}
+    @@hidden = %w{chanserv epsy}
     @@hidden << $nick
 
     @@users = []; def users; @@users; end
@@ -38,7 +38,9 @@ class IrcUser
     def get_ip user
       ignored = ["unaffiliated/#{user.nick}","services."]
       return nil if ignored.include? user.host
-      return Resolv.getaddress(user.host)
+      ip = Resolv.getaddress(user.host)
+      return nil unless ip =~ /^[0-9\.]+$/
+      return ip
     rescue Exception #Resolv::Error
       puts "--- ResolvError => #{$!}"
       nil
@@ -78,21 +80,28 @@ end
 
 class IrcUser
 
-  attr_accessor :nick,:host, :ip, :ignored
+  attr_accessor :nick,:host,:ignored
 
   def initialize hash
 
     @nick    = hash[:nick]
     @host    = hash[:host]
-    @ip      = IrcUser.get_ip(self)
-    @ignored =  IrcUser.hidden(hash[:nick])
-
+    @ip      = nil
+    if @host == "cpe-67-10-243-28.satx.res.rr.com"
+      @ignored = true
+    else
+      @ignored = IrcUser.hidden(hash[:nick])
+    end
     @@users << self
 
   end
 
+  def ip
+    @ip || @ip = IrcUser.get_ip(self)
+  end
+
   def hostmask
-    "#{@nick}@#{@ip}"
+    "#{@nick}@#{ip}"
   end
 
   def authorized?

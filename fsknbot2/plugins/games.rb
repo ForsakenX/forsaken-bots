@@ -31,18 +31,14 @@ class GamesCommand
     def parse_waiting game
       time_left = game.timeout - (Time.now - game.created_at).to_i
       time = seconds_to_clock(time_left)
-      "{ "+
-         "#{game.hostmask} "+
-         "version: (#{game.version}) "+
-         "times out in: (#{time}) "+
-      "}"
+      "{ #{game.to_s} times out in: (#{time}) }"
     end
 
     def parse_host game
       time = seconds_to_clock( Time.now - game.start_time )
       "{ "+
-         "#{game.hostmask} version: (#{game.version}) "+
-         "since #{game.start_time.strftime('%I:%M:%S')} "+
+         "#{game.to_s} "+
+         "started at: #{game.start_time.strftime('%I:%M:%S')} "+
          "runtime #{time} "+
        "}"
     end

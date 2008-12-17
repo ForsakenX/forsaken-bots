@@ -7,8 +7,7 @@ IrcCommandManager.register ['host','die'], 'host a game' do |m|
     end
 
     if game = Game.create(:host => m.from,:version => m.args.join(' '))
-      m.reply "Waiting for game to start:  #{game.hostmask} "+
-                 "version: (#{game.version})"
+      m.reply "Waiting for game to start:  #{game.url}"
     end
 
 end

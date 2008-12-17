@@ -85,7 +85,7 @@ class IrcChatMsg
    end
 
    ## call listeners
-   @@observer.call self
+   @@observer.call self unless @from.ignored
 
   end
 
