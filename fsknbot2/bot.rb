@@ -6,7 +6,7 @@ require 'eventmachine'
 
 # main settings
 $nick     = 'fsknbot'
-$channels = ['#forsaken','#6dof']
+$channels = ['#forsaken']
 $server   = 'localhost'
 $port     = 6667
 $prefix   = '!'
