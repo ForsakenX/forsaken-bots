@@ -5,7 +5,7 @@ require 'rubygems'
 require 'eventmachine'
 
 # main settings
-$nick     = 'fsknbot'
+$nick     = 'methbot'
 $channels = ['#forsaken','#6dof']
 $server   = 'localhost'
 $port     = 6667
