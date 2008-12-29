@@ -10,7 +10,7 @@ class IrcUser
     @@authorized = %w{methods silence diii-the_lion}
     def authorized; @@authorized; end
 
-    @@hidden = %w{chanserv epsy}
+    @@hidden = %w{chanserv epsy bdb* ntrek*}
     @@hidden << $nick
 
     @@users = []; def users; @@users; end
@@ -80,20 +80,20 @@ end
 
 class IrcUser
 
-  attr_accessor :nick,:host,:ignored
+  attr_accessor :nick,:host
 
   def initialize hash
 
     @nick    = hash[:nick]
     @host    = hash[:host]
     @ip      = nil
-    if @host == "cpe-67-10-243-28.satx.res.rr.com"
-      @ignored = true
-    else
-      @ignored = IrcUser.hidden(hash[:nick])
-    end
+
     @@users << self
 
+  end
+
+  def ignored
+    IrcUser.hidden( @nick )
   end
 
   def ip

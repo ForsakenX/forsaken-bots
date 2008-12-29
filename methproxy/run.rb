@@ -67,13 +67,13 @@ class IrcProxy < EM::Connection
 
       # boot strap #forsaken
       unless line.slice!(/,?#forsaken/i).nil?
-        puts "client >>> JOIN #forsaken"
+        puts "c -> JOIN #forsaken"
         bootstrap '#forsaken'
       end
 
       # boot strap #6dof
       unless line.slice!(/,?#6dof/i).nil?
-        puts "client >>> JOIN #6dof"
+        puts "c -> JOIN #6dof"
         bootstrap '#6dof'
       end
 
@@ -86,7 +86,7 @@ class IrcProxy < EM::Connection
 
       # kill the connection since client requests it
       @@connections.delete self
-      puts "client >>> #{line}"
+      puts "c -> #{line}"
       send_line "ERROR :Closing Link: hostname (Client Quit)", true
       close_connection_after_writing
       return
@@ -103,7 +103,7 @@ class IrcProxy < EM::Connection
 
   # send data to client
   def send_line line, print=false
-    puts "client <<< #{line}" if print
+    puts "c <- #{line}" if print
     super line
   end
 
@@ -138,6 +138,7 @@ class IrcClient < EM::Connection
     send_line "USER x x x :x"
     send_line "NICK FsknBot"
     send_line "JOIN #forsaken,#6dof"
+    #send_line "JOIN #6dof"
   end
 
   # we lost connectino to irc
@@ -169,13 +170,13 @@ class IrcClient < EM::Connection
     if line =~ /^:([^!]+)[^ ]+ PRIVMSG ([^ ]+) :(.*)/im
 
       # only print channel and nick for readability
-      puts "irc >>> #{$2} #{$1}: #{$3}"
+      puts "-> #{$2} #{$1}: #{$3}"
 
     # other types of input
     else
 
       # remove hostname from server lines for readability
-      puts "irc >>> #{line.sub(/^:[^ ]+ /,'')}"
+      puts "-> #{line.sub(/^:[^ ]+ /,'')}"
 
     end
 
@@ -187,7 +188,7 @@ class IrcClient < EM::Connection
   # print data sent to screen
   def send_line line
     send_data "#{line}\n"
-    puts "irc <<< #{line}"
+    puts "<- #{line}"
   end
 
 end
