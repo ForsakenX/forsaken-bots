@@ -7,7 +7,7 @@ require 'eventmachine'
 # main settings
 $nick     = 'methbot'
 $nick_proper = 'MethBot'
-$channels = ['#6dof']#['#forsaken','#6dof']
+$channels = ['#forsaken','#6dof']
 $server   = 'irc.freenode.net'
 $port     = 6667
 $prefix   = '!'
