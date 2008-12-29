@@ -6,14 +6,11 @@ require 'eventmachine'
 
 # main settings
 $nick     = 'methbot'
+$nick_proper = 'MethBot'
 $channels = ['#forsaken','#6dof']
-$server   = 'localhost'
+$server   = 'irc.freenode.net'
 $port     = 6667
 $prefix   = '!'
-$privmsg_port = 6668
-
-# start observers
-$run_observers = []
 
 # constants
 ROOT = File.dirname(__FILE__)
@@ -60,9 +57,6 @@ EM::run {
     puts_error(__FILE__,__LINE__)
     exit 1
   end
-
-  ## tell people we are now running
-  $run_observers.each{|o|o.call}
 
 }
 

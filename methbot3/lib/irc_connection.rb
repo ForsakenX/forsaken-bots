@@ -71,6 +71,11 @@ class IrcConnection < EM::Connection
     status "Connected"
     @@connection = self
     IrcConnection.join $channels
+    puts "Connected to freenode"
+    @@connection = self
+    send_line "PASS #{ARGV[0]}"
+    send_line "USER x x x :x"
+    send_line "NICK #{$nick_proper}"
   end
 
   def unbind

@@ -52,6 +52,10 @@ class IrcHandleLine
     ## handle the action
     case @action
 
+      ## pings
+      when 'ping'
+        IrcConnection.pong @parts.join(' ')
+
       ## handle nick change
       when 'nick'
 
