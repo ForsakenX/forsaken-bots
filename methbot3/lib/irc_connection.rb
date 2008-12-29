@@ -80,7 +80,7 @@ class IrcConnection < EM::Connection
   end
 
   def receive_line line
-    puts "irc >>> (fsknbot2) #{line}"
+    puts "irc >>> (methbot3) #{line}"
     close_connection if line.split.first.downcase == "error"
     IrcHandleLine.new line
   rescue Exception

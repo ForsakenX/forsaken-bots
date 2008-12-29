@@ -29,7 +29,7 @@ class PingCommand
       else
         blocked << m.from.nick.downcase
         users = IrcUser.nicks.map{|n|blocked.index(n.downcase)?nil:n}.compact
-        "(FsknBot2) " + users.sort.join(', ')
+        users.sort.join(', ')
       end
 
     end
