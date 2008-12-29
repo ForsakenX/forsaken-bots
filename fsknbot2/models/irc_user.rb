@@ -10,7 +10,7 @@ class IrcUser
     @@authorized = %w{methods silence diii-the_lion}
     def authorized; @@authorized; end
 
-    @@hidden = %w{epsy}
+    @@hidden = %w{epsy methbot}
     @@hidden << $nick
 
     @@users = []; def users; @@users; end

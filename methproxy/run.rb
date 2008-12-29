@@ -71,12 +71,6 @@ class IrcProxy < EM::Connection
         bootstrap '#forsaken'
       end
 
-      # boot strap #6dof
-      unless line.slice!(/,?#6dof/i).nil?
-        puts "c -> JOIN #6dof"
-        bootstrap '#6dof'
-      end
-
       # do not allow clients to join other channels
       return
     end
@@ -137,8 +131,7 @@ class IrcClient < EM::Connection
     send_line "PASS #{ARGV[0]}"
     send_line "USER x x x :x"
     send_line "NICK FsknBot"
-    send_line "JOIN #forsaken,#6dof"
-    #send_line "JOIN #6dof"
+    send_line "JOIN #forsaken"
   end
 
   # we lost connectino to irc
