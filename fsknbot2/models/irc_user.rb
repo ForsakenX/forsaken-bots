@@ -36,8 +36,8 @@ class IrcUser
     end
 
     def get_ip user
-      ignored = ["unaffiliated/#{user.nick}","services."]
-      return nil if ignored.include? user.host
+      ignored = ["unaffiliated/#{user.nick.downcase}","services."]
+      return nil if ignored.include? user.host.downcase
       ip = Resolv.getaddress(user.host)
       return nil unless ip =~ /^[0-9\.]+$/
       return ip

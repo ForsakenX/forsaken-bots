@@ -19,8 +19,7 @@ class HelpCommand
     end
 
     def helphelp
-      "Help shows help on commands.  "+
-      "Syntax: help [command].  "+
+      "help [command].  "+
       "Commands: #{commands.join(', ')}"
     end
 

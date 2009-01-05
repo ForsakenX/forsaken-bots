@@ -41,7 +41,7 @@ class Game
       @@games.length
     end
 
-    def update
+    def update_xml
       doc = REXML::Document.new
       games = doc.add_element("games")
       @@games.each do |game|
@@ -58,6 +58,10 @@ class Game
       rescue Exception
       	puts "Error Saving Games.xml: #{$!}"
       end
+    end
+
+    def update
+      update_xml
     end
 
   end

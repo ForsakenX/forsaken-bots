@@ -8,7 +8,8 @@ class GamesCommand
     def run m
 
       unless Game.length > 0
-        return "No games..."
+        return "No games...  "+
+               "Click for list of games: http://fly.thruhere.net/chat/?guest"
       end
     
       hosts = []
