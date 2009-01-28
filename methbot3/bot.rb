@@ -12,6 +12,9 @@ $server   = 'irc.freenode.net'
 $port     = 6667
 $prefix   = '!'
 
+# add procs to run when em is started
+$run_observers = []
+
 # constants
 ROOT = File.dirname(__FILE__)
 
@@ -32,8 +35,12 @@ begin
       "models/*.rb",
       "plugins/*.rb"
   ].each do |f|
-    puts "Loading File: #{f}"
-    require f if FileTest.executable?(f)
+    if FileTest.executable?(f)
+      puts "Loading File: #{f}"
+      require f
+    else
+      puts "Skipping File: #{f}"
+    end
   end
 rescue Exception
   puts_error(__FILE__,__LINE__)
@@ -57,6 +64,9 @@ EM::run {
     puts_error(__FILE__,__LINE__)
     exit 1
   end
+
+  ## tell people we are now running
+  $run_observers.each{|o|o.call}
 
 }
 

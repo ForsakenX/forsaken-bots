@@ -1,6 +1,5 @@
 require 'observe'
 require 'irc_user'
-require 'irc_chat_msg'
 require 'irc_connection'
 
 #
