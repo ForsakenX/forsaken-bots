@@ -4,7 +4,9 @@ IrcCommandManager.register 'fortune' do |m|
 end
 
 $run_observers << Proc.new {
-	EM::PeriodicTimer.new( 60*60*30 ) do
+	minute = 60
+	hour = 60 * minute
+	EM::PeriodicTimer.new( hour * 2 ) do
 	  IrcConnection.privmsg "#forsaken", FortuneCommand.run
 	end
 }

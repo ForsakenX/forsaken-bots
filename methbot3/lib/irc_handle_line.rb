@@ -29,6 +29,8 @@ class IrcHandleLine
   ## parse incoming line
   def initialize line
 
+print "### IrcHandleLine"
+
     ## save message time
     @time = Time.now
 
@@ -185,6 +187,8 @@ class IrcHandleLine
         self.class.events[:topic].call( args )
 
     end
+
+puts "### IrcHandleLine END"
 
   end
 

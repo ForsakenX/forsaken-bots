@@ -20,7 +20,8 @@ class UrlCommand
   class << self
   
     @@agent = WWW::Mechanize.new
-    @@agent.read_timeout = 2 # fuck you
+    @@agent.user_agent_alias = "Linux Mozilla"
+    @@agent.read_timeout = 3 # fuck you
     @@agent.keep_alive = false # http keepalives
 
     @@db_path = "#{ROOT}/db/urls.yaml"
@@ -103,7 +104,17 @@ class UrlCommand
 
     def check_url m, url
       url = "http://#{url}" unless url =~ /^http/
-      page = @@agent.get(url)
+      # try to get page 3 times
+      page = ""
+      n = 3
+      n.times do |i|
+        begin
+          page = @@agent.get(url)
+          break
+        rescue Timeout::Error
+          throw Timeout::Error if i == (n-1)
+        end
+      end
       info = handle_page(m,url,page)
       # delete last entry for this url
       @@urls.dup.each{|u| @@urls.delete u if u[0] == url }
