@@ -50,6 +50,7 @@ class FAQ
     end
 
     def set m
+      return m.reply("Unauthorized") unless m.source.authorized?
       faq = self.load
       return m.reply("Missing <name>.") unless name = m.args.shift
       return m.reply("Missing <answer>.") unless answer = m.args.join(' ')
@@ -59,6 +60,7 @@ class FAQ
     end
 
     def del m
+      return m.reply("Unauthorized") unless m.source.authorized?
       faq = self.load
       return m.reply("Missing <name>.") unless name = m.args.shift
       return m.reply("faq `#{name}' does not exist.") if faq[name].nil?

@@ -1,5 +1,6 @@
 
-IrcCommandManager.register ['google','wiki','wp','youtube'], 'google <search>' do |m|
+IrcCommandManager.register ['google','wiki','wp','youtube'],
+                           'google <search>' do |m|
   m.reply GoogleCommand.run(m)
 end
 

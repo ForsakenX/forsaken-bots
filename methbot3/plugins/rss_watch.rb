@@ -2,7 +2,12 @@
 IrcCommandManager.register 'rsswatch', 'rsswatch <url>' do |m|
   next m.reply "Unauthorized" unless m.from.authorized?
   next m.reply "Missing Url" if m.args.length < 1
-  feed = RssWatch.add m.args.first
+  begin
+    feed = RssWatch.add m.args.first
+  rescue Exception
+    puts_error __FILE__, __LINE__
+    next m.reply "Feed Error: #{$!}"
+  end
   next m.reply "Feed, '#{feed.title}' added, "+
                "cached #{feed.items.length} items..."
 end
@@ -10,7 +15,7 @@ end
 $run_observers << Proc.new {
         interval = 60 # every minute
         EM::PeriodicTimer.new( interval ) do
-		RssWatch.run_updates
+		RssWatch.update_feeds
         end
 }
 
@@ -44,24 +49,24 @@ class RssWatch
       feed
     end
 
-    def run_updates
+    def update_feeds
 #      puts "-- Updating RssWatch Feeds"
       load_feeds
-
       @@feeds.each do |url,links|
 	feed = Feed.new url 
         next unless feed.items.length > 0
         feed.items.each do |item|
           next if links.include? item.link
           links << item.link
-          msg = "#{feed.title}: new item, #{item.title} => #{item.link}"
-#          puts "-- #{msg}"
+          msg = "#{feed.title}: #{item.title} #{item.link} "
+          #msg += Url.describe_link( item.link )
           IrcConnection.privmsg "#forsaken", msg
+#          puts "-- Found update"
         end
+#        puts "-- Feed links: #{feed.items.length}"
       end
-
-      save_feeds
 #      puts "-- Done Updating RssWatch Feeds"
+      save_feeds
     end
 
   end

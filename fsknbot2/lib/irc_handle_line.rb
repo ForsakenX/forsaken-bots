@@ -1,6 +1,5 @@
 require 'observe'
 require 'irc_user'
-require 'irc_chat_msg'
 require 'irc_connection'
 
 #
@@ -51,6 +50,10 @@ class IrcHandleLine
 
     ## handle the action
     case @action
+
+      ## pings
+      when 'ping'
+        IrcConnection.pong @parts.join(' ')
 
       ## handle nick change
       when 'nick'

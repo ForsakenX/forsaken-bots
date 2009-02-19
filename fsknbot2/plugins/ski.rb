@@ -1,5 +1,5 @@
 IrcHandleLine.events[:join].register do |nick|
-	%w{ski* meth* *term*}.each do |mask|
+	%w{ski.* .*term.*}.each do |mask|
 		next unless nick =~ /#{mask}/
 		IrcConnection.privmsg nick,
 			"Please click here:  "+

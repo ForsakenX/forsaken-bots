@@ -29,8 +29,6 @@ class IrcChatMsg
   ## instance constructor
   def initialize hash
 
-puts "### IrcChatMsg"
-
    ## only handle $channels or private messages
    return unless [$nick,$channels].flatten.include? hash[:to].downcase
 

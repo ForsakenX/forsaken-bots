@@ -8,8 +8,13 @@ class GamesCommand
     def run m
 
       unless Game.length > 0
-        return "No games...  "+
-               "Click for list of games: http://fly.thruhere.net/chat/?guest"
+	# for ski
+	if m.from.nick.downcase =~ /ski.*/
+		m.reply_directly "http://fly.thruhere.net/chat/?#{m.from.nick}"
+		return
+	end
+	# for everyone else
+        return "No games...  "
       end
     
       hosts = []

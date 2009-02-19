@@ -7,34 +7,26 @@ IrcCommandManager.register 'urls',
 "urls list => Link to the whole database."
 
 IrcCommandManager.register 'urls' do |m|
-  m.reply UrlCommand.run(m)
+  m.reply UrlCommand.run m
 end
 
 IrcChatMsg.register do |m|
-  UrlCommand.message(m)
+  UrlCommand.chat_listener m
 end
 
-require 'timeout'
 require 'mechanize'
 class UrlCommand 
   class << self
-  
-    @@agent = WWW::Mechanize.new
-    @@agent.user_agent_alias = "Linux Mozilla"
-    @@agent.read_timeout = 3 # fuck you
-    @@agent.keep_alive = false # http keepalives
-
+ 
     @@db_path = "#{ROOT}/db/urls.yaml"
     @@db = File.expand_path(@@db_path)
     @@urls = (File.exists?(@@db) && YAML.load_file(@@db)) || []
 
-    @@response_codes = {
-      "404" => "Page not found"
-    }
-
-    #
-    #  Command
-    #  
+    def save
+      file = File.open(@@db,'w+')
+      YAML.dump(@@urls,file)
+      file.close
+    end
 
     def run m
       case m.args.first
@@ -90,83 +82,108 @@ class UrlCommand
       urls.join(', ')
     end
 
-    #
-    #  Listener
-    #
-  
-    def message m
+    def chat_listener m
       return unless m.channel
       words = m.message.split(' ')
       urls = words.find_all{|p| p =~ /^((https?:\/\/|www\.).+)/im; $1 }
-      urls.each{|u| check_url(m,u) }
+      urls.each do |url|
+        # get the page data
+        begin
+          # one time this printed entire set of links on page
+          # protect by cutting down to 200 chars
+          info = Url.describe_link( url ).slice!(0,200)
+          m.reply info
+        rescue Exception
+          m.reply $!
+          next # do not save
+        end
+        # delete last entry for this url
+        @@urls.dup.each{|u| @@urls.delete u if u[0] == url }
+        # save the url
+        @@urls.unshift [url,info,m.from.nick,m.to,m.time]
+      end
+      # save the database
       save
     end
 
-    def check_url m, url
+  end
+end
+
+
+class Url
+  class << self
+ 
+    @@agent = WWW::Mechanize.new
+    @@agent.user_agent_alias = "Linux Mozilla"
+    @@agent.read_timeout = 3 # fuck you
+    @@agent.keep_alive = false # http keepalives
+
+    @@response_codes = {
+      "404" => "Page not found"
+    }
+
+    def describe_link url
+      page = get( url )
+      title = link_title( url, page )
+      if title.empty?
+        "[Link Info]: #{link_info( url, page )}"
+      else
+        "[Link Title]: #{title}"
+      end
+    end
+
+    # get page handle
+    def get url, n = 3 # default 3 attempts
       url = "http://#{url}" unless url =~ /^http/
-      # try to get page 3 times
-      page = ""
-      n = 3
       n.times do |i|
         begin
-          page = @@agent.get(url)
-          break
+          return @@agent.get(url)
+          break # success
         rescue Timeout::Error
           throw Timeout::Error if i == (n-1)
         end
       end
-      info = handle_page(m,url,page)
-      # delete last entry for this url
-      @@urls.dup.each{|u| @@urls.delete u if u[0] == url }
-      # save the url
-      @@urls.unshift [url,info,m.from.nick,m.to,m.time]
     rescue WWW::Mechanize::RedirectLimitReachedError
-      m.reply "To many redirects for: #{url}"
+      throw "To many redirects for: #{url}"
     rescue WWW::Mechanize::ResponseCodeError
       if error = @@response_codes[$!.response_code]
-        m.reply error
+        throw error
       else
-        m.reply "Unhandeled response code: #{$!.response_code}"
+        throw "Unhandeled response code: #{$!.response_code}"
       end
     rescue WWW::Mechanize::UnsupportedSchemeError
-      m.reply "Unsupported Scheme: #{$!.scheme}"
+      throw "Unsupported Scheme: #{$!.scheme}"
     rescue WWW::Mechanize::ContentTypeError
-      m.reply "ContentType Error: #{$!.content_type}"
+      throw "ContentType Error: #{$!.content_type}"
+    rescue Timeout::Error
+      throw "Timed out trying to connect."
     rescue Exception
-      m.reply "Error Inspecting URL: #{$!}"
       puts_error __FILE__,__LINE__
+      throw "Error Inspecting URL: #{$!}"
     end
 
-    def handle_page(m,url,page)
-      info = nil
-      if !page.respond_to?(:title)
-        info = link_info(m,url,page)
-      elsif page.title.nil? || page.title.gsub(/\s+/,'').empty?
-        m.reply "Title is missing."
-      else
-        info = page.title
-        # one time printed entire set of links on page
-        # protect by cutting down to 200 chars
-        m.reply "[Link Title]: #{info.slice(0,200)}"
-      end
-      info
+    # get title of page
+    def link_title url, page=nil
+      page = get(url) if page.nil?
+      return "" unless page.respond_to? :title
+      return "" if page.title.nil?
+      page.title.gsub!(/\s+/,' ')
     end
 
-    def link_info m,url,page
+     # get link info
+    def link_info url, page=nil
+      page = get(url) if page.nil?
 # need way to get final url or response['file-name']
       #url.request_uri =~ /\/([^\/\?]+)$/
       url =~ /\/([^\/\?]+)$/
       filename = $1
-      if length = page.response['content-length']
-        length = format_size(length)
+      if content_length = page.response['content-length']
+        length = format_size(content_length)
       end
-      info  = "[Link Info]: "+
-              "filename: '#{filename||'unknown'}', "+
-              "size: (#{length||0}), "+
-              "content-type: (#{page.response['content-type']}), "+
-              "last-modified: (#{page.response['last-modified']})"
-      m.reply info
-      info
+      "filename: '#{filename||'unknown'}', "+
+      "size: (#{length||0}), "+
+      "content-type: (#{page.response['content-type']}), "+
+      "last-modified: (#{page.response['last-modified']})"
     end
 
     def format_size bytes
@@ -177,12 +194,8 @@ class UrlCommand
       n = (n*100.0).round/100.0
       "#{n} #{sizes[i]}"
     end
-  
-    def save
-      file = File.open(@@db,'w+')
-      YAML.dump(@@urls,file)
-      file.close
-    end
 
   end
 end
+
+

@@ -6,8 +6,9 @@ require 'eventmachine'
 
 # main settings
 $nick     = 'fsknbot'
+$nick_proper = 'FsknBot'
 $channels = ['#forsaken']
-$server   = 'localhost'
+$server   = 'irc.freenode.net'
 $port     = 6667
 $prefix   = '!'
 $privmsg_port = 6668

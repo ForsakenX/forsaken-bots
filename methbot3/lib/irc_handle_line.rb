@@ -29,8 +29,6 @@ class IrcHandleLine
   ## parse incoming line
   def initialize line
 
-print "### IrcHandleLine"
-
     ## save message time
     @time = Time.now
 

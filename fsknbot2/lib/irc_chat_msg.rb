@@ -5,18 +5,15 @@ require 'irc_handle_line'
 require 'irc_command_manager'
 
 #
-# Listener
-#
-
-IrcHandleLine.events[:message].register do |args|
-  IrcChatMsg.new( args )
-end
-
-#
 # Instance
 #
 
 class IrcChatMsg
+
+  # listener
+  IrcHandleLine.events[:message].register do |args|
+    self.new( args )
+  end
 
   ## public api
   @@observer = Observe.new
@@ -85,7 +82,9 @@ class IrcChatMsg
    end
 
    ## call listeners
-   @@observer.call self unless @from.ignored
+   unless @from.ignored
+     @@observer.call self
+   end
 
   end
 
