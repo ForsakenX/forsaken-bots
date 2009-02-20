@@ -28,9 +28,9 @@ end
 # load lib and commands
 begin
   Dir[
-      "lib/*.rb",
-      "models/*.rb",
-      "plugins/*.rb"
+      "#{ROOT}/lib/*.rb",
+      "#{ROOT}/models/*.rb",
+      "#{ROOT}/plugins/*.rb"
   ].each do |f|
     if FileTest.executable?(f)
       puts "Loading File: #{f}"

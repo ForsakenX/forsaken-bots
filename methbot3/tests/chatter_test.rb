@@ -2,6 +2,7 @@
 
 # boot strap environment
 ROOT = File.dirname(__FILE__) + "/../"
+puts ROOT
 require "#{ROOT}/config/environment"
 require 'chatter' # incase not executable
 
