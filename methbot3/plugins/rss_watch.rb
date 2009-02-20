@@ -58,7 +58,9 @@ class RssWatch
         feed.items.each do |item|
           next if links.include? item.link
           links << item.link
-          msg = "#{feed.title}: #{item.title} #{item.link} "
+          # shrink url
+          tiny = TinyUrl.new(item.link).tiny || item.link
+          msg = "#{feed.title}: #{item.title} #{tiny} "
           #msg += Url.describe_link( item.link )
           IrcConnection.privmsg "#forsaken", msg
 #          puts "-- Found update"
