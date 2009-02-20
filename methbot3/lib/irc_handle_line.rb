@@ -92,7 +92,7 @@ class IrcHandleLine
 
         ## create user
         else
-          user = IrcUser.new :nick => nick, :host => host
+          user = IrcUser.create :nick => nick, :host => host
         end
 
       ## handle join
@@ -185,8 +185,6 @@ class IrcHandleLine
         self.class.events[:topic].call( args )
 
     end
-
-puts "### IrcHandleLine END"
 
   end
 

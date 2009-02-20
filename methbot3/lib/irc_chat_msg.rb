@@ -60,7 +60,9 @@ class IrcChatMsg
 
 		# get user message came from
 		if @from = IrcUser.find_by_nick( m[:from] )
-			@ignored = true if @from.ignored
+			if @from.ignored
+				@ignored = true
+			end
 		else
 			@from = IrcUser.new({ :nick => m[:from] })
 			@ignored = true
@@ -69,7 +71,9 @@ class IrcChatMsg
 		# valid target is $channels we are in or pm
 		valid_targets = [$nick,$channels].flatten
 		@valid_target = valid_targets.include? @to.downcase
-		@ignored = true unless @valid_target
+		unless @valid_target
+			@ignored = true
+		end
 
 		# if we are in channel or private message
 		@channel = @to[0] == '#'[0]
