@@ -1,8 +1,7 @@
 #!/usr/bin/ruby
 
-ROOT = File.dirname(__FILE__) + "/../"
-require "#{ROOT}/config/environment"
-require "google"
+require File.dirname(__FILE__) + '/test.lib'
+require "google" # incase not executable
 
 query = "cars"
 puts GoogleCommand.search( query )

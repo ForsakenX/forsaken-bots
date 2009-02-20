@@ -50,6 +50,7 @@ class IrcUser
       unless user = IrcUser.find_by_nick(hash[:nick])
         user = IrcUser.new(hash)
       end
+      @@users << user
       user
     end
 
@@ -87,8 +88,6 @@ class IrcUser
     @nick    = hash[:nick]
     @host    = hash[:host]
     @ip      = nil
-
-    @@users << self
 
   end
 

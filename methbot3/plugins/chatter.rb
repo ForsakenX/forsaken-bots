@@ -6,8 +6,9 @@ class << self
 	def chatters; @@chatters; end
 
 	def random
-		self.send @chatters[ rand( @@chatters.length ) ]
+		self.send @@chatters[ rand( @@chatters.length ) ]
 	rescue Exception
+		puts_error __FILE__,__LINE__
 		$!
 	end
 
@@ -62,7 +63,7 @@ IrcCommandManager.register 'chatter',
 
 IrcCommandManager.register 'chatter' do |m|
 	command = m.args.shift
-	if command.nil? or command.empty?
+	if command.nil? || command.empty?
 		m.reply IrcCommandManager.help[ 'chatter' ]
 		next
 	end

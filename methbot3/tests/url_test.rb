@@ -1,8 +1,6 @@
 #!/usr/bin/env ruby
 
-# boot strap environment
-ROOT = File.dirname(__FILE__) + "/../"
-require "#{ROOT}/config/environment"
+require File.dirname(__FILE__) + '/test.lib'
 require 'url' # incase not executable
 
 def get url

@@ -1,9 +1,6 @@
 #!/usr/bin/ruby
 
-# boot strap environment
-ROOT = File.dirname(__FILE__) + "/../"
-puts ROOT
-require "#{ROOT}/config/environment"
+require File.dirname(__FILE__) + '/test.lib'
 require 'chatter' # incase not executable
 
 def info msg
@@ -24,14 +21,13 @@ class << self
 end
 end
 
+=begin
 info "Testing No Args "
 IrcCommandManager.call( 'chatter', FakeMessage )
 
 info "Testing W/ Args "
 FakeMessage.args = ['wotd']
 IrcCommandManager.call( 'chatter', FakeMessage )
-
-=begin
 
 info IrcCommandManager.help[ "chatter" ]
 
@@ -44,10 +40,9 @@ info "QOTD: #{Chatter.qotd}"
 info "JOTD: #{Chatter.jotd}"
 
 info "Fortune: #{Chatter.fortune}"
+=end
 
 3.times do
 	info "Random: #{Chatter.random}"
 end
-
-=end
 

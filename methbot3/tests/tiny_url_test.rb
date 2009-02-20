@@ -1,8 +1,7 @@
 #!/usr/bin/ruby
 
-ROOT = File.dirname(__FILE__) + "/../"
-require "#{ROOT}/config/environment"
-require "tiny_url"
+require File.dirname(__FILE__) + '/test.lib'
+require "tiny_url" # incase not executable
 
 url = ARGV[0] || "google.com"
 link = TinyUrl.new url

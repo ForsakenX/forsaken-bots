@@ -1,7 +1,5 @@
 #!/usr/bin/ruby
 
-ROOT = File.dirname(__FILE__) + "/../"
-require "#{ROOT}/config/environment"
-require "#{ROOT}/lib/feed"
+require File.dirname(__FILE__) + '/test.lib'
 
 puts md5( "test" )

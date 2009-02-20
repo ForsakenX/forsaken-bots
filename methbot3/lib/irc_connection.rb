@@ -20,12 +20,14 @@ class IrcConnection < EM::Connection
 
     def privmsg target, messages
       [messages].flatten.each do |message|
-        next if message.nil? or !message.respond_to?(:to_s) or message.empty?
+        next if message.nil? or !message.respond_to?(:to_s)
+	message = message.to_s
+	next if message.respond_to?(:empty?) and message.empty?
         # shrink white space
         message.gsub!(/\s+/," ")
         # irc sends max of 512 bytes to sender
         # this should stop message from behind cut off
-        message.to_s.scan(/.{1,230}[^ ]{0,150}/m){|chunk|
+        message.scan(/.{1,230}[^ ]{0,150}/m){|chunk|
           # catch white space only lines
           next if chunk.gsub(/\s/,'').empty?
           # send the line
