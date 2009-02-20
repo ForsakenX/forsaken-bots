@@ -80,12 +80,11 @@ class GoogleNewsCommand
   end
 end
 
-require 'tinyurl'
 class GoogleLink
   class << self
     def parse url
       return url if url.length < 40
-      t = Tinyurl.new( url )
+      t = TinyUrl.new( url )
       t.tiny || t.original
     end
   end
