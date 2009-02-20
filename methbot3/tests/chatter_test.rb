@@ -5,18 +5,48 @@ ROOT = File.dirname(__FILE__) + "/../"
 require "#{ROOT}/config/environment"
 require 'chatter' # incase not executable
 
-class Object
-	def puts msg=""
-		super "*"*50
-		super msg
+def info msg
+	puts "*"*50
+	puts msg
+end
+
+class FakeMessage
+class << self
+
+	@@args = []
+	def args; @@args; end
+	def args= x; @@args = x; end
+
+	def reply msg=""
+		puts "reply => #{msg}"
 	end
 end
+end
 
-puts Chatter.fortune
+info "Testing No Args "
+IrcCommandManager.call( 'chatter', FakeMessage )
 
-puts Chatter.qotd
+info "Testing W/ Args "
+FakeMessage.args = ['wotd']
+IrcCommandManager.call( 'chatter', FakeMessage )
+
+=begin
+
+info IrcCommandManager.help[ "chatter" ]
+
+info "WOTD: #{Chatter.wotd}"
+
+info "FQOTD: #{Chatter.fqotd}"
+
+info "QOTD: #{Chatter.qotd}"
+
+info "JOTD: #{Chatter.jotd}"
+
+info "Fortune: #{Chatter.fortune}"
 
 3.times do
-	puts Chatter.random
+	info "Random: #{Chatter.random}"
 end
+
+=end
 

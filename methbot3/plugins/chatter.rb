@@ -1,15 +1,74 @@
 
+class Chatter
+class << self
+
+	@@chatters = [ :fortune, :qotd, :fqotd, :jotd, :fotd, :wotd ]
+	def chatters; @@chatters; end
+
+	def random
+		self.send @chatters[ rand( @@chatters.length ) ]
+	rescue Exception
+		$!
+	end
+
+	def fortune
+		(`/usr/games/fortune`||"").gsub(/\s/,' ')
+	end
+
+	def qotd # random quotes daily
+		@qotd ||= FeedRandomizer.new(
+			"http://www.brainyquote.com/link/quotefu.rss"
+		)
+		item = @qotd.random
+		"#{item.title}: #{item.description}"
+	end
+
+	def fqotd # funny quote of the day
+		@fqotd ||= FeedRandomizer.new(
+			"http://feeds2.feedburner.com/quotationspage/qotd"
+		)
+		item = @fqotd.random
+		"#{item.title}: #{item.description}"
+	end
+
+	def jotd # joke of the day
+		@jotd ||= FeedRandomizer.new(
+			"http://www.comedycentral.com/rss/jokes/"+
+			"indexcached.jhtml?partner=rssMozilla"
+		)
+		item = @jotd.random
+		"#{item.title}: #{item.description}"
+	end
+
+	def fotd # fact of the day
+		@fotd ||= FeedRandomizer.new(
+			"http://www.b4u.com/rss/en_facts.xml"
+		)
+		item = @fotd.random
+		"#{item.title}: #{item.description}"
+	end
+
+	def wotd # 1 word of the day
+		url = "http://feeds.reference.com/DictionarycomWordOfTheDay"
+		feed = Feed.new( url )
+		"#{feed.title} => #{feed.items.first.description}"
+	end
+
+end
+end
+
 IrcCommandManager.register 'chatter',
-	"chatter [random|qotd]"
+	"chatter [#{Chatter.chatters.join('|')}]"
 
 IrcCommandManager.register 'chatter' do |m|
-	case command = m.args.shift
-	when nil,'random'
-		m.reply Chatter.random 
-	when 'fortune'
-		m.reply Chatter.fortune
-	when 'qotd'
-		m.reply Chatter.qotd 
+	command = m.args.shift
+	if command.nil? or command.empty?
+		m.reply IrcCommandManager.help[ 'chatter' ]
+		next
+	end
+	command = command.to_sym
+	if Chatter.chatters.include? command
+		m.reply Chatter.send command
 	else
 		m.reply IrcCommandManager.help[ 'chatter' ]
 	end
@@ -22,64 +81,4 @@ $run_observers << Proc.new {
 	  IrcConnection.privmsg "#forsaken", Chatter.random
 	end
 }
-
-class Chatter
-class << self
-
-	@@chatters = [ :fortune, :qotd ]
-
-	def random
-		self.send @@chatters[ rand( @@chatters.length ) ]
-	rescue Exception
-		$!
-	end
-
-	def fortune
-		(`/usr/games/fortune`||"").gsub(/\s/,' ')
-	end
-
-	def qotd # 4 random quotes daily
-		@qotd ||= FeedRandomizer.new(
-			"http://feeds2.feedburner.com/quotationspage/qotd"
-		)
-		@qotd.random
-	end
-
-end
-end
-
-class FeedRandomizer
-
-	attr_reader :url
-
-	def initialize url
-		@url = url
-		@seen = []
-		@items = []
-	end
-
-	def random
-
-		# update item list if empty
-		if @items.length < 1
-			@seen = []
-			@items = Feed.new(@url).items
-		end
-
-		# no items found?
-		return false if @items.length < 1
-
-		# get random item
-        	item = @items[ rand( @items.length ) ]
-
-		# move item to seen list
-		@seen << item
-		@items.delete item
-
-		# return the random quote
-		"#{item.title}: #{item.description}"
-
-	end
-
-end
 

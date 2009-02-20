@@ -16,8 +16,16 @@ class << self
 		WWW::Mechanize::Util::html_unescape( string )
 	end
 
+	def clean string
+		clean_white_space clean_html( string )
+	end
+
 	def clean_html string
 		unescape string.gsub(/<.*?>/,'')
+	end
+
+	def clean_white_space string
+		string.gsub(/\s+/,' ')
 	end
 
 end
@@ -56,17 +64,13 @@ class FeedItem
 		if @type == :rss
 			@title = Feed.unescape( @item.title )
 			@link = @item.link
-			@description = Feed.clean_html @item.description
+			@description = Feed.clean @item.description
 		else
 			@title = Feed.unescape( @item.title.content )
 			@link = @item.link.href
-			if @item.summary.nil?
-				@description = @title
-			else
-				@description = Feed.clean_html(
-					@item.summary.content
-				)
-			end
+			@description = @item.summary.nil? ?
+				@title :
+				Feed.clean( @item.summary.content )
 		end
 	end
 
