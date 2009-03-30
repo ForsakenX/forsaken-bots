@@ -52,6 +52,10 @@ class IrcConnection < EM::Connection
       end
     end
 
+    def kick nick, message="pwned!", channel="#forsaken" 
+      IrcConnection.send_line "KICK #{channel} #{nick} :#{message}"
+    end
+
   end
 end
 

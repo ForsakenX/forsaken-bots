@@ -1,21 +1,13 @@
 IrcCommandManager.register 'games', 'list games' do |m|
-  GamesCommand.run(m).split("\n").each{|l| m.reply l }
+  GamesCommand.run.split("\n").each{|l| m.reply l }
 end
 
 class GamesCommand
   class << self
 
-    def run m
+    def run
 
-      unless Game.length > 0
-	# for ski
-	if m.from.nick.downcase =~ /ski.*/
-		m.reply_directly "http://fly.thruhere.net/chat/?#{m.from.nick}"
-		return
-	end
-	# for everyone else
-        return "No games...  "
-      end
+      return "No games...  " unless Game.length > 0
     
       hosts = []
       waiting = []

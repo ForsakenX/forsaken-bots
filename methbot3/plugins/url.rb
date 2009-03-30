@@ -125,7 +125,7 @@ class Url
     def describe_link url
       page = get( url )
       title = link_title( url, page )
-      if title.empty?
+      if title.nil? || title.empty?
         "[Link Info]: #{link_info( url, page )}"
       else
         "[Link Title]: #{title}"
@@ -173,14 +173,13 @@ class Url
      # get link info
     def link_info url, page=nil
       page = get(url) if page.nil?
-# need way to get final url or response['file-name']
-      #url.request_uri =~ /\/([^\/\?]+)$/
-      url =~ /\/([^\/\?]+)$/
-      filename = $1
+      page.uri.path =~ /\/([^\/\?]+)$/
+      #url =~ /\/([^\/\?]+)$/
+      filename = $1 || 'unknown'
       if content_length = page.response['content-length']
         length = format_size(content_length)
       end
-      "filename: '#{filename||'unknown'}', "+
+      "filename: '#{filename}', "+
       "size: (#{length||0}), "+
       "content-type: (#{page.response['content-type']}), "+
       "last-modified: (#{page.response['last-modified']})"

@@ -54,6 +54,10 @@ class IrcConnection < EM::Connection
       end
     end
 
+    def pong token
+      IrcConnection.send_line "PONG #{token}"
+    end
+
   end
 end
 

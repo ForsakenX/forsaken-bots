@@ -24,6 +24,8 @@ require 'feed'
 class RssWatch
   class << self
 
+    @@send_queue = []
+
     @@db = File.expand_path("#{ROOT}/db/rss_watch.yaml")
     def db= db; @@db = db; end
 
@@ -60,15 +62,18 @@ class RssWatch
           links << item.link
           # shrink url
           tiny = TinyUrl.new(item.link).tiny || item.link
-          msg = "#{feed.title}: #{item.title} #{tiny} "
+          #msg = "#{feed.title}: #{item.title} #{tiny} "
+          msg = "#{item.title} #{tiny} "
           #msg += Url.describe_link( item.link )
-          IrcConnection.privmsg "#forsaken", msg
+          @@send_queue << msg        
+#          IrcConnection.privmsg "#forsaken", msg
 #          puts "-- Found update"
         end
 #        puts "-- Feed links: #{feed.items.length}"
       end
 #      puts "-- Done Updating RssWatch Feeds"
       save_feeds
+      IrcConnection.privmsg "#forsaken", @@send_queue.shift
     end
 
   end

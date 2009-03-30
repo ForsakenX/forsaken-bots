@@ -45,7 +45,14 @@ class ScanCommand
     end
     def users
       list = IrcUser.unique_by_ip
-      @@blocked.each{|user| list.delete user }
+      @@blocked.each do |user|
+        # remove blocked users 
+        list.delete user
+        # and any other user from their ip
+        list.dup.each do |u|
+          list.delete u if u.ip == user.ip
+        end
+      end
       list
     end
     def block m

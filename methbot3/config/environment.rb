@@ -1,10 +1,8 @@
 #!/usr/bin/env ruby
 
-# libraries
 require 'rubygems'
 require 'eventmachine'
 
-# main settings
 $nick     = 'methbot'
 $nick_proper = 'MethBot'
 $channels = ['#forsaken','#6dof']
@@ -12,20 +10,16 @@ $server   = 'irc.freenode.net'
 $port     = 6667
 $prefix   = '!'
 
-# add procs to run when em is started
-$run_observers = []
+$run_observers = [] # add procs to run when em is started
 
-# lib path
 $: << "#{ROOT}/lib/"
 $: << "#{ROOT}/models/"
 $: << "#{ROOT}/plugins/"
 
-# error helper
 def puts_error file=nil, line=nil
   puts "--- ERROR: #{file} #{line}: (#{$!}):\n#{$@.join("\n")}"
 end
 
-# load lib and commands
 begin
   Dir[
       "#{ROOT}/lib/*.rb",
@@ -42,12 +36,5 @@ begin
 rescue Exception
   puts_error(__FILE__,__LINE__)
   exit 1
-end
-
-# catch errors
-module EM
-  def handle_runtime_error
-    puts_error __FILE__,__LINE__
-  end
 end
 

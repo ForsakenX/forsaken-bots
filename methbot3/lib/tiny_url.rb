@@ -1,15 +1,15 @@
-
-require 'open-uri'
+require 'net/http'
+require 'uri'
 class TinyUrl
 
-	@@tinyurl = "http://tinyurl.com/api-create.php?url="
+	@@tinyurl = URI.parse "http://tinyurl.com/api-create.php"
 
-	attr_accessor :tiny, :original
+	attr_accessor :tiny, :original, :post
 
 	def initialize url
 		@original = url
-		@tiny = open( @@tinyurl + url ).read
+		@post = { 'url' => @original }
+		@tiny = Net::HTTP.post_form( @@tinyurl, @post).body
 	end
 
 end
-

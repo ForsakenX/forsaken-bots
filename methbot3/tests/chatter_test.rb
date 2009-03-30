@@ -37,12 +37,13 @@ info "FQOTD: #{Chatter.fqotd}"
 
 info "QOTD: #{Chatter.qotd}"
 
-info "JOTD: #{Chatter.jotd}"
-
-info "Fortune: #{Chatter.fortune}"
-=end
+info "Fortune: #{Chatter.fortune_offensive ARGV}"
 
 3.times do
 	info "Random: #{Chatter.random}"
 end
+=end
+
+info "LimeRick: #{Chatter.limerick}"
+
 

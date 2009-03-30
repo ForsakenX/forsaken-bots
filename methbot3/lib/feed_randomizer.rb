@@ -3,10 +3,11 @@ class FeedRandomizer
 
 	attr_reader :url
 
-	def initialize url
+	def initialize url, length=nil
 		@url = url
 		@seen = []
 		@items = []
+		@length = length
 	end
 
 	def random
@@ -14,7 +15,13 @@ class FeedRandomizer
 		# update item list if empty
 		if @items.length < 1
 			@seen = []
-			@items = Feed.new(@url).items
+			if @length
+				@items = Feed.new(@url).items.select do |item|
+					item.description.length < @length
+				end
+			else
+				@items = Feed.new(@url).items
+			end
 		end
 
 		# no items found?
