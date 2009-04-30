@@ -34,10 +34,12 @@ end
 class Feed
 
 	attr_reader :url, :feed, :type, :rss, :atom, 
-                    :items, :title, :link, :description
+                    :items, :title, :link, :description,
+			:errors
 
 	def initialize url
 		@url = url
+		@errors = []
 		@feed = self.class.parse( @url )
 		@type = @feed.respond_to?(:channel) ? :rss : :atom
 		@items = @feed.items.map{|item|FeedItem.new(item,@type)}

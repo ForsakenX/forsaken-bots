@@ -6,7 +6,7 @@ IrcCommandManager.register 'rsswatch', 'rsswatch <url>' do |m|
     feed = RssWatch.add m.args.first
   rescue Exception
     puts_error __FILE__, __LINE__
-    next m.reply "Feed Error: #{$!}"
+    next m.reply "Feed Error: #{$!.slice(0,50)}"
   end
   next m.reply "Feed, '#{feed.title}' added, "+
                "cached #{feed.items.length} items..."
@@ -55,25 +55,31 @@ class RssWatch
 #      puts "-- Updating RssWatch Feeds"
       load_feeds
       @@feeds.each do |url,links|
-	feed = Feed.new url 
-        next unless feed.items.length > 0
-        feed.items.each do |item|
-          next if links.include? item.link
-          links << item.link
-          # shrink url
-          tiny = TinyUrl.new(item.link).tiny || item.link
-          #msg = "#{feed.title}: #{item.title} #{tiny} "
-          msg = "#{item.title} #{tiny} "
-          #msg += Url.describe_link( item.link )
-          @@send_queue << msg        
-#          IrcConnection.privmsg "#forsaken", msg
-#          puts "-- Found update"
-        end
-#        puts "-- Feed links: #{feed.items.length}"
+	begin
+#		puts "-- checking #{url}"
+		feed = Feed.new url 
+	        next unless feed.items.length > 0
+	        feed.items.each do |item|
+	          next if links.include? item.link
+	          links << item.link
+	          # shrink url
+	          tiny = TinyUrl.new(item.link).tiny || item.link
+	          #msg = "#{feed.title}: #{item.title} #{tiny} "
+	          msg = "#{item.title} #{tiny} "
+	          #msg += Url.describe_link( item.link )
+	          @@send_queue << msg        
+#	          puts "-- Found update"
+	        end
+#	        puts "-- Feed links: #{feed.items.length}"
+	rescue Exception
+	    puts_error __FILE__, __LINE__
+	end
       end
-#      puts "-- Done Updating RssWatch Feeds"
+      puts "-- Done Updating RssWatch Feeds"
       save_feeds
       IrcConnection.privmsg "#forsaken", @@send_queue.shift
+    rescue Exception
+	    puts_error __FILE__, __LINE__
     end
 
   end

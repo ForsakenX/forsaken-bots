@@ -34,7 +34,7 @@ class ScanCommand
     attr_accessor :scanning
     def run
   
-      DirectPlay::find_hosts( users ) do |results|
+      EnetTest::find_hosts( users ) do |results|
 
         yield results if block_given?
 

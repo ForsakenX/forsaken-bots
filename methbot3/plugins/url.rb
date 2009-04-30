@@ -94,7 +94,7 @@ class UrlCommand
           info = Url.describe_link( url ).slice!(0,200)
           m.reply info
         rescue Exception
-          m.reply $!
+          m.reply "[Link Error]: " + $!.to_s.slice(0,50)
           next # do not save
         end
         # delete last entry for this url
@@ -115,16 +115,21 @@ class Url
  
     @@agent = WWW::Mechanize.new
     @@agent.user_agent_alias = "Linux Mozilla"
-    @@agent.read_timeout = 3 # fuck you
+    @@agent.read_timeout = 2
     @@agent.keep_alive = false # http keepalives
+    @@agent.max_history = 0 # otherwise head clouds get
 
     @@response_codes = {
       "404" => "Page not found"
     }
 
     def describe_link url
-      page = get( url )
-      title = link_title( url, page )
+      title = nil
+      page = get_method( url, :head )
+      if page.response['content-type'] =~ /text\/html/
+	        page = get_method( url, :page )
+        	title = link_title( url, page )
+      end
       if title.nil? || title.empty?
         "[Link Info]: #{link_info( url, page )}"
       else
@@ -132,39 +137,52 @@ class Url
       end
     end
 
+    def get url, n=3
+      get_method url, :page, n
+    end
+
     # get page handle
-    def get url, n = 3 # default 3 attempts
+    def get_method url, method=:page, n=3 # default 3 attempts
       url = "http://#{url}" unless url =~ /^http/
       n.times do |i|
         begin
-          return @@agent.get(url)
+		if method == :page
+			# this stops reading huge files marked as text/html
+			Timeout.timeout(1) do
+				return @@agent.get(url)
+			end
+			break # success
+		else
+			return @@agent.head(url)
+		end
+
           break # success
         rescue Timeout::Error
-          throw Timeout::Error if i == (n-1)
+	  raise "Took to long to read page..." if i == (n-1)
         end
       end
     rescue WWW::Mechanize::RedirectLimitReachedError
-      throw "To many redirects for: #{url}"
+      raise "To many redirects for: #{url}"
     rescue WWW::Mechanize::ResponseCodeError
       if error = @@response_codes[$!.response_code]
-        throw error
+        raise error
       else
-        throw "Unhandeled response code: #{$!.response_code}"
+        raise "Unhandeled response code: #{$!.response_code}"
       end
     rescue WWW::Mechanize::UnsupportedSchemeError
-      throw "Unsupported Scheme: #{$!.scheme}"
+      raise "Unsupported Scheme: #{$!.scheme}"
     rescue WWW::Mechanize::ContentTypeError
-      throw "ContentType Error: #{$!.content_type}"
+      raise "ContentType Error: #{$!.content_type}"
     rescue Timeout::Error
-      throw "Timed out trying to connect."
+      raise "Timed out."
     rescue Exception
       puts_error __FILE__,__LINE__
-      throw "Error Inspecting URL: #{$!}"
+      raise $!
     end
 
     # get title of page
     def link_title url, page=nil
-      page = get(url) if page.nil?
+      page = get_method(url,:page) if page.nil?
       return "" unless page.respond_to? :title
       return "" if page.title.nil?
       page.title.gsub!(/\s+/,' ')
@@ -172,7 +190,7 @@ class Url
 
      # get link info
     def link_info url, page=nil
-      page = get(url) if page.nil?
+      page = get_method(url,:head) if page.nil?
       page.uri.path =~ /\/([^\/\?]+)$/
       #url =~ /\/([^\/\?]+)$/
       filename = $1 || 'unknown'

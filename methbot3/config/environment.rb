@@ -10,6 +10,10 @@ $server   = 'irc.freenode.net'
 $port     = 6667
 $prefix   = '!'
 
+$privmsg_channel = '#forsaken'
+$privmsg_interface = '127.0.0.1'
+$privmsg_port = 6668
+
 $run_observers = [] # add procs to run when em is started
 
 $: << "#{ROOT}/lib/"
