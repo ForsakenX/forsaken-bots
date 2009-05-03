@@ -1,13 +1,6 @@
 require "rexml/document"
 
 #
-# Startup
-#
-
-# periodic game scanner
-$run_observers << Proc.new(){ EM::PeriodicTimer.new(30){ ScanCommand.run } }
-
-#
 # Public API
 #
 
@@ -17,31 +10,26 @@ class Game
     @@games = []; def games; @@games; end
 
     def create game
-      if g = Game.find(game[:host].ip)
-        g.version = game[:version]
-      else
+      unless g = Game.find(game[:ip], game[:port])
         g = Game.new(game)
         @@games << g
+    	Game.update
       end
       g
     end
 
-    def destroy ip
-      if game = Game.find(ip)
-        game.destroy
+    def find ip, port
+      @@games.detect do |game|
+        game.ip == ip
+        game.port == port
       end
-      game
-    end
-
-    def find ip
-      @@games.detect{|game|game.ip==ip}
     end
 
     def length
       @@games.length
     end
 
-    def update_xml
+    def update
       doc = REXML::Document.new
       games = doc.add_element("games")
       @@games.each do |game|
@@ -60,10 +48,6 @@ class Game
       end
     end
 
-    def update
-      update_xml
-    end
-
   end
 end
 
@@ -73,112 +57,26 @@ end
 
 class Game
 
-  attr_reader :host, :hosting, :timer, :start_time, :created_at, :ip, :timeout
-  attr_accessor :version
+  attr_reader :hostname, :start_time, :name, :ip, :url, :version
 
   def initialize game
-    @timeout     = 5 * 60
     @version     = game[:version]
-    @host        = game[:host]
-    @ip          = @host.ip
-    @canceled    = false
-    @hosting     = false
-    @checking    = false
-    @start_time  = nil
-    @fail_count  = 0
-    @created_at  = Time.now
-    @timer       = EM::PeriodicTimer.new( 1 ) { check_game }
-    @channel     = "#forsaken"
-  end
-
-  def name
-    @host.nick
-  end
-
-  def hostmask
-    "#{name}@#{@ip}"
-  end
-
-  def url
-    "fskn://#{ip}"
-  end
-
-  def check_game
-    status "Checking Game"
-    if @canceled || @checking
-      return status("Stopped: canceled (#{@canceled}) checking (#{@checking})")
-    end
-    @checking = true
-    DirectPlay::hosting?( @host.ip ) do |hosting,time|
-      hosting ? port_open : port_closed
-      @checking = false
-    end
-  end
-
-  def port_open
-    status "Port Open"
-    @fail_count = 0
-    @hosting ? game_already_started : started_hosting
-  end
-
-  def port_closed
-    status "Port Closed"
-    @fail_count += 1
-    @hosting ? stopped_hosting : game_not_started
-  end
-
-  def started_hosting
-    status "Started Hosting"
-    @hosting     = true
+    @name        = game[:name]
+    @ip          = game[:ip]
+    @port        = game[:port]
     @start_time  = Time.now
-    @timer.interval = 30  # higher updater
-    IrcConnection.chatmsg @channel, "#{name} has started a game @ #{url}"
-    Game.update
-  end
-
-  def stopped_hosting
-    if @fail_count < 5
-      status "Fail Count (#{@fail_count})"
-      @timer.interval = 1 # lower check interval to retest quickly
-      return
-    end
-    status "Closing: Finished"
-    IrcConnection.chatmsg @channel, "#{name}'s game has closed."
-    @hosting = false
-    destroy
-  end
-
-  def game_already_started
-    status "Allready Hosting"
-    @timer.interval = 30 
-  end
-
-  def game_not_started
-    status "Not started yet"
-    seconds = (Time.now - @created_at).to_i
-    if seconds > @timeout
-      status "Closing: To long to start"
-      IrcConnection.chatmsg @channel, "Timed out waiting for #{name} to start a game."
-      destroy
-    end
+    @url	 = "fskn://#{@ip}"
+    @hostname	 = "#{@name}@#{@ip}:#{@port}"
   end
 
   def destroy
     @@games.delete(self)
-    @canceled = true
-    @timer.cancel if @timer
     Game.update
     self
   end
 
-  def status msg
-    puts "GameTimer (#{hostmask}): #{msg}"
-  end
-
   def to_s
-    output  = "#{name} @ #{url}"
-    output += "version: #{@version} " if @version
-    output
+    "#{@name} @ #{@url} version: #{@version}"
   end
 
 end
