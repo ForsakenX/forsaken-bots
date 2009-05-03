@@ -1,8 +1,6 @@
 class GameTracker < EM::Connection
 	include EM::Protocols::LineText2
 
-	@@hosts = {}
-
 	def receive_line line
 		peer = Socket.unpack_sockaddr_in(get_peername)
 		port,ip = peer
@@ -11,26 +9,25 @@ class GameTracker < EM::Connection
 		state = parts.shift
 		case state
 		when "hosting"
-			version = parts.shift
-			Game.create({ 
+			name, version = parts
+			return if name.nil? or version.nil?
+			Game.update({ 
 				:ip => ip,
 				:port => port,
-				:version => version
+				:version => version,
+				:name => name
 			})
-			@@hosts[peer] = Time.now
 		when "finished"
-			Game.destroy ip
-			@@hosts.delete peer
+			Game.destroy ip, port
 		end
 	end
 
 	def self.check
-		@@hosts.dup.each do |peer,last_time|
-			time_range = Time.now - 60
-			if last_time < time_range
-				ip = peer[1]
-				Game.detroy ip
-				@@hosts.delete peer
+		puts "GameTracker checking games"
+		Game.games.dup.each do |game|
+			timeout_range = Time.now - 60
+			if game.last_time < timeout_range
+				game.destroy
 			end
 		end
 	end
@@ -43,7 +40,7 @@ $run_observers << Proc.new {
 			GameTracker.check
 		end
 	rescue
-		puts "Failed to open datagram socket for GameTracker..."
+		puts "Failed to setup GameTracker..."
 		exit 1
 	end
 }

@@ -9,12 +9,32 @@ class Game
 
     @@games = []; def games; @@games; end
 
+    def update game
+      g = Game.create game
+      g.last_time = Time.now
+    end
+
     def create game
       unless g = Game.find(game[:ip], game[:port])
         g = Game.new(game)
         @@games << g
-    	Game.update
+    	Game.publish
+        IrcConnection.privmsg "#forsaken", "Game started #{g.to_s}"
       end
+      g
+    end
+
+    def destroy ip, port
+      if g = Game.find(ip, port)
+	g.destroy
+      end
+      g
+    end
+
+    def destroy_game g
+      @@games.delete g
+      Game.publish
+      IrcConnection.privmsg "#forsaken", "Game closed #{g.to_s}"
       g
     end
 
@@ -29,7 +49,7 @@ class Game
       @@games.length
     end
 
-    def update
+    def publish
       doc = REXML::Document.new
       games = doc.add_element("games")
       @@games.each do |game|
@@ -57,7 +77,8 @@ end
 
 class Game
 
-  attr_reader :hostname, :start_time, :name, :ip, :url, :version
+  attr_reader :hostname, :start_time, :name, :ip, :port, :url, :version
+  attr_accessor :last_time
 
   def initialize game
     @version     = game[:version]
@@ -65,14 +86,13 @@ class Game
     @ip          = game[:ip]
     @port        = game[:port]
     @start_time  = Time.now
+    @last_time	 = @start_time
     @url	 = "fskn://#{@ip}"
     @hostname	 = "#{@name}@#{@ip}:#{@port}"
   end
 
   def destroy
-    @@games.delete(self)
-    Game.update
-    self
+    Game.destroy_game self
   end
 
   def to_s
