@@ -34,14 +34,13 @@ class Game
     def destroy_game g
       @@games.delete g
       Game.publish
-      IrcConnection.privmsg "#forsaken", "Game closed #{g.to_s}"
+      IrcConnection.privmsg "#forsaken", "Game #{g.name} closed"
       g
     end
 
     def find ip, port
       @@games.detect do |game|
-        game.ip == ip
-        game.port == port
+        game.ip == ip and game.port == port
       end
     end
 
@@ -56,6 +55,7 @@ class Game
         time = game.start_time.strftime("%a, %d %b %Y %H:%M:%S GMT-0400") if game.start_time
         games.add_element("game",{ "nick" => game.name,
                                    "ip"   => game.ip,
+                                   "port" => game.port,
                                    "version" => game.version,
                                    "started_at" => time})
       end
@@ -87,8 +87,8 @@ class Game
     @port        = game[:port]
     @start_time  = Time.now
     @last_time	 = @start_time
-    @url	 = "fskn://#{@ip}"
-    @hostname	 = "#{@name}@#{@ip}:#{@port}"
+    @url	 = "fskn://#{@ip}:#{@port}?version=#{@version}"
+    @hostname	 = "#{@name}@#{@url}"
   end
 
   def destroy
@@ -96,7 +96,7 @@ class Game
   end
 
   def to_s
-    "#{@name} @ #{@url} version: #{@version}"
+    "#{@name} @ #{@url}"
   end
 
 end

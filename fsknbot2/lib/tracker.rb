@@ -5,12 +5,14 @@ class GameTracker < EM::Connection
 		peer = Socket.unpack_sockaddr_in(get_peername)
 		port,ip = peer
 		puts "peer: {port=#{port}, ip=#{ip}}, data: #{line}"
-		parts = line.split
+		parts = line.split # safe from \r injection
 		state = parts.shift
 		case state
 		when "hosting"
-			name, version = parts
-			return if name.nil? or version.nil?
+			port = parts.shift
+			version = parts.shift
+			name = parts.join
+			return if port.nil? or name.nil? or version.nil?
 			Game.update({ 
 				:ip => ip,
 				:port => port,
@@ -18,6 +20,8 @@ class GameTracker < EM::Connection
 				:name => name
 			})
 		when "finished"
+			port = parts.shift
+			return if port.nil?
 			Game.destroy ip, port
 		end
 	end
