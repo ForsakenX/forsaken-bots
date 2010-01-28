@@ -48,7 +48,7 @@ class Game
       @@games.length
     end
 
-    def publish
+    def publish_xml
       doc = REXML::Document.new
       games = doc.add_element("games")
       @@games.each do |game|
@@ -66,6 +66,46 @@ class Game
       rescue Exception
       	puts "Error Saving Games.xml: #{$!}"
       end
+    end
+
+	def publish_json
+		games = []
+		@@games.each do |game|
+        		time = game.start_time.strftime("%a, %d %b %Y %H:%M:%S GMT-0400") if game.start_time
+			games << {
+				:nick => game.name,
+				:ip => game.ip,
+				:port => game.port,
+				:version => game.version,
+				:started_at => time
+			}
+		end
+		output = "{\n"
+		games.each_with_index do |game,x|
+			output += "{\n"
+			game.keys.each_with_index do |key,i|
+				output += "\t"
+				output += "#{key}='#{game[key]}'"
+				output += "," unless (i == game.keys.length - 1)
+				output += "\n"
+			end
+			output += "}"
+			output += "," unless (x == games.length - 1)
+			output += "\n"
+		end
+		output += "}\n"
+		begin
+			file = File.open( File.expand_path( "#{ROOT}/db/games.json" ), 'w+' )
+			file.write output
+			file.close
+		rescue Exception
+			puts "Error Saving games.json: #{$!}"
+		end
+	end
+
+    def publish
+      publish_json
+      publish_xml
     end
 
   end

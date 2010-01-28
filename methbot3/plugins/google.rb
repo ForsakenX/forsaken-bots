@@ -1,11 +1,15 @@
 
-IrcCommandManager.register ['google','wiki','wp','youtube'],
+IrcCommandManager.register ['google','g'],
                            'google <search>' do |m|
   m.reply GoogleCommand.run(m)
 end
 
 IrcCommandManager.register 'news', 'news <search>' do |m|
   m.reply GoogleNewsCommand.run(m)
+end
+
+IrcCommandManager.register ['desc','d'], 'desc <search>' do |m|
+  m.reply GoogleCommand.desc(m.args.join(' '))
 end
 
 require 'mechanize'
@@ -15,13 +19,26 @@ class GoogleCommand
     @@agent = WWW::Mechanize.new
     @@page = @@agent.get('http://google.com')
     @@form = @@page.form_with(:name => 'f')
+	def desc query
+		query = "site:wikipedia.org #{query}"
+	      form = @@form.dup
+	      form.q = query
+	      result = form.submit
+		links = result.links.select{|l|l.attributes['class']=='l'}
+		return "No results found" if links.empty?
+		link = GoogleLink.parse links.first.href
+		parser = result.parser
+		content = parser.search('div.s').first
+		return "No results found" if content.nil?
+		content.css('cite, span.gl').each { |n| n.remove }
+		content.content + " #{link}"
+	end
     def run m
       query = m.args.join(' ')
       return m.reply("Missing search") if query.empty?
-      query += " site:wikipedia.org" if %w{wp wiki}.include? m.command
-      query += " site:youtube.com.org" if %w{you}.include? m.command
       count = 0
       links = search( query )
+      return "No results found" if links.empty?
       formatted = ""
       links[0..(@@max_results-1)].each do |link|
         t = GoogleLink.parse( link.href )
@@ -41,6 +58,7 @@ class GoogleCommand
   end
 end
 
+require 'uri'
 require 'rss'
 class GoogleNewsCommand
   class << self
@@ -56,7 +74,11 @@ class GoogleNewsCommand
     def search query
       count = 0
       formatted = ""
-      parse(query).items[0..(@@max_results-1)].each do |item|
+      parsed = parse(query)
+      return "Query failed" if parsed.nil?
+      items = parsed.items
+      return "No results found" if item.nil? or items.empty?
+      items[0..(@@max_results-1)].each do |item|
         link = GoogleLink.parse(item.link.split('url=')[1])
         title = WWW::Mechanize::Util::html_unescape( item.title )
         r = "(#{count+=1}) #{title} #{link}"
@@ -68,6 +90,7 @@ class GoogleNewsCommand
     end
 
     def url query
+      query = URI.escape query
       @@search.sub('[[query]]',query)
     end
 

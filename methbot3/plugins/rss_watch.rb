@@ -59,7 +59,7 @@ class RssWatch
 #		puts "-- checking #{url}"
 		feed = Feed.new url 
 	        next unless feed.items.length > 0
-	        feed.items.each do |item|
+	        feed.items.reverse.each do |item|
 	          next if links.include? item.link
 	          links << item.link
 	          # shrink url
@@ -68,7 +68,7 @@ class RssWatch
 	          msg = "#{item.title} #{tiny} "
 	          #msg += Url.describe_link( item.link )
 	          @@send_queue << msg        
-#	          puts "-- Found update"
+	          puts "-- Found item #{item.title}"
 	        end
 #	        puts "-- Feed links: #{feed.items.length}"
 	rescue Exception

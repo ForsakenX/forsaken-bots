@@ -2,7 +2,7 @@
 class Chatter
 class << self
 
-	@@chatters = [ :random, :fortune, :wotd ]
+	@@chatters = [ :desc, :random, :fortune, :wotd ]
 	def chatters; @@chatters; end
 
 	@@randoms = []
@@ -23,6 +23,11 @@ class << self
 	rescue Exception
 		puts_error __FILE__,__LINE__
 		"chatter error: "+ $!
+	end
+
+	def desc args=[]
+		words = File.readlines "/etc/dictionaries-common/words"
+		GoogleCommand.desc words[rand(words.length)]
 	end
 
 	# should we add ability to add fortunes ?
