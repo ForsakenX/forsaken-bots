@@ -3,16 +3,16 @@
 require 'rubygems'
 require 'eventmachine'
 
-$nick     = 'timmer'
-$nick_proper = 'Timmer'
-$channels = ['#6dof']
+$nick     = 'tif'
+$nick_proper = 'tif'
+$channels = ['#forsaken','#6dof']
 $server   = 'irc.freenode.net'
 $port     = 6667
 $prefix   = '!'
 
 $privmsg_channel = '#forsaken'
 $privmsg_interface = '127.0.0.1'
-$privmsg_port = 6668
+$privmsg_port = 6669
 
 $run_observers = [] # add procs to run when em is started
 

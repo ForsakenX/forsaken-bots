@@ -1,3 +1,3 @@
 while(true) do
-  ./run.rb $@
+  ./run.rb `cat pass` "$@"
 done

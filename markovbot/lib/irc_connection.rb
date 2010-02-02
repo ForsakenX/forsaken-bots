@@ -76,8 +76,8 @@ class IrcConnection < EM::Connection
   def post_init
     status "Connected"
     @@connection = self
-    send_line "PASS #{ARGV[0]}"
-    send_line "USER x x x :x"
+    send_line "PASS #{File.read ARGV[0]}"
+    send_line "USER #{$nick} #{$nick} #{$nick} :#{$nick}"
     send_line "NICK #{$nick_proper}"
     IrcConnection.join $channels
   end
@@ -89,7 +89,7 @@ class IrcConnection < EM::Connection
   end
 
   def receive_line line
-    puts "irc >>> (methbot3) #{line}"
+    puts "irc >>> (markovbot) #{line}"
     close_connection if line.split.first.downcase == "error"
     IrcHandleLine.new line
   rescue Exception

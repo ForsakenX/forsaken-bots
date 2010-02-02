@@ -38,6 +38,13 @@ class IrcHandleLine
     ## cut up the line
     @parts = line.split(' ')
 
+    ## pings
+    if @parts.first.downcase == "ping"
+	@parts.shift
+        IrcConnection.pong @parts.join(' ')
+	return
+    end
+
     ## first part of line is hostname of server or user_tag
     ## server == :koolaid.ny.us.blitzed.org
     ## user_tag == :nick![n|y]=uid@hostname
@@ -50,10 +57,6 @@ class IrcHandleLine
 
     ## handle the action
     case @action
-
-      ## pings
-      when 'ping'
-        IrcConnection.pong @parts.join(' ')
 
       ## handle nick change
       when 'nick'

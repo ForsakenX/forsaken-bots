@@ -56,6 +56,10 @@ class IrcConnection < EM::Connection
       IrcConnection.send_line "KICK #{channel} #{nick} :#{message}"
     end
 
+    def pong token
+      IrcConnection.send_line "PONG #{token}"
+    end
+
   end
 end
 
