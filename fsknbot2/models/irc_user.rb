@@ -10,7 +10,7 @@ class IrcUser
     @@authorized = %w{methods silence diii-the_lion}
     def authorized; @@authorized; end
 
-    @@hidden = %w{epsy methbot nevy.* delia}
+    @@hidden = %w{epsy methbot nevy.* delia}# .*kim?mel.* .*kmiell.*}
     @@hidden << $nick
 
     @@users = []; def users; @@users; end
@@ -38,7 +38,8 @@ class IrcUser
     def get_ip user
       ignored = ["unaffiliated/#{user.nick.downcase}","services."]
       return nil if ignored.include? user.host.downcase
-      ip = Resolv.getaddress(user.host)
+			host = user.host.sub('gateway/web/freenode/ip.','')
+      ip = Resolv.getaddress(host)
       return nil unless ip =~ /^[0-9\.]+$/
       return ip
     rescue Exception #Resolv::Error
@@ -93,6 +94,7 @@ class IrcUser
   end
 
   def ignored
+    #return false if @ip == "174.49.70.136"
     IrcUser.hidden( @nick )
   end
 

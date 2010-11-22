@@ -13,7 +13,7 @@ class << self
 	end
 
 	def unescape string
-		WWW::Mechanize::Util::html_unescape( string )
+		Mechanize::Util::html_unescape( string )
 	end
 
 	def clean string

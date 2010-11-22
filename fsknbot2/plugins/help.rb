@@ -19,12 +19,15 @@ class HelpCommand
     end
 
     def helphelp
-      "help [command].  "+
-      "Commands: #{commands.join(', ')}"
+      "help [command] (for help on specific command), "+
+			"list of commands and aliases: #{commands.join(', ')}"
     end
 
     def commands
-      IrcCommandManager.commands.keys
+      IrcCommandManager.aliases.keys.sort.map do |command|
+				aliases = IrcCommandManager.aliases[command].join(';')
+				aliases.empty? ? command : command + " (#{aliases})"
+			end
     end
 
     def not_found
@@ -33,4 +36,3 @@ class HelpCommand
 
   end
 end
-

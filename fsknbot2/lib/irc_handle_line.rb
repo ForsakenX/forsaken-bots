@@ -106,7 +106,7 @@ class IrcHandleLine
         return unless $channels.include? channel
 
         ## send join event
-        self.class.events[:join].call @nick
+        self.class.events[:join].call(channel,@nick)
 
         ## we just joined 
         if @nick.downcase == $nick

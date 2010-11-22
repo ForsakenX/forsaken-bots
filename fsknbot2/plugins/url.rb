@@ -113,7 +113,7 @@ end
 class Url
   class << self
  
-    @@agent = WWW::Mechanize.new
+    @@agent = Mechanize.new
     @@agent.user_agent_alias = "Linux Mozilla"
     @@agent.read_timeout = 2
     @@agent.keep_alive = false # http keepalives
@@ -161,17 +161,17 @@ class Url
 	  raise "Took to long to read page..." if i == (n-1)
         end
       end
-    rescue WWW::Mechanize::RedirectLimitReachedError
+    rescue Mechanize::RedirectLimitReachedError
       raise "To many redirects for: #{url}"
-    rescue WWW::Mechanize::ResponseCodeError
+    rescue Mechanize::ResponseCodeError
       if error = @@response_codes[$!.response_code]
         raise error
       else
         raise "Unhandeled response code: #{$!.response_code}"
       end
-    rescue WWW::Mechanize::UnsupportedSchemeError
+    rescue Mechanize::UnsupportedSchemeError
       raise "Unsupported Scheme: #{$!.scheme}"
-    rescue WWW::Mechanize::ContentTypeError
+    rescue Mechanize::ContentTypeError
       raise "ContentType Error: #{$!.content_type}"
     rescue Timeout::Error
       raise "Timed out."

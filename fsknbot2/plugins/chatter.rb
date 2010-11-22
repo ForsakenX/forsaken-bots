@@ -26,13 +26,13 @@ class << self
 	end
 
 	def desc args=[]
-		words = File.readlines "/etc/dictionaries-common/words"
+		words = File.readlines "#{ROOT}/db/words"
 		GoogleCommand.desc words[rand(words.length)]
 	end
 
 	# should we add ability to add fortunes ?
 
-	@@fortune_modes = %w{art astrology atheism bofh-excuses computers cookie debian definitions disclaimer drugs education ethnic food fortunes goedel humorists kids knghtbrd law limerick linux linuxcookie literature love magic mario.anagramas mario.computadores mario.gauchismos mario.geral mario.palindromos mario.piadas medicine men-women misandry miscellaneous news paradoxum people perl pets platitudes politics privates racism religion riddles science sex songs-poems spam sports startrek translate-me vulgarity wisdom work zippy}
+	@@fortune_modes = %w{art ascii-art bofh-excuses calvin chalkboard chucknorris computers cookie debian definitions drugs dubya education ethnic familyguy firefly food fortunes futurama gentoo-dev gentoo-forums goedel hitchhiker homer humorists humorix-misc humorix-stories kernelcookies kids knghtbrd law linux linuxcookie literature love magic medicine men-women miscellaneous news off osfortune paradoxum people perl pets platitudes politics powerpuff pqf riddles science smac songs-poems SP sports startrek starwars strangelove tao translate-me wisdom work zippy zx-error}
 
 	def fortune_modes; @@fortune_modes; end
 
@@ -49,8 +49,8 @@ class << self
 		end
 		opts = opts.join(' ')
 		puts "Chatter Fortune options: "+ opts.to_s
-		off_dir = "/usr/share/games/fortunes/off"
-		(`cd #{off_dir}; fortune #{opts} 2>&1`||"").gsub(/\s+/,' ')
+		off_dir = "/usr/share/fortune"
+		(`fortune #{opts} 3>&1`||"").gsub(/\s+/,' ')
 	end
 
 	def wotd args=[]  # 1 word of the day

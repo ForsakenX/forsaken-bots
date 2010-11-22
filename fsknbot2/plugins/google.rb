@@ -1,26 +1,43 @@
 
-IrcCommandManager.register ['google','g'],
-                           'google <search>' do |m|
+IrcCommandManager.register ['google','g'], 'google <search>' do |m|
   m.reply GoogleCommand.run(m)
 end
 
-IrcCommandManager.register 'news', 'news <search>' do |m|
+IrcCommandManager.register ['news','n'], 'news <topic>' do |m|
   m.reply GoogleNewsCommand.run(m)
 end
 
-IrcCommandManager.register ['desc','d'], 'desc <search>' do |m|
+IrcCommandManager.register ['wiki','w'], 'wiki <search>' do |m|
   m.reply GoogleCommand.desc(m.args.join(' '))
+end
+
+IrcCommandManager.register ['define','d'], 'define <word>' do |m|
+  m.reply GoogleCommand.define(m.args.join(' '))
 end
 
 require 'mechanize'
 class GoogleCommand
   class << self
     @@max_results = 3
-    @@agent = WWW::Mechanize.new
+    @@agent = Mechanize.new
     @@page = @@agent.get('http://google.com')
     @@form = @@page.form_with(:name => 'f')
 	def desc query
 		query = "site:wikipedia.org #{query}"
+	      form = @@form.dup
+	      form.q = query
+	      result = form.submit
+		links = result.links.select{|l|l.attributes['class']=='l'}
+		return "No results found" if links.empty?
+		link = GoogleLink.parse links.first.href
+		parser = result.parser
+		content = parser.search('div.s').first
+		return "No results found" if content.nil?
+		content.css('cite, span.gl').each { |n| n.remove }
+		content.content + " #{link}"
+	end
+	def define query
+		query = "site:wiktionary.org #{query}"
 	      form = @@form.dup
 	      form.q = query
 	      result = form.submit
@@ -77,10 +94,10 @@ class GoogleNewsCommand
       parsed = parse(query)
       return "Query failed" if parsed.nil?
       items = parsed.items
-      return "No results found" if item.nil? or items.empty?
+      return "No results found" if items.nil? or items.empty?
       items[0..(@@max_results-1)].each do |item|
         link = GoogleLink.parse(item.link.split('url=')[1])
-        title = WWW::Mechanize::Util::html_unescape( item.title )
+        title = Mechanize::Util::html_unescape( item.title )
         r = "(#{count+=1}) #{title} #{link}"
         # keep limited to one line of irc
         break if formatted.length + r.length > 230

@@ -1,4 +1,5 @@
 require "rexml/document"
+require 'net/http'
 
 #
 # Public API
@@ -26,7 +27,7 @@ class Game
 
     def destroy ip, port
       if g = Game.find(ip, port)
-	g.destroy
+				g.destroy
       end
       g
     end
@@ -124,11 +125,17 @@ class Game
     @version     = game[:version]
     @name        = game[:name]
     @ip          = game[:ip]
+		@country     = Net::HTTP.get_response(URI.parse(
+#			'http://api.hostip.info/country.php?ip='+game[:ip]
+			"http://api.hostip.info/get_html.php?ip=#{game[:ip]}&position=true"
+		)).body.gsub(/\s+/," ").gsub(/City.*/,'').strip
     @port        = game[:port]
     @start_time  = Time.now
     @last_time	 = @start_time
     @url	 = "fskn://#{@ip}:#{@port}?version=#{@version}"
     @hostname	 = "#{@name}@#{@url}"
+		output=`#{ROOT}/plugins/test/test #{@ip} #{@port}`
+		@open = "Port Open: " + ($? == 0).to_s
   end
 
   def destroy
@@ -136,7 +143,7 @@ class Game
   end
 
   def to_s
-    "#{@name} @ #{@url}"
+    "#{@name} @ #{@url} #{@country}, #{@open}"
   end
 
 end

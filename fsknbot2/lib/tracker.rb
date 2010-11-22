@@ -40,7 +40,7 @@ end
 $run_observers << Proc.new {
 	begin
 		EM::open_datagram_socket "0.0.0.0", 47624, GameTracker
-	        EM::PeriodicTimer.new( 60 ) do # every minute
+		EM::PeriodicTimer.new( 60 ) do # every minute
 			GameTracker.check
 		end
 	rescue

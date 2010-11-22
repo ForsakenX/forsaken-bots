@@ -1,13 +1,13 @@
 
-IrcCommandManager.register 'welcome',
-"welcome <nick> => Welcome user. "
+#IrcCommandManager.register 'welcome',
+#"welcome <nick> => Welcome user. "
 
-IrcCommandManager.register 'welcome' do |m|
-  WelcomeCommand.command m
-end
+#IrcCommandManager.register 'welcome' do |m|
+#  WelcomeCommand.command m
+#end
 
-IrcHandleLine.events[:join].register do |nick|
-  WelcomeCommand.welcome nick.downcase
+IrcHandleLine.events[:join].register do |channel,nick|
+  WelcomeCommand.welcome nick.downcase if channel == "#forsaken"
 end
 
 class WelcomeCommand

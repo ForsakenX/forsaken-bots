@@ -63,7 +63,8 @@ class RssWatch
 	          next if links.include? item.link
 	          links << item.link
 	          # shrink url
-	          tiny = TinyUrl.new(item.link).tiny || item.link
+	          #tiny = TinyUrl.new(item.link).tiny || item.link
+	          tiny = item.link
 	          #msg = "#{feed.title}: #{item.title} #{tiny} "
 	          msg = "#{item.title} #{tiny} "
 	          #msg += Url.describe_link( item.link )
