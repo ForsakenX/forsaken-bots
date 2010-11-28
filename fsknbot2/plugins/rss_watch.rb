@@ -78,7 +78,7 @@ class RssWatch
       end
       puts "-- Done Updating RssWatch Feeds"
       save_feeds
-      IrcConnection.privmsg "#forsaken", @@send_queue.shift
+      IrcConnection.privmsg $channels, @@send_queue.shift
     rescue Exception
 	    puts_error __FILE__, __LINE__
     end

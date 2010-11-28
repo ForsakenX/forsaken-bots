@@ -18,7 +18,7 @@ class IrcConnection < EM::Connection
       @@connection.close_connection unless @@connection.nil?
     end
 
-    def privmsg target, messages
+    def privmsg targets, messages
       [messages].flatten.each do |message|
         next if message.nil? or !message.respond_to?(:to_s) or message.empty?
         # shrink white space
@@ -29,7 +29,9 @@ class IrcConnection < EM::Connection
           # catch white space only lines
           next if chunk.gsub(/\s/,'').empty?
           # send the line
-          IrcConnection.send_line "PRIVMSG #{target.downcase} :#{chunk}"
+					[targets].flatten.each do |target|
+      	    IrcConnection.send_line "PRIVMSG #{target.downcase} :#{chunk}"
+					end
         }
       end
     end
