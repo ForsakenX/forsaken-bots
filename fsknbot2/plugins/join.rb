@@ -7,5 +7,4 @@ IrcHandleLine.events[:join].register do |channel,nick|
 			IrcConnection.kick user.nick, "your welcome"
 		end
 	end
-	IrcConnection.privmsg channel, GamesCommand.run if channel == "#forsaken"
 end

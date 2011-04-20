@@ -4,6 +4,10 @@ class GameTracker < EM::Connection
 	def receive_line line
 		peer = Socket.unpack_sockaddr_in(get_peername)
 		port,ip = peer
+		if ip == '71.52.173.202'
+			puts "ignoring message from bukecooter"
+			return
+		end
 		puts "peer: {port=#{port}, ip=#{ip}}, data: #{line}"
 		parts = line.split # safe from \r injection
 		state = parts.shift
@@ -23,6 +27,8 @@ class GameTracker < EM::Connection
 			port = parts.shift
 			return if port.nil?
 			Game.destroy ip, port
+		when "ping"
+			send_data "pong\n"
 		end
 	end
 

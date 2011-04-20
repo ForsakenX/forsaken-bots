@@ -19,8 +19,8 @@ class Game
       unless g = Game.find(game[:ip], game[:port])
         g = Game.new(game)
         @@games << g
-    	Game.publish
-        IrcConnection.privmsg "#forsaken", "Game started #{g.to_s}"
+ 		   	Game.publish
+        IrcConnection.privmsg "#forsaken", "Game started #{g.to_s}" #if g.valid
       end
       g
     end
@@ -35,7 +35,7 @@ class Game
     def destroy_game g
       @@games.delete g
       Game.publish
-      IrcConnection.privmsg "#forsaken", "Game #{g.name} closed"
+      IrcConnection.privmsg "#forsaken", "Game #{g.name} closed" #if g.valid
       g
     end
 
@@ -53,7 +53,8 @@ class Game
       doc = REXML::Document.new
       games = doc.add_element("games")
       @@games.each do |game|
-        time = game.start_time.strftime("%a, %d %b %Y %H:%M:%S GMT-0400") if game.start_time
+				next unless game.valid
+        time = game.start_time.to_i if game.start_time
         games.add_element("game",{ "nick" => game.name,
                                    "ip"   => game.ip,
                                    "port" => game.port,
@@ -72,7 +73,8 @@ class Game
 	def publish_json
 		games = []
 		@@games.each do |game|
-        		time = game.start_time.strftime("%a, %d %b %Y %H:%M:%S GMT-0400") if game.start_time
+			next unless game.valid
+   		time = game.start_time.strftime("%a, %d %b %Y %H:%M:%S GMT-0400") if game.start_time
 			games << {
 				:nick => game.name,
 				:ip => game.ip,
@@ -119,23 +121,28 @@ end
 class Game
 
   attr_reader :hostname, :start_time, :name, :ip, :port, :url, :version
-  attr_accessor :last_time
+  attr_accessor :last_time, :open, :valid
 
   def initialize game
     @version     = game[:version]
     @name        = game[:name]
     @ip          = game[:ip]
-		@country     = Net::HTTP.get_response(URI.parse(
-#			'http://api.hostip.info/country.php?ip='+game[:ip]
-			"http://api.hostip.info/get_html.php?ip=#{game[:ip]}&position=true"
-		)).body.gsub(/\s+/," ").gsub(/City.*/,'').strip
+		begin
+			@country   = Net::HTTP.get_response(URI.parse(
+	#			'http://api.hostip.info/country.php?ip='+game[:ip]
+				"http://api.hostip.info/get_html.php?ip=#{game[:ip]}&position=true"
+			)).body.gsub(/\s+/," ").gsub(/City.*/,'').strip
+		rescue Exception
+			@country   = "Unknown"
+		end
     @port        = game[:port]
     @start_time  = Time.now
     @last_time	 = @start_time
     @url	 = "fskn://#{@ip}:#{@port}?version=#{@version}"
     @hostname	 = "#{@name}@#{@url}"
-		output=`#{ROOT}/plugins/test/test #{@ip} #{@port}`
+		output=`#{ROOT}/plugins/test/test #{@ip} #{@port} 2>&1`
 		@open = "Port Open: " + ($? == 0).to_s
+		@valid = $? == 0
   end
 
   def destroy
