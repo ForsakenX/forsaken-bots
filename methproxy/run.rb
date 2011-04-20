@@ -1,5 +1,9 @@
 #!/usr/bin/env ruby
 
+##
+# Simple proxy for multiple bots to hide behind one login
+##
+
 require 'rubygems'
 require 'eventmachine'
 
