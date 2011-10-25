@@ -4,7 +4,7 @@ IrcChatMsg.register do |m|
   max = 512 - 2 # 512 - \r\n parsed by receive line
 
   # detect possible overflow
-  next unless m.line.length >= max
+  next unless (m.line||"").length >= max
 
   # show end of message
   length = 120  # length of message to show
