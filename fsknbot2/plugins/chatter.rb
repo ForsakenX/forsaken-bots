@@ -67,9 +67,9 @@ end
 end
 
 IrcCommandManager.register 'chatter',
-	"chatter [#{Chatter.chatters.join('|')}]\n" +
+	"chatter [#{Chatter.chatters.join(', ')}]\n" +
 	"chatter fortune [<mode>...] => Possible Modes: "+
-	"[#{Chatter.fortune_modes.join('|')}]"
+	"[#{Chatter.fortune_modes.join(', ')}]"
 
 IrcCommandManager.register 'chatter' do |m|
 	command = m.args.shift

@@ -27,7 +27,8 @@ class GoogleCommand
 	      form = @@form.dup
 	      form.q = query
 	      result = form.submit
-		links = result.links.select{|l|l.attributes['class']=='l'}
+		#links = result.links.select{|l|l.attributes['class']=='l'}
+		links = result.links.select{|l| l.attributes['class'].nil? and !l.attributes['onmousedown'].nil? }
 		return "No results found" if links.empty?
 		link = GoogleLink.parse links.first.href
 		parser = result.parser
@@ -41,7 +42,8 @@ class GoogleCommand
 	      form = @@form.dup
 	      form.q = query
 	      result = form.submit
-		links = result.links.select{|l|l.attributes['class']=='l'}
+		#links = result.links.select{|l|l.attributes['class']=='l'}
+		links = result.links.select{|l| l.attributes['class'].nil? and !l.attributes['onmousedown'].nil? }
 		return "No results found" if links.empty?
 		link = GoogleLink.parse links.first.href
 		parser = result.parser
@@ -70,7 +72,8 @@ class GoogleCommand
       form = @@form.dup
       form.q = query
       result = form.submit
-      result.links.select{|l|l.attributes['class']=='l'}
+      #result.links.select{|l|l.attributes['class']=='l'}
+			result.links.select{|l| l.attributes['class'].nil? and !l.attributes['onmousedown'].nil? }
     end
   end
 end

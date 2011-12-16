@@ -15,6 +15,7 @@ IrcChatMsg.register do |m|
 end
 
 require 'mechanize'
+require 'yaml'
 class UrlCommand 
   class << self
  
