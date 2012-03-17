@@ -94,7 +94,6 @@ class IrcUser
   end
 
   def ignored
-    #return false if @ip == "174.49.70.136"
     IrcUser.hidden( @nick )
   end
 
