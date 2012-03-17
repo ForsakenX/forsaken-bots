@@ -16,19 +16,24 @@ IrcCommandManager.register ['define','d'], 'define <word>' do |m|
 end
 
 require 'mechanize'
+require 'cgi'
 class GoogleCommand
   class << self
     @@max_results = 3
     @@agent = Mechanize.new
     @@page = @@agent.get('http://google.com')
     @@form = @@page.form_with(:name => 'f')
+	def parse_serp_links result
+		#result.links.select{|l|l.attributes['class']=='l'}
+		#result.links.select{|l| l.attributes['class'].nil? and !l.attributes['onmousedown'].nil? }
+		result.links.select{|l| l.href =~ %r{^/url\?q=} }
+	end
 	def desc query
 		query = "site:wikipedia.org #{query}"
-	      form = @@form.dup
-	      form.q = query
-	      result = form.submit
-		#links = result.links.select{|l|l.attributes['class']=='l'}
-		links = result.links.select{|l| l.attributes['class'].nil? and !l.attributes['onmousedown'].nil? }
+    form = @@form.dup
+    form.q = query
+    result = form.submit
+		links = parse_serp_links result
 		return "No results found" if links.empty?
 		link = GoogleLink.parse links.first.href
 		parser = result.parser
@@ -39,11 +44,10 @@ class GoogleCommand
 	end
 	def define query
 		query = "site:wiktionary.org #{query}"
-	      form = @@form.dup
-	      form.q = query
-	      result = form.submit
-		#links = result.links.select{|l|l.attributes['class']=='l'}
-		links = result.links.select{|l| l.attributes['class'].nil? and !l.attributes['onmousedown'].nil? }
+	  form = @@form.dup
+	  form.q = query
+	  result = form.submit
+		links = parse_serp_links result
 		return "No results found" if links.empty?
 		link = GoogleLink.parse links.first.href
 		parser = result.parser
@@ -72,8 +76,7 @@ class GoogleCommand
       form = @@form.dup
       form.q = query
       result = form.submit
-      #result.links.select{|l|l.attributes['class']=='l'}
-			result.links.select{|l| l.attributes['class'].nil? and !l.attributes['onmousedown'].nil? }
+			parse_serp_links result
     end
   end
 end
@@ -126,10 +129,14 @@ end
 class GoogleLink
   class << self
     def parse url
+			url = extract_url url
       return url if url.length < 40
       t = TinyUrl.new( url )
       t.tiny || t.original
     end
+		def extract_url url
+			CGI::unescape url.split('q=')[1].split('&')[0]
+		end
   end
 end
 

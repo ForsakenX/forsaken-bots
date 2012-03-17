@@ -13,7 +13,7 @@ IrcCommandManager.register 'rsswatch', 'rsswatch <url>' do |m|
 end
 
 $run_observers << Proc.new {
-        interval = 60 # every minute
+        interval = 60*6 # every minute
         EM::PeriodicTimer.new( interval ) do
 		RssWatch.update_feeds
         end
@@ -73,6 +73,7 @@ class RssWatch
 	        end
 #	        puts "-- Feed links: #{feed.items.length}"
 	rescue Exception
+			puts "ERROR ::::::: file parsing feed at: #{url}"
 	    puts_error __FILE__, __LINE__
 	end
       end
@@ -80,6 +81,7 @@ class RssWatch
       save_feeds
       IrcConnection.privmsg $channels, @@send_queue.shift
     rescue Exception
+			puts "ERROR ::::::::::   update_feeds "
 	    puts_error __FILE__, __LINE__
     end
 
