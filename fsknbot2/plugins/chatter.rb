@@ -1,4 +1,3 @@
-
 class Chatter
 class << self
 
