@@ -13,13 +13,13 @@ class Game
     def update game
       g = Game.create game
       g.last_time = Time.now
+ 		  Game.publish if g.valid # updates if user opened port
     end
 
     def create game
       unless g = Game.find(game[:ip], game[:port])
         g = Game.new(game)
         @@games << g
- 		   	Game.publish
 				if g.valid
         	IrcConnection.privmsg "#forsaken", "Game started #{g.to_s}"
 				else
@@ -127,7 +127,7 @@ end
 class Game
 
   attr_reader :hostname, :start_time, :name, :ip, :port, :url, :version
-  attr_accessor :last_time, :open, :valid
+  attr_accessor :last_time, :open
 
   def initialize game
     @version     = game[:version]
@@ -145,9 +145,14 @@ class Game
     @last_time	 = @start_time
     @url	 = "fskn://#{@ip}:#{@port}?version=#{@version}"
     @hostname	 = "#{@name}@#{@url}"
-		output=`#{ROOT}/plugins/test/test #{@ip} #{@port} 2>&1`
-		@valid = $? == 0
-  end
+	end
+
+	def valid
+		@valid ||= begin
+			output=`#{ROOT}/plugins/test/test #{@ip} #{@port} 2>&1`
+			$? == 0
+		end
+	end
 
   def destroy
     Game.destroy_game self
