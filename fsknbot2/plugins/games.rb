@@ -10,11 +10,16 @@ class GamesCommand
       output = []
       Game.games.each do |game|
 	      time = seconds_to_clock( Time.now - game.start_time )
-	      output << "{ "+
-        	 "#{game.to_s} "+
-	         "started at: #{game.start_time.strftime('%I:%M:%S')} "+
-        	 "runtime #{time} "+
-	       "}"
+				if games.valid
+	      	output << "{ "+
+        		 "#{game.to_s} "+
+	       	  "started at: #{game.start_time.strftime('%I:%M:%S')} "+
+        		 "runtime #{time} "+
+	       	"}"
+				else
+					output << "{ #{game.name} has a game open but "+
+						"the game is not joinable }"
+				end
       end
       "Games: #{output.join(', ')}"
     end
