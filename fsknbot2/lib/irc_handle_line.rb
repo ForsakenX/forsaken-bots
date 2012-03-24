@@ -40,9 +40,9 @@ class IrcHandleLine
 
     ## pings
     if @parts.first.downcase == "ping"
-	@parts.shift
-        IrcConnection.pong @parts.join(' ')
-	return
+			@parts.shift
+      IrcConnection.pong @parts.join(' ')
+			return
     end
 
     ## first part of line is hostname of server or user_tag
