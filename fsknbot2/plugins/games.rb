@@ -10,7 +10,7 @@ class GamesCommand
       output = []
       Game.games.each do |game|
 	      time = seconds_to_clock( Time.now - game.start_time )
-				if games.valid
+				if game.valid
 	      	output << "{ "+
         		 "#{game.to_s} "+
 	       	  "started at: #{game.start_time.strftime('%I:%M:%S')} "+

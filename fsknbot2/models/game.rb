@@ -24,7 +24,7 @@ class Game
         	IrcConnection.privmsg "#forsaken", "Game started #{g.to_s}"
 				else
         	IrcConnection.privmsg "#forsaken",
-						"A game has been started by, '#{g.name}' "+
+						"'#{g.name}' has started a game "+
 						"but the port is closed so nobody can join..."
 				end
       end
