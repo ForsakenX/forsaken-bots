@@ -20,7 +20,13 @@ class Game
         g = Game.new(game)
         @@games << g
  		   	Game.publish
-        IrcConnection.privmsg "#forsaken", "Game started #{g.to_s}" #if g.valid
+				if g.valid
+        	IrcConnection.privmsg "#forsaken", "Game started #{g.to_s}"
+				else
+        	IrcConnection.privmsg "#forsaken",
+						"A game has been started by, '#{g.name}' "+
+						"but the port is closed so nobody can join..."
+				end
       end
       g
     end
@@ -35,7 +41,7 @@ class Game
     def destroy_game g
       @@games.delete g
       Game.publish
-      IrcConnection.privmsg "#forsaken", "Game #{g.name} closed" #if g.valid
+      IrcConnection.privmsg "#forsaken", "Game #{g.name} closed" if g.valid
       g
     end
 
@@ -129,7 +135,6 @@ class Game
     @ip          = game[:ip]
 		begin
 			@country   = Net::HTTP.get_response(URI.parse(
-	#			'http://api.hostip.info/country.php?ip='+game[:ip]
 				"http://api.hostip.info/get_html.php?ip=#{game[:ip]}&position=true"
 			)).body.gsub(/\s+/," ").gsub(/City.*/,'').strip
 		rescue Exception
@@ -141,7 +146,6 @@ class Game
     @url	 = "fskn://#{@ip}:#{@port}?version=#{@version}"
     @hostname	 = "#{@name}@#{@url}"
 		output=`#{ROOT}/plugins/test/test #{@ip} #{@port} 2>&1`
-		@open = "Port Open: " + ($? == 0).to_s
 		@valid = $? == 0
   end
 
@@ -150,7 +154,7 @@ class Game
   end
 
   def to_s
-    "#{@name} @ #{@url} #{@country}, #{@open}"
+   	"#{@name} @ #{@url} #{@country}"
   end
 
 end
