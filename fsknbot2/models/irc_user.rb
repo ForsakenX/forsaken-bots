@@ -98,8 +98,16 @@ class IrcUser
   end
 
   def ip
-    @ip || @ip = IrcUser.get_ip(self)
+    @ip ||= IrcUser.get_ip(self)
   end
+
+	def location
+		@location ||= ip.nil? ? throw : Net::HTTP.get_response(URI.parse(
+			"http://api.hostip.info/get_html.php?ip=#{ip}&position=true"
+		)).body.gsub(/\s+/," ").gsub(/City.*/,'').strip
+	rescue Exception
+		@location = "Unknown"
+	end
 
   def hostmask
     "#{@nick}@#{ip}"
