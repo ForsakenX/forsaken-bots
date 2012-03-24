@@ -17,7 +17,7 @@ class GamesCommand
         		 "runtime #{time} "+
 	       	"}"
 				else
-					output << "{ #{game.name} has a game open but "+
+					output << "{ '#{game.name}' has a game open but "+
 						"the game is not joinable }"
 				end
       end
