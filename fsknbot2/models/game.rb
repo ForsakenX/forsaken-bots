@@ -24,8 +24,9 @@ class Game
         	IrcConnection.privmsg "#forsaken", "Game started #{g.to_s}"
 				else
         	IrcConnection.privmsg "#forsaken",
-						"'#{g.name}' has started a game "+
-						"but the port is closed so nobody can join..."
+						"A game has started a game "+
+						"but the port is closed so nobody can join... "+
+						"#{g.name}@#{g.ip} #{g.country}"
 				end
       end
       g
@@ -127,7 +128,7 @@ end
 class Game
 
   attr_reader :hostname, :start_time, :name, :ip, :port, :url, :version
-  attr_accessor :last_time, :open
+  attr_accessor :last_time, :open, :country
 
   def initialize game
     @version     = game[:version]
