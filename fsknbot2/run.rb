@@ -1,5 +1,8 @@
 #!/usr/bin/env ruby
 
+$stdout.sync = true # disable output buffering
+$stderr.sync = true # disable output buffering
+
 ROOT = File.dirname(__FILE__)
 
 require "#{ROOT}/config/environment"
