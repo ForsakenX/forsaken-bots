@@ -88,12 +88,14 @@ class IrcConnection < EM::Connection
 
   def unbind
     status "Disconnected"
+		sleep 1
     reconnect $server, $port
     post_init
   end
 
   def receive_line line
-    puts "irc >>> (fsknbot2) #{line}"
+    t=Time.now.strftime("%m-%d-%y %H:%M:%S")
+    puts "irc #{t} >>> (fsknbot2) #{line}"
     close_connection if line.split.first.downcase == "error"
     IrcHandleLine.new line
   rescue Exception
