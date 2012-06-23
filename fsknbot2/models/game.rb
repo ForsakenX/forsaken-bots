@@ -1,6 +1,16 @@
 require "rexml/document"
 require 'net/http'
 
+def names_to_s d
+	if d.length > 1
+		l = d.pop
+		n = "#{d.join(',')} and #{l} have"
+	else
+		n = "#{d} has"
+	end
+	n
+end
+
 #
 # Public API
 #
@@ -24,11 +34,23 @@ class Game
         	IrcConnection.privmsg "#forsaken", "Game started #{g.to_s}"
 				else
         	IrcConnection.privmsg "#forsaken",
-						"A game has started a game "+
+						"A game has started "+
 						"but the port is closed so nobody can join... "+
 						"#{g.name}@#{g.ip} #{g.country}"
 				end
       end
+			if (a=g.names[1..-1].compact.sort) != (b=game[:names][1..-1].compact.sort)
+				puts "game: #{g.name} before = #{a.join ','} after = #{b.join ','}"
+				if not (d=a-b).empty?
+					IrcConnection.privmsg "#forsaken",
+						"#{names_to_s d} left #{g.name}'s game."
+				end
+				if not (d=b-a).empty?
+					IrcConnection.privmsg "#forsaken",
+						"#{names_to_s d} joined #{g.name}'s game."
+				end
+			end
+			g.names = game[:names]
       g
     end
 
@@ -128,11 +150,12 @@ end
 class Game
 
   attr_reader :hostname, :start_time, :name, :ip, :port, :url, :version
-  attr_accessor :last_time, :open, :country
+  attr_accessor :last_time, :open, :country, :names
 
   def initialize game
     @version     = game[:version]
     @name        = game[:name]
+		@names       = game[:names]
     @ip          = game[:ip]
 		begin
 			@country   = Net::HTTP.get_response(URI.parse(
@@ -159,8 +182,12 @@ class Game
     Game.destroy_game self
   end
 
+	def players
+		@names[1..-1]
+	end
+
   def to_s
-   	"#{@name} @ #{@url} #{@country}"
+   	"#{@name} @ #{@url} #{@country} players: #{players.empty? ? "(none)" : players.join(',')}"
   end
 
 end
