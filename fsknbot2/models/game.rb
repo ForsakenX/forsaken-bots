@@ -36,7 +36,7 @@ class Game
         	IrcConnection.privmsg "#forsaken",
 						"A game has started "+
 						"but the port is closed so nobody can join... "+
-						"#{g.name}@#{g.ip} #{g.country}"
+						"#{g.name}@#{g.ip} (#{g.version}) #{g.country}"
 				end
       end
 			if (a=g.names[1..-1].compact.sort) != (b=game[:names][1..-1].compact.sort)
