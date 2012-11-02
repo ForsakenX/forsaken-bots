@@ -2,17 +2,10 @@ DEBUG=0
 
 CC=gcc
 
-FLAGS=-pipe
-CFLAGS=$(FLAGS) -I/usr/include/enet
-LDFLAGS=$(FLAGS)
-ifeq ($(DEBUG),1)
-	FLAGS+=-g
-	CFLAGS+=-Wall -g
-else
-	CFLAGS+=-O2
-	LDFLAGS+=-s
-endif
-LIBS=-lenet
+FLAGS=-pipe -g
+CFLAGS=$(FLAGS) -Wall -g -I./include 
+LDFLAGS=$(FLAGS) -L./lib
+LIBS= -Wl,-dn -lenet -Wl,-dy
 
 OBJS=test.o
 
