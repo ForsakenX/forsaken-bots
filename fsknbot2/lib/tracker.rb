@@ -30,6 +30,7 @@ class GameTracker < EM::Connection
 	end
 
 	def self.check
+		t = Time.now
 		puts "GameTracker checking games"
 		Game.games.dup.each do |game|
 			timeout_range = Time.now - 60
@@ -37,6 +38,7 @@ class GameTracker < EM::Connection
 				game.destroy
 			end
 		end
+		puts "GameTracker check took #{Time.now-t} seconds"
 	end
 end
 

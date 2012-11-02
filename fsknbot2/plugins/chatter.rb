@@ -88,7 +88,9 @@ $run_observers << Proc.new {
 	minute = 60
 	hour = 60 * minute
 	EM::PeriodicTimer.new( 6 * hour ) do
+		t = Time.now
 	  IrcConnection.privmsg "#forsaken", Chatter.random
+		puts "Time to run Chatter.random: #{Time.now-t}"
 	end
 }
 

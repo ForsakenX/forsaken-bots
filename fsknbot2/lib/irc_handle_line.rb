@@ -55,6 +55,9 @@ class IrcHandleLine
     ## 2nd part of line is the irc action
     @action = @parts.shift.downcase
 
+		## debug info
+		puts "action = #{@action}"
+
     ## handle the action
     case @action
 

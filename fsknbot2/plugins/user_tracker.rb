@@ -9,6 +9,7 @@ $run_observers << Proc.new {
 			file.puts line
 			file.close
 			#puts "Login tracker logged: #{line}"
+			puts "Took #{Time.now-now} seconds to run user_tracker.rb"
 		rescue
     	puts_error(__FILE__,__LINE__)
 		end

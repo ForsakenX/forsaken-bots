@@ -7,7 +7,10 @@ class IrcCommandManager
 
     def call command, msg
       return unless @@commands[ command ]
-      @@commands[ command ].call(msg.dup)
+			t = Time.now
+      rv = @@commands[ command ].call(msg.dup)
+			puts "Took #{Time.now - t} to run command: #{command}"
+			rv
     end
 
     # register both at once or one at a time

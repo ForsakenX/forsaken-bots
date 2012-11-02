@@ -94,10 +94,13 @@ class IrcConnection < EM::Connection
   end
 
   def receive_line line
-    t=Time.now.strftime("%m-%d-%y %H:%M:%S")
-    puts "irc #{t} >>> (fsknbot2) #{line}"
+    t=Time.now
+		puts
+    puts "irc #{t.strftime("%m-%d-%y %H:%M:%S")} >>> (fsknbot2) #{line}"
     close_connection if line.split.first.downcase == "error"
     IrcHandleLine.new line
+		puts "Took #{Time.now-t} seconds to process line."
+		puts
   rescue Exception
     puts_error __FILE__,__LINE__
   end

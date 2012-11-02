@@ -15,7 +15,9 @@ end
 $run_observers << Proc.new {
         interval = 60*6 # every minute
         EM::PeriodicTimer.new( interval ) do
-		RssWatch.update_feeds
+					t = Time.now
+					RssWatch.update_feeds
+					puts "rss watch update took #{Time.now - t} seconds"
         end
 }
 
