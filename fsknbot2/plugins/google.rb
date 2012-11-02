@@ -37,9 +37,10 @@ class GoogleCommand
 		return "No results found" if links.empty?
 		link = GoogleLink.parse links.first.href
 		parser = result.parser
-		content = parser.search('div.s').first
+		#content = parser.search('div.s').first
+		content = parser.search('div.s .st').first
 		return "No results found" if content.nil?
-		content.css('cite, span.gl').each { |n| n.remove }
+		#content.css('cite, span.gl, span.vshid').each { |n| n.remove }
 		content.content + " #{link}"
 	end
 	def define query
@@ -51,9 +52,8 @@ class GoogleCommand
 		return "No results found" if links.empty?
 		link = GoogleLink.parse links.first.href
 		parser = result.parser
-		content = parser.search('div.s').first
+		content = parser.search('div.s .st').first
 		return "No results found" if content.nil?
-		content.css('cite, span.gl').each { |n| n.remove }
 		content.content + " #{link}"
 	end
     def run m
