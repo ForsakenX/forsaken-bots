@@ -16,7 +16,7 @@ end
 EM::run {
   begin
     EM::connect $server, $port, IrcConnection
-	  #EM::start_server $privmsg_interface, $privmsg_port, IrcPrivmsgProxy
+	  EM::start_server $privmsg_interface, $privmsg_port, IrcPrivmsgProxy
   rescue Exception
     puts_error(__FILE__,__LINE__)
     exit 1
