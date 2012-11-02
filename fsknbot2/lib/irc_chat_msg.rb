@@ -76,15 +76,38 @@ class IrcChatMsg
      ## command is first word
      @command = (@args.shift||'').downcase
 
+			##
+			return if @from.ignored
+
+# TODO should also fork listeners ?
+
+# fork so plugins can't slow down core bot
+_t=Time.now
+parent_id=$$
+pid = fork {
+puts "forked `#{@command}` as id #{$$} for parent #{parent_id} took #{Time.now-_t} seconds"
+
+# over write send methods to new socket
+require 'socket'
+$s=TCPSocket.new('localhost',6668)
+def reply          m; $s.puts m; end
+def reply_directly m; true; end # disabled
+
      ## call command
-     IrcCommandManager.call(@command,self) unless @from.ignored
+     IrcCommandManager.call(@command,self)
+
+$s.close
+puts "forked child exiting took #{Time.now-_t} seconds"
+exit 0
+}
+puts "about to detach child at #{Time.now-_t} seconds"
+Process.detach pid # let init become parent
+puts "detached child at #{Time.now-_t} seconds"
 
    end
 
    ## call listeners
-   unless @from.ignored
-     @@observer.call self
-   end
+   @@observer.call self
 
   end
 
