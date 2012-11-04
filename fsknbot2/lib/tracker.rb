@@ -9,16 +9,18 @@ class GameTracker < EM::Connection
 		state = parts.shift
 		case state
 		when "hosting"
-			port = parts.shift
+			port    = parts.shift
 			version = parts.shift
-			names = (parts.join||"").split ',' 
+			names   = parts.shift.split ',' 
+			level   = parts.shift || ""
 			return if port.nil? or names.empty? or version.nil?
 			Game.update({ 
-				:ip => ip,
-				:port => port,
+				:ip      => ip,
+				:port    => port,
 				:version => version,
-				:name => names.first,
-				:names => names
+				:name    => names.first,
+				:names   => names,
+				:level   => level
 			})
 		when "finished"
 			port = parts.shift
