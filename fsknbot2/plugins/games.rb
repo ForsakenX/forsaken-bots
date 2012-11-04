@@ -6,7 +6,7 @@ class GamesCommand
   class << self
 
     def run
-      return "No games...  " unless Game.length > 0
+      return "None..." unless Game.length > 0
       output = []
       Game.games.each do |game|
 	      time = seconds_to_clock( Time.now - game.start_time )
