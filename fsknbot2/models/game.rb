@@ -6,7 +6,7 @@ def names_to_s d
 		l = d.pop
 		n = "#{d.join(',')} and #{l} have"
 	else
-		n = "#{d} has"
+		n = "#{d.first} has"
 	end
 	n
 end
@@ -50,6 +50,11 @@ class Game
 						"#{names_to_s d} joined #{g.name}'s game."
 				end
 			end
+			if g.level != game[:level]
+				IrcConnection.privmsg "#forsaken",
+					"#{g.name}'s level has changed from #{g.level} to #{game[:level]}"
+			end
+			g.level = game[:level]
 			g.names = game[:names]
       g
     end
@@ -150,12 +155,13 @@ end
 class Game
 
   attr_reader :hostname, :start_time, :name, :ip, :port, :url, :version
-  attr_accessor :last_time, :open, :country, :names
+  attr_accessor :last_time, :open, :country, :names, :level
 
   def initialize game
     @version     = game[:version]
     @name        = game[:name]
 		@names       = game[:names]
+		@level       = game[:level]
     @ip          = game[:ip]
 		begin
 			@country   = Net::HTTP.get_response(URI.parse(
@@ -187,7 +193,7 @@ class Game
 	end
 
   def to_s
-   	"#{@name} @ #{@url} #{@country} players: #{players.empty? ? "(none)" : players.join(',')}"
+   	"#{@name} @ #{@url} #{@country} players: #{players.empty? ? "(none)" : players.join(',')} level: #{@level}"
   end
 
 end
