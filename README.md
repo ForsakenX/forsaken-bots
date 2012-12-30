@@ -1,7 +1,7 @@
 forsaken-bots
 =============
 
-Various bots used for Forsaken.
+Various bots used by the Forsaken community.
 
   FsknBot:
 
