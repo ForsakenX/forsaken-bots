@@ -1,15 +1,19 @@
-
 require 'rubygems'
 require 'mechanize'
 require 'rss'
+require 'timeout'
 
 class Feed
 class << self
 			
-	def parse url
-		RSS::Parser.parse( url )
-	rescue RSS::InvalidRSSError
-		RSS::Parser.parse( url, false )
+	def parse url, timeout=5
+		Timeout.timeout(timeout) do
+			begin
+				RSS::Parser.parse( url )
+			rescue RSS::InvalidRSSError
+				RSS::Parser.parse( url, false )
+			end
+		end
 	end
 
 	def unescape string
@@ -41,6 +45,7 @@ class Feed
 		@url = url
 		@errors = []
 		@feed = self.class.parse( @url )
+		throw "failed to parse #{@url}" if @feed.nil?
 		@type = @feed.respond_to?(:channel) ? :rss : :atom
 		@items = @feed.items.map{|item|FeedItem.new(item,@type)}
 		if @type == :rss
