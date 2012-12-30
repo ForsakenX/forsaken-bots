@@ -1,0 +1,5 @@
+config/passwd
+config/wolfram.appid
+db
+logs
+run
