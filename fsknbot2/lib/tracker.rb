@@ -11,8 +11,10 @@ class GameTracker < EM::Connection
 		when "hosting"
 			port    = parts.shift
 			version = parts.shift
-			names   = parts.shift.split ',' 
-			level   = parts.shift || ""
+			# some bastards have spaces in their names
+			# so we have to assume that the last part is the level name
+			level   = parts.pop
+			names   = parts.join(' ').split ',' 
 			return if port.nil? or names.empty? or version.nil?
 			Game.update({ 
 				:ip      => ip,
