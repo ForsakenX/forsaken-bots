@@ -54,32 +54,28 @@ class RssWatch
     end
 
     def update_feeds
-#      puts "-- Updating RssWatch Feeds"
+      puts "-- Updating RssWatch Feeds - #{Time.now}"
       load_feeds
       @@feeds.each do |url,links|
-	begin
-#		puts "-- checking #{url}"
-		feed = Feed.new url 
-	        next unless feed.items.length > 0
+				puts "-- checking #{url}"
+				begin
+					feed = Feed.new url 
+  	      next unless !feed.items.nil? and feed.items.length > 0
 	        feed.items.reverse.each do |item|
 	          next if links.include? item.link
-	          links << item.link
-	          # shrink url
-	          #tiny = TinyUrl.new(item.link).tiny || item.link
-	          tiny = item.link
-	          #msg = "#{feed.title}: #{item.title} #{tiny} "
+          	links << item.link
+    	      tiny = item.link
 	          msg = "#{item.title} #{tiny} "
-	          #msg += Url.describe_link( item.link )
-	          @@send_queue << msg        
-	          puts "-- Found item #{item.title}"
-	        end
-#	        puts "-- Feed links: #{feed.items.length}"
-	rescue Exception
-			puts "ERROR ::::::: file parsing feed at: #{url}"
-	    puts_error __FILE__, __LINE__
-	end
+          	@@send_queue << msg        
+        	  puts "-- Found item #{item.title}"
+      	  end
+    	    puts "-- Feed links: #{feed.items.length}"
+				rescue Exception
+					puts "ERROR ::::::: file parsing feed at: #{url}"
+		   		puts_error __FILE__, __LINE__
+				end
       end
-      puts "-- Done Updating RssWatch Feeds"
+      puts "-- Done - #{Time.now}"
       save_feeds
       IrcConnection.privmsg $channels, @@send_queue.shift
     rescue Exception
