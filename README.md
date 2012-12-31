@@ -16,3 +16,9 @@ Various bots used by the Forsaken community.
       Dialing this bot would auto join you to a conference.
 
       This provided voice chat for games without need for someone to manage it during game play.
+
+  IrcProxy:
+  
+      Hides multiple irc clients behind one active session.
+  
+      Allowed multiple bots to sit behind one login and reduced spamming the channel with joins/leaves.
