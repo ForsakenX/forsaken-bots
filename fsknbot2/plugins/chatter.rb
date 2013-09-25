@@ -1,7 +1,7 @@
 class Chatter
 class << self
 
-	@@chatters = [ :desc, :random, :fortune, :wotd ]
+	@@chatters = [ :desc, :random, :fortune ] #, :wotd ]
 	def chatters; @@chatters; end
 
 	@@randoms = []
