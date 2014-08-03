@@ -9,6 +9,9 @@ class IrcConnection < EM::Connection
   class <<self
 
     @@connection = nil
+    @@last_ping_time = Time.now
+    def last_ping_time; @@last_ping_time; end
+    def last_ping_time=(x); @@last_ping_time=x; end
 
     def send_line line
       @@connection.send_line line unless @@connection.nil?
@@ -59,11 +62,24 @@ class IrcConnection < EM::Connection
     end
 
     def pong token
+      @@last_ping_time = Time.now
       IrcConnection.send_line "PONG #{token}"
     end
 
   end
 end
+
+# if we haven't received a ping in 5 minutes
+# then close the connection which will invoke reconnect in `unbind`
+$run_observers << Proc.new {
+  EM::PeriodicTimer.new( 60 ) do
+		if Time.now - IrcConnection.last_ping_time > 60*5
+      IrcConnection.last_ping_time = Time.now
+      puts "CLOSING CONNECTION - last ping was at #{IrcConnection.last_ping_time}"
+      IrcConnection.close
+    end
+  end
+}
 
 #
 #  Instance
