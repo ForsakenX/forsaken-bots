@@ -42,9 +42,9 @@ class IrcHandleLine
 
     ## pings
     if @parts.first.downcase == "ping"
-			@parts.shift
+      @parts.shift
       IrcConnection.pong @parts.join(' ')
-			return
+      return
     end
 
     ## first part of line is hostname of server or user_tag
@@ -57,8 +57,8 @@ class IrcHandleLine
     ## 2nd part of line is the irc action
     @action = @parts.shift.downcase
 
-		## debug info
-		puts "action = #{@action}"
+    ## debug info
+    puts "action = #{@action}"
 
     ## handle the action
     case @action
