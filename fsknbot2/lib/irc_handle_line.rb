@@ -13,7 +13,8 @@ class IrcHandleLine
       :join    => Observe.new,
       :part    => Observe.new,
       :message => Observe.new,
-      :topic   => Observe.new
+      :topic   => Observe.new,
+      :end_who_list => Observe.new,
     }
 
     def events; @@events; end
@@ -75,6 +76,11 @@ class IrcHandleLine
           user.nick = new
 
         end
+
+      ## end of who list
+      when '315'
+
+        self.class.events[:end_who_list].call
 
       ## handle who responses
       when '352'
