@@ -1,3 +1,4 @@
+require 'observe'
 require 'irc_handle_line'
 require 'em_protocols_line_text_2'
 
@@ -7,6 +8,12 @@ require 'em_protocols_line_text_2'
 
 class IrcConnection < EM::Connection
   class <<self
+
+    @@events = {
+      :privmsg => Observe.new,
+    }
+
+    def events; @@events; end
 
     @@connection = nil
     @@last_ping_time = Time.now
@@ -22,6 +29,11 @@ class IrcConnection < EM::Connection
     end
 
     def privmsg targets, messages, type="PRIVMSG"
+      @@events[:privmsg].call(targets,messages)
+      privmsg_raw targets, messages, type
+    end
+
+    def privmsg_raw targets, messages, type="PRIVMSG"
       [messages].flatten.each do |message|
         next if message.nil? or !message.respond_to?(:to_s) or message.empty?
         # shrink white space
