@@ -11,6 +11,7 @@ class IrcHandleLine
 
     @@events = {
       :join    => Observe.new,
+      :part    => Observe.new,
       :message => Observe.new,
       :topic   => Observe.new
     }
@@ -129,8 +130,13 @@ class IrcHandleLine
       ## user left channel
       when 'part'
 
+        channel = @parts.shift.downcase
+
+        ## send part events
+        self.class.events[:part].call(channel,@nick)
+
         ## allowed channels
-        return unless $channels.include? @parts.shift.downcase
+        return unless $channels.include? channel
 
         ## remove user
         IrcUser.delete_by_nick @nick
