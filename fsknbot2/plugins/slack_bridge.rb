@@ -22,13 +22,29 @@ IrcHandleLine.events[:message].register do |args|
   $send_to_slack.call args[:from], args[:message]
 end
 
+$send_user_list_to_slack = lambda do
+  users = IrcUser.nicks.
+            select{|n|
+              n !~ / @ slack/ &&
+              n != 'ChanServ' &&
+              n !~ /#{$nick}/i
+            }.join(", ")
+	next if users.empty?
+  $send_to_slack.call "FsknBot", "Users: #{users}"
+end
+
 %w{ join part }.each do |event|
   IrcHandleLine.events[event.to_sym].register do |channel,nick|
     next if channel != "#forsaken"
-    next if nick.downcase == "fsknbot"
+    #next if nick.downcase == "fsknbot"
     puts "forwarding #{event} to slack.com"
     $send_to_slack.call "FsknBot", "#{nick} has #{event}ed #{channel}"
+    $send_user_list_to_slack.call
   end
+end
+
+IrcHandleLine.events[:end_who_list].register do
+  $send_user_list_to_slack.call
 end
 
 IrcConnection.events[:privmsg].register do |targets,messages|
