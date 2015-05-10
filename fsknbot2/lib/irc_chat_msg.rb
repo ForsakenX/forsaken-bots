@@ -87,16 +87,23 @@ parent_id=$$
 pid = fork {
 puts "forked `#{@command}` as id #{$$} for parent #{parent_id} took #{Time.now-_t} seconds"
 
-# over write send methods to new socket
-require 'socket'
-$s=TCPSocket.new('localhost',6668)
-def reply          m; $s.puts m; end
+# over write send methods
+@hash = hash
+def reply m
+	if @hash[:replier]
+		@hash[:replier].call(m)
+	else
+		require 'socket'
+		$s = TCPSocket.new('localhost',6668)
+		$s.puts m
+		$s.close
+	end
+end
 def reply_directly m; true; end # disabled
 
      ## call command
      IrcCommandManager.call(@command,self)
 
-$s.close
 puts "forked child exiting took #{Time.now-_t} seconds"
 exit 0
 }
