@@ -26,7 +26,9 @@ class GoogleCommand
 	def parse_serp_links result
 		#result.links.select{|l|l.attributes['class']=='l'}
 		#result.links.select{|l| l.attributes['class'].nil? and !l.attributes['onmousedown'].nil? }
-		result.links.select{|l| l.href =~ %r{^/url\?q=} }
+		result.links.
+			select{|l| l.href =~ %r{^/url\?q=} }.
+			select{|l| l.href !~ %r{/settings/ads/} }
 	end
 	def desc query
 		query = "site:wikipedia.org #{query}"
