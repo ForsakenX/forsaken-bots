@@ -3,7 +3,7 @@ require 'eventmachine'
 
 $nick     = 'fsknbot'
 $nick_proper = 'FsknBot'
-$channels = ['#forsaken','#6dof']
+$channels = ['#forsaken'] #,'#6dof']
 $server   = 'irc.freenode.net'
 $port     = 6667
 $prefix   = '!'
