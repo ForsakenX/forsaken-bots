@@ -23,41 +23,41 @@ class GoogleCommand
     @@agent = Mechanize.new
     @@page = @@agent.get('http://google.com')
     @@form = @@page.form_with(:name => 'f')
-	def parse_serp_links result
-		#result.links.select{|l|l.attributes['class']=='l'}
-		#result.links.select{|l| l.attributes['class'].nil? and !l.attributes['onmousedown'].nil? }
-		result.links.
-			select{|l| l.href =~ %r{^/url\?q=} }.
-			select{|l| l.href !~ %r{/settings/ads/} }
-	end
-	def desc query
-		query = "site:wikipedia.org #{query}"
-    form = @@form.dup
-    form.q = query
-    result = form.submit
-		links = parse_serp_links result
-		return "No results found" if links.empty?
-		link = GoogleLink.parse links.first.href
-		parser = result.parser
-		#content = parser.search('div.s').first
-		content = parser.search('div.s .st').first
-		return "No results found" if content.nil?
-		#content.css('cite, span.gl, span.vshid').each { |n| n.remove }
-		content.content + " #{link}"
-	end
-	def define query
-		query = "site:wiktionary.org #{query}"
-	  form = @@form.dup
-	  form.q = query
-	  result = form.submit
-		links = parse_serp_links result
-		return "No results found" if links.empty?
-		link = GoogleLink.parse links.first.href
-		parser = result.parser
-		content = parser.search('div.s .st').first
-		return "No results found" if content.nil?
-		content.content + " #{link}"
-	end
+    def parse_serp_links result
+      #result.links.select{|l|l.attributes['class']=='l'}
+      #result.links.select{|l| l.attributes['class'].nil? and !l.attributes['onmousedown'].nil? }
+      result.links.
+        select{|l| l.href =~ %r{^/url\?q=} }.
+        select{|l| l.href !~ %r{/settings/ads/} }
+    end
+    def desc query
+      query = "site:wikipedia.org #{query}"
+      form = @@form.dup
+      form.q = query
+      result = form.submit
+      links = parse_serp_links result
+      return "No results found" if links.empty?
+      link = GoogleLink.parse links.first.href
+      parser = result.parser
+      #content = parser.search('div.s').first
+      content = parser.search('div.s .st').first
+      return "No results found" if content.nil?
+      #content.css('cite, span.gl, span.vshid').each { |n| n.remove }
+      content.content + " #{link}"
+    end
+    def define query
+      query = "site:wiktionary.org #{query}"
+      form = @@form.dup
+      form.q = query
+      result = form.submit
+      links = parse_serp_links result
+      return "No results found" if links.empty?
+      link = GoogleLink.parse links.first.href
+      parser = result.parser
+      content = parser.search('div.s .st').first
+      return "No results found" if content.nil?
+      content.content + " #{link}"
+    end
     def run m
       query = m.args.join(' ')
       return m.reply("Missing search") if query.empty?
@@ -78,7 +78,7 @@ class GoogleCommand
       form = @@form.dup
       form.q = query
       result = form.submit
-			parse_serp_links result
+      parse_serp_links result
     end
   end
 end
@@ -131,14 +131,14 @@ end
 class GoogleLink
   class << self
     def parse url
-			url = extract_url url
+      url = extract_url url
       return url if url.length < 40
       t = TinyUrl.new( url )
       t.tiny || t.original
     end
-		def extract_url url
-			CGI::unescape url.split('q=')[1].split('&')[0]
-		end
+    def extract_url url
+      CGI::unescape url.split('q=')[1].split('&')[0]
+    end
   end
 end
 
