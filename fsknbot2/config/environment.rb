@@ -13,6 +13,12 @@ $privmsg_channel = '#forsaken'
 $privmsg_interface = '127.0.0.1'
 $privmsg_port = 6668
 
+# you must define these values in config file
+$slack_incoming_hook = nil
+$slack_bridge_token = nil
+$slack_general_bot_token = nil
+require "#{ROOT}/config/slack_config.rb"
+
 $run_observers = []
 
 $: << "#{ROOT}/lib/"
@@ -25,6 +31,9 @@ end
 
 begin
   Dir[
+      # temporary hack because slack needs to
+      # register observers before others
+      "#{ROOT}/plugins/slack_bridge.rb",
       "#{ROOT}/lib/*.rb",
       "#{ROOT}/models/*.rb",
       "#{ROOT}/plugins/*.rb"

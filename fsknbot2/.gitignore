@@ -1,4 +1,5 @@
 config/passwd
+config/slack_config.rb
 config/wolfram.appid
 db
 logs
