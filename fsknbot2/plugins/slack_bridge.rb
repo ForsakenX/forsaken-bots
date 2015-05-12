@@ -26,7 +26,7 @@ $send_user_list_to_slack = lambda do
   users = IrcUser.nicks.
             select{|n|
               n !~ / @ slack/ &&
-              n != 'ChanServ' &&
+              n !~ /ChanServ/i &&
               n !~ /#{$nick}/i
             }.join(", ")
 	next if users.empty?
