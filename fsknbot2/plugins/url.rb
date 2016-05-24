@@ -20,11 +20,13 @@ require 'summarize'
 class UrlCommand 
   class << self
  
-    @@db_path = "#{ROOT}/db/urls.yaml"
-    @@db = File.expand_path(@@db_path)
-    @@urls = (File.exists?(@@db) && YAML.load_file(@@db)) || []
+    #@@db_path = "#{ROOT}/db/urls.yaml"
+    #@@db = File.expand_path(@@db_path)
+    #@@urls = (File.exists?(@@db) && YAML.load_file(@@db)) || []
+    @@urls = []
 
     def save
+      return
       file = File.open(@@db,'w+')
       YAML.dump(@@urls,file)
       file.close
@@ -100,9 +102,9 @@ class UrlCommand
           next # do not save
         end
         # delete last entry for this url
-        @@urls.dup.each{|u| @@urls.delete u if u[0] == url }
+        #@@urls.dup.each{|u| @@urls.delete u if u[0] == url }
         # save the url
-        @@urls.unshift [url,info,m.from.nick,m.to,m.time]
+        #@@urls.unshift [url,info,m.from.nick,m.to,m.time]
       end
       # save the database
       save
