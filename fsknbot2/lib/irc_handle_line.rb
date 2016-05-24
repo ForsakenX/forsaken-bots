@@ -63,6 +63,10 @@ class IrcHandleLine
     ## handle the action
     case @action
 
+      ## handle pong messages
+      when 'pong'
+        IrcConnection.last_pong_time = Time.now
+
       ## handle nick change
       when 'nick'
 
