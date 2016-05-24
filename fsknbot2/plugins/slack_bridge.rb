@@ -56,11 +56,32 @@ end
 require 'evma_httpserver'
 
 class SlackHttpListener < EM::Connection
+
   include EM::HttpServer
+
   def post_init
     super
     no_environment_strings
+    puts "Slack HTTP Listener: New Connection From: ..."
   end
+
+  def unbind
+    super
+    puts "Slack HTTP Listener: Lost Connection From: ..."
+  end
+
+  def receive_data data
+    puts "Slack HTTP Listener: Received data From:  ..."
+    puts "Slack HTTP Listener: Data = #{data}"
+    super data
+  end
+
+  def send_data data
+    puts "Slack HTTP Listener: Sending data to: ..."
+    puts "Slack HTTP Listener: Data = #{data}"
+    super data
+  end
+
   def process_http_request
     #   @http_protocol
     #   @http_request_method
