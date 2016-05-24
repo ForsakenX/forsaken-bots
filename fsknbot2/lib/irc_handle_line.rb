@@ -1,3 +1,4 @@
+# vim: set ts=2 sw=2 et :
 require 'observe'
 require 'irc_user'
 require 'irc_connection'

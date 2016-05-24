@@ -125,30 +125,30 @@ class Url
       "404" => "Page not found"
     }
 
-		def summarize url, page
-			summarized = page.parser.inner_text.summarize
-			name = url.gsub('http://','').gsub(/\//,'.') + ".txt"
-			file = File.new("/home/aquinod/www/links/#{name}",'w+')
-			file.write(summarized)
-			file.close
-			return name
-		rescue Exception
-			puts "error summarizing page: #{$!}"
-			nil
-		end
+    def summarize url, page
+      summarized = page.parser.inner_text.summarize
+      name = url.gsub('http://','').gsub(/\//,'.') + ".txt"
+      file = File.new("/home/aquinod/www/links/#{name}",'w+')
+      file.write(summarized)
+      file.close
+      return name
+    rescue Exception
+      puts "error summarizing page: #{$!}"
+      nil
+    end
 
     def describe_link url
       title = nil
       page = get_method( url, :head )
       if page.response['content-type'] =~ /text\/html/
-	        page = get_method( url, :page )
-        	title = link_title( url, page )
-					#summarized = summarize url, page
+          page = get_method( url, :page )
+          title = link_title( url, page )
+          #summarized = summarize url, page
       end
       if title.nil? || title.empty?
         "[Link Info]: #{link_info( url, page )}"
       else
-				#summary = summarized.nil? ? "" : "[Summary]: http://fly.thruhere.net/links/#{summarized}"
+        #summary = summarized.nil? ? "" : "[Summary]: http://fly.thruhere.net/links/#{summarized}"
         #"[Link Title]: #{title} #{summary}"
         "[Link Title]: #{title}"
       end
@@ -163,20 +163,20 @@ class Url
       url = "http://#{url}" unless url =~ /^http/
       n.times do |i|
         begin
-					if method == :page
-						# this stops reading huge files marked as text/html
-						Timeout.timeout(1) do
-							return @@agent.get(url)
-						end
-						break # success
-					else
-						return @@agent.head(url)
-					end
+          if method == :page
+            # this stops reading huge files marked as text/html
+            Timeout.timeout(1) do
+              return @@agent.get(url)
+            end
+            break # success
+          else
+            return @@agent.head(url)
+          end
           break # success
         rescue Timeout::Error
-	  			raise "Took to long to read page..." if i == (n-1)
+          raise "Took to long to read page..." if i == (n-1)
         end
-    	end
+      end
     rescue Mechanize::RedirectLimitReachedError
       raise "To many redirects for: #{url}"
     rescue Mechanize::ResponseCodeError

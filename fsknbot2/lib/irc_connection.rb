@@ -48,9 +48,9 @@ class IrcConnection < EM::Connection
           # catch white space only lines
           next if chunk.gsub(/\s/,'').empty?
           # send the line
-					[targets].flatten.each do |target|
-      	    IrcConnection.send_line "#{type} #{target.downcase} :#{chunk}"
-					end
+          [targets].flatten.each do |target|
+            IrcConnection.send_line "#{type} #{target.downcase} :#{chunk}"
+          end
         }
       end
     end
@@ -154,19 +154,19 @@ class IrcConnection < EM::Connection
 
   def unbind
     status "Disconnected"
-		sleep 1
+    sleep 1
     reconnect $server, $port
     post_init
   end
 
   def receive_line line
     t=Time.now
-		puts
+    puts
     puts "irc #{t.strftime("%m-%d-%y %H:%M:%S")} >>> (fsknbot2) #{line}"
     close_connection if line.split.first.downcase == "error"
     IrcHandleLine.new line
-		puts "Took #{Time.now-t} seconds to process line."
-		puts
+    puts "Took #{Time.now-t} seconds to process line."
+    puts
   rescue Exception
     puts_error __FILE__,__LINE__
   end

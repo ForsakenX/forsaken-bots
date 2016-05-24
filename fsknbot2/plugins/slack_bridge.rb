@@ -29,7 +29,7 @@ $send_user_list_to_slack = lambda do
               n !~ /ChanServ/i &&
               n !~ /#{$nick}/i
             }.join(", ")
-	next if users.empty?
+  next if users.empty?
   $send_to_slack.call "FsknBot", "Users: #{users}"
 end
 
