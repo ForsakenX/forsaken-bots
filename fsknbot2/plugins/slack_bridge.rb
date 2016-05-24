@@ -109,6 +109,11 @@ class SlackHttpListener < EM::Connection
     # keys: token,team_id,team_domain,service_id,channel_id,
     #       channel_name,timestamp,user_id,user_name,text
 
+    unless @http_post_content
+      puts "slack @http_post_content was nil?"
+      return
+    end
+
     p = @http_post_content.split('&').
         inject({}){|h,i|k,v=i.split('='); h[k.to_sym]=v; h}
 
