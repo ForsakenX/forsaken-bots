@@ -30,6 +30,8 @@ $send_user_list_to_slack = lambda do
               n !~ /#{$nick}/i
             }.join(", ")
   next if users.empty?
+  next if users == $last_users_list
+  $last_users_list = users
   $send_to_slack.call "FsknBot", "Users: #{users}"
 end
 
