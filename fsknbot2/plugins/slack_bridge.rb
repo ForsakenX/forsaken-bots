@@ -22,12 +22,13 @@ IrcHandleLine.events[:message].register do |args|
   $send_to_slack.call args[:from], args[:message]
 end
 
-$send_user_list_to_slack = lambda do
+$send_user_list_to_slack = lambda do |removed_nick=""|
   users = IrcUser.nicks.
             select{|n|
               n !~ / @ slack/ &&
               n !~ /ChanServ/i &&
-              n !~ /#{$nick}/i
+              n !~ /#{$nick}/i &&
+              n != removed_nick
             }.join(", ")
   next if users.empty?
   next if users == $last_users_list
@@ -41,7 +42,7 @@ end
     #next if nick.downcase == "fsknbot"
     puts "forwarding #{event} to slack.com"
     $send_to_slack.call "FsknBot", "#{nick} has #{event}ed #{channel}"
-    $send_user_list_to_slack.call
+    $send_user_list_to_slack.call nick
   end
 end
 
