@@ -13,6 +13,7 @@ class IrcHandleLine
     @@events = {
       :join    => Observe.new,
       :part    => Observe.new,
+      :quit    => Observe.new,
       :message => Observe.new,
       :topic   => Observe.new,
       :end_who_list => Observe.new,
@@ -154,6 +155,10 @@ class IrcHandleLine
 
       ## user quit irc
       when 'quit'
+
+        ## send part events
+        channel = nil # all channels
+        self.class.events[:quit].call(channel,@nick)
 
         ## remove user
         IrcUser.delete_by_nick @nick
