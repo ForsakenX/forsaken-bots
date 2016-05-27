@@ -36,12 +36,13 @@ $send_user_list_to_slack = lambda do |removed_nick=""|
   $send_to_slack.call "FsknBot", "Users: #{users}"
 end
 
-%w{ join part }.each do |event|
+%w{ join part quit }.each do |event|
   IrcHandleLine.events[event.to_sym].register do |channel,nick|
-    next if channel != "#forsaken"
+    next unless channel == "#forsaken" || channel.nil?
     #next if nick.downcase == "fsknbot"
     puts "forwarding #{event} to slack.com"
-    $send_to_slack.call "FsknBot", "#{nick} has #{event}ed #{channel}"
+    verb = event == 'quit' ? event : "#{event}ed"
+    $send_to_slack.call "FsknBot", "#{nick} has #{verb} #{channel}"
     $send_user_list_to_slack.call nick
   end
 end
