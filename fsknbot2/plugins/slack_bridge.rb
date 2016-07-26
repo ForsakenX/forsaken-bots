@@ -2,16 +2,33 @@
 
 require 'irc_handle_line'
 
+require 'json'
+require 'net/http'
+require 'uri'
+
 $send_to_slack = lambda do |user,text,channel="#freenode-bridge"|
-  text.gsub! /\n/, ' ' # post data wont be happy with new lines in it
-  puts "send_to_slack: user=#{user}, text=#{text}, channel=#{channel}"
-  `
-    curl \
-      -s \
-      -X POST --data-urlencode \
-      'payload={"channel":"#{channel}","username":"#{user} @ freenode","text":"#{text}","icon_emoji":":ghost:"}' \
-      "#{$slack_incoming_hook}"
-  `
+
+  payload = {
+		channel:     channel,
+		username:    "#{user} @ freenode",
+		text:        text,
+		icon_emoji:  ":ghost:"
+	}.to_json
+
+  puts "send_to_slack: user=#{user}, text=#{text}, channel=#{channel}, payload=#{payload}"
+
+  uri = URI.parse($slack_incoming_hook)
+
+  Net::HTTP.start( uri.host, uri.port, use_ssl: uri.scheme == 'https' ) do |http|
+    request = Net::HTTP::Post.new(uri.request_uri)
+    request.set_form_data({payload: payload})
+    response = http.request(request)
+    puts "response code: #{response.code}"
+    puts "-------------"
+    puts response.body
+    puts "-------------"
+  end
+
 end
 
 IrcHandleLine.events[:message].register do |args|
