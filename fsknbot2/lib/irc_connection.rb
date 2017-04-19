@@ -146,9 +146,28 @@ class IrcConnection < EM::Connection
   def post_init
     status "Connected"
     @@connection = self
-    send_line "PASS #{$passwd}"
-    send_line "USER x x x :x"
-    send_line "NICK #{$nick_proper}"
+    # TODO: This is a real hack to get it working ASAP
+    #       Need proper CAP and SASL negotiation steps
+    #       - http://ircv3.net/specs/extensions/sasl-3.1.html
+    #       - http://ircv3.net/specs/extensions/sasl-3.2.html
+    if true # use SASL
+      send_line "CAP LS 302"
+      send_line "USER x x x :x"
+      send_line "NICK #{$nick_proper}"
+      send_line "CAP REQ :sasl"
+      send_line "AUTHENTICATE PLAIN"
+      send_line "AUTHENTICATE #{
+        require 'base64'
+        Base64.encode64 [
+          $nick_proper, $nick_proper, $passwd
+        ].join("\0")
+      }"
+      send_line "CAP END"
+    else
+      send_line "PASS #{$passwd}"
+      send_line "USER x x x :x"
+      send_line "NICK #{$nick_proper}"
+    end
     IrcConnection.join $channels
   end
 
