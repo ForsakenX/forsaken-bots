@@ -9,11 +9,11 @@ require 'uri'
 $send_to_slack = lambda do |user,text,channel="#freenode-bridge"|
 
   payload = {
-		channel:     channel,
-		username:    "#{user} @ freenode",
-		text:        text,
-		icon_emoji:  ":ghost:"
-	}.to_json
+    channel:     channel,
+    username:    "#{user} @ freenode",
+    text:        text,
+    icon_emoji:  ":ghost:"
+  }.to_json
 
   puts "send_to_slack: user=#{user}, text=#{text}, channel=#{channel}, payload=#{payload}"
 
