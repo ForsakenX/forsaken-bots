@@ -7,7 +7,7 @@ $channels = ['#forsaken'] #,'#6dof']
 $server   = 'irc.freenode.net'
 $port     = 6667
 $prefix   = '!'
-$passwd   = File.read "#{ROOT}/config/passwd"
+$passwd   = File.read("#{ROOT}/config/passwd").chomp
 
 $privmsg_channel = '#forsaken'
 $privmsg_interface = '127.0.0.1'
