@@ -152,6 +152,12 @@ class SlackHttpListener < EM::Connection
       return
     end
 
+    if p[:text].nil?
+      puts "text was nil?"
+      respond
+      return
+    end
+
     # strip text of weird slack url formatting
     require 'cgi'
     text = CGI::unescape p[:text]
